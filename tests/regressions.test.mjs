@@ -30,14 +30,14 @@ function app(stubs = {}, env = {}) {
     const code = ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true } }).outputText;
     vm.runInNewContext(code, {
       exports, require: dependency => dependency.startsWith('@/') ? load(dependency) : dependency.startsWith('.') ? load(path.resolve(path.dirname(file), `${dependency}.ts`)) : Object.hasOwn(stubs, dependency) ? stubs[dependency] : external[dependency],
-      process: { env, cwd: () => '/isolated-test' }, Date: Clock, URLSearchParams, TextDecoder, AbortSignal,
+      process: { env, cwd: () => '/isolated-test' }, Date: Clock, URL, URLSearchParams, TextDecoder, AbortSignal,
       console: { log() {}, warn() {}, error() {} }, fetch: stubs.fetch,
     }, { filename: file });
     return exports;
   }
   return load;
 }
-const next = { connection: async () => {}, NextResponse: { json: (body, options) => ({ body, status: options?.status || 200 }) } };
+const next = { after: () => {}, connection: async () => {}, NextResponse: { json: (body, options) => ({ body, status: options?.status || 200 }) } };
 const missingFiles = { readFile: async () => { throw Object.assign(new Error('missing'), { code: 'ENOENT' }); } };
 const base = { name: 'Alice', email: 'alice@example.test', phone: '+8801700000000', date: 'Monday, January 7, 2030', timeSlot: '10:00am', timezone: 'Asia/Dhaka' };
 const lead = { name: 'Alice', email: 'alice@example.test', message: 'Please discuss this workflow.' };
@@ -206,7 +206,7 @@ test('existing booking data survives additive schema initialization', async t =>
   assert.ok((await client.execute('PRAGMA table_info(bookings)')).rows.some(row => row.name === 'phone'));
 });
 
-function calendarSetup(t, extra = {}) {
+function calendarSetup(t, extra = {}, env = {}) {
   let feed = [], failure = false;
   const created = [], reads = [];
   const context = setup(t, {
@@ -223,7 +223,7 @@ function calendarSetup(t, extra = {}) {
       },
     },
     ...extra,
-  });
+  }, env);
   return { ...context, created, reads, setFeed: value => { feed = value; }, fail: () => { failure = true; }, tick: () => { clockNow += 16000; } };
 }
 const legacyEvent = (overrides = {}) => ({
@@ -386,4 +386,91 @@ test('event identity persistence failure rolls back the reservation before Googl
   assert.equal(response.status, 503);
   assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 0);
   assert.equal(ctx.created.length, 0);
+});
+
+test('host env controls the profile and initials with safe defaults', () => {
+  const defaultHost = app()('src/lib/bookingHost.ts').getBookingHost();
+  assert.equal(defaultHost.name, 'Farhan Kabir Sifat'); assert.equal(defaultHost.initials, 'FS');
+  const host = app({}, { BOOKING_HOST_NAME: ' "  Ayesha   Rahman  " ', BOOKING_HOST_TITLE: 'Founder & Lead' })('src/lib/bookingHost.ts').getBookingHost();
+  assert.equal(host.name, 'Ayesha Rahman'); assert.equal(host.title, 'Founder & Lead'); assert.equal(host.initials, 'AR');
+  assert.equal(app({}, { BOOKING_HOST_NAME: 'নাজমুল' })('src/lib/bookingHost.ts').getBookingHost().initials, 'ন');
+});
+
+test('host env reaches the provider description and escaped confirmation email', async t => {
+  const sent = [], created = [];
+  const { load } = setup(t, {
+    nodemailer: { createTransport: () => ({ sendMail: async mail => { sent.push(mail); } }) },
+    '@/lib/googleCalendar': { googleCalendarConnectionId: () => 'test-connection', readGoogleCalendarChanges: async () => null, createGoogleCalendarEvent: async params => { created.push(params); return { success: true, meetUrl: 'https://meet.google.com/mock' }; } },
+  }, { BOOKING_HOST_NAME: 'Ayesha & Rahman', BOOKING_HOST_TITLE: 'Founder <Lead>', SMTP_HOST: 'mock', SMTP_USER: 'sender@example.test', SMTP_PASS: 'mock' });
+  await load('src/app/api/schedule/route.ts').POST(req(base));
+  assert.match(created[0].description, /Host: Ayesha & Rahman \(Founder <Lead>\)/);
+  assert.match(sent[1].html, /Ayesha &amp; Rahman/); assert.match(sent[1].html, /Founder &lt;Lead&gt;/);
+  assert.doesNotMatch(sent[1].html, /Farhan Kabir Sifat|Principal Systems Architect/);
+});
+
+const mailEnv = { SMTP_HOST: 'mock', SMTP_USER: 'sender@example.test', SMTP_PASS: 'mock', SITE_URL: 'https://studio.example.test' };
+async function cancelledContext(t, sendMail, env = mailEnv) {
+  const ctx = calendarSetup(t, { nodemailer: { createTransport: () => ({ sendMail }) } }, env);
+  const route = ctx.load('src/app/api/schedule/route.ts'); await route.POST(req(base));
+  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled' }]); ctx.tick(); await route.GET();
+  return { ...ctx, route, flush: ctx.load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails };
+}
+
+test('cancellation email shows the chosen host, local time and rebooking without a Join link', () => {
+  const render = app({}, { BOOKING_HOST_NAME: 'Ayesha & Rahman', BOOKING_HOST_TITLE: 'Founder <Lead>', SITE_URL: 'https://studio.example.test' })('src/lib/cancellationEmail.ts').renderCancellationEmail;
+  const mail = render({ ...base, name: '<script>Alice</script>', timezone: 'America/Los_Angeles' });
+  assert.match(mail.html, /Ayesha &amp; Rahman/); assert.match(mail.html, /Founder &lt;Lead&gt;/);
+  assert.match(mail.html, /&lt;script&gt;Alice&lt;\/script&gt;/); assert.doesNotMatch(mail.html, /<script>/);
+  assert.match(mail.html, /Sunday, January 6, 2030/); assert.match(mail.text, /8:00 PM PST/);
+  assert.match(mail.html, /https:\/\/studio.example.test\/schedule/); assert.doesNotMatch(mail.html, /Join with Google Meet|meet.google.com/);
+  assert.match(render({ ...base, timezone: 'old timezone label' }).text, /Asia\/Dhaka/);
+});
+
+test('a cancellation queues transactionally and repeated or concurrent sends deliver once', async t => {
+  const sent = []; const ctx = await cancelledContext(t, async mail => { sent.push(mail); }); sent.length = 0;
+  assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 0);
+  assert.equal((await ctx.client.execute('SELECT * FROM booking_cancellation_emails')).rows.length, 1);
+  await Promise.all([ctx.flush(), ctx.flush()]);
+  assert.equal(sent.length, 1); assert.equal(sent[0].to, base.email); assert.match(sent[0].subject, /^Cancelled:/);
+  assert.ok(sent[0].text); assert.match(sent[0].messageId, /^<cancellation\..+@studio.example.test>$/);
+  assert.ok((await ctx.client.execute('SELECT sentAt FROM booking_cancellation_emails')).rows[0].sentAt);
+  ctx.tick(); await ctx.route.GET(); await ctx.flush(); assert.equal(sent.length, 1);
+});
+
+test('failed cancellation email retries later without restoring the slot', async t => {
+  let fail = false, attempts = 0; const ctx = await cancelledContext(t, async () => { if (fail) { attempts++; throw Error('SMTP offline'); } });
+  fail = true; await ctx.flush();
+  assert.equal(attempts, 1); assert.equal((await ctx.client.execute('SELECT sentAt FROM booking_cancellation_emails')).rows[0].sentAt, null);
+  assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 0);
+  await ctx.flush(); assert.equal(attempts, 1);
+  clockNow += 61000; fail = false; await ctx.flush();
+  assert.ok((await ctx.client.execute('SELECT sentAt FROM booking_cancellation_emails')).rows[0].sentAt);
+});
+
+test('cancellation without SMTP remains queued for later configuration', async t => {
+  let attempts = 0; const ctx = await cancelledContext(t, async () => { attempts++; }, {});
+  await ctx.flush(); assert.equal(attempts, 0);
+  assert.equal((await ctx.client.execute('SELECT sentAt FROM booking_cancellation_emails')).rows[0].sentAt, null);
+});
+
+test('different Calendar connections cannot send the original cancellation notification', async t => {
+  const ctx = await cancelledContext(t, async () => {}); let attempts = 0;
+  const load = app({ '@libsql/client': { createClient: () => ctx.client }, '@/lib/googleCalendar': { googleCalendarConnectionId: () => 'other-connection' }, nodemailer: { createTransport: () => ({ sendMail: async () => { attempts++; } }) } }, { ...mailEnv, TURSO_DATABASE_URL: 'file::memory:' });
+  await load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails(); assert.equal(attempts, 0);
+});
+
+test('queue insertion failure rolls back cancellation and preserves reservation', async t => {
+  const ctx = calendarSetup(t), route = ctx.load('src/app/api/schedule/route.ts'); await route.POST(req(base));
+  await ctx.client.execute("CREATE TRIGGER reject_cancel_mail BEFORE INSERT ON booking_cancellation_emails BEGIN SELECT RAISE(ABORT, 'disk failure'); END");
+  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled' }]); ctx.tick(); await route.GET();
+  assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 1);
+  assert.equal((await ctx.client.execute('SELECT cancelledAt FROM booking_calendar_events')).rows[0].cancelledAt, null);
+  assert.equal((await ctx.client.execute('SELECT * FROM booking_cancellation_emails')).rows.length, 0);
+});
+
+test('availability schedules cancellation mail after the response, even if a Calendar read fails', async t => {
+  const tasks = []; const ctx = calendarSetup(t, { 'next/server': { ...next, after: task => tasks.push(task) } }, mailEnv);
+  const route = ctx.load('src/app/api/schedule/route.ts'); await route.POST(req(base));
+  ctx.tick(); ctx.fail(); assert.equal((await route.GET()).status, 200);
+  assert.equal(tasks.length, 2); assert.ok(tasks.every(task => typeof task === 'function'));
 });

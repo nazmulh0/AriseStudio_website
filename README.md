@@ -137,3 +137,40 @@ does not restore or move the website reservation; book a new slot through the we
 Automatic synchronization runs when the website scheduler is used. For background processing
 when nobody has the scheduler open, add a scheduled worker or Calendar push subscription.
 Reference: https://developers.google.com/workspace/calendar/api/v3/reference/events/list
+
+## Booking host and cancellation email
+
+Set the host once in the root `.env` for local use, and in Vercel's Production
+Environment Variables for deployment:
+
+```dotenv
+BOOKING_HOST_NAME="Farhan Kabir Sifat"
+BOOKING_HOST_TITLE="Principal Architect"
+SITE_URL="https://arise-studio-website.vercel.app"
+```
+
+The server passes only the public host profile to the scheduler. The header,
+automatic initials, confirmation screen, Calendar descriptions/links and both
+confirmation and cancellation emails use this profile. These variables do not
+need a `NEXT_PUBLIC_` prefix. Restart the local server after edits; redeploy after
+changing Vercel environment variables. Already-sent emails and existing Calendar
+event descriptions are historical records and are not rewritten.
+
+Cancellation emails use the existing SMTP configuration and a separate branded
+HTML/plain-text template with the cancelled time and a link to book again.
+`SITE_URL` controls that link and the logo origin; on Vercel it can be omitted to
+use `VERCEL_PROJECT_PRODUCTION_URL`. Use an HTTPS public origin in production.
+Google's own Calendar cancellation notices are separate and retain Google's design.
+
+A new `booking_cancellation_emails` table holds delivery state. Only newly
+reconciled cancellations are queued, in the same transaction as their archive and
+slot release. Older archived cancellations are not replayed. Next.js `after()`
+sends up to five pending emails after scheduler API responses. Missing SMTP keeps
+mail pending; a failed delivery is eligible again after one minute. A two-minute
+claim prevents concurrent senders from sending the same queued item. A successful
+SMTP send is recorded and not normally repeated. SMTP has no exactly-once delivery:
+a process crash after acceptance but before recording success can cause a duplicate.
+
+Email failure does not relock a cancelled slot. Delivery/retries run when the
+scheduler API is used, like the existing cancellation sync; no always-on worker
+or cron is added. No mail is sent merely by rendering the schedule page on the server.

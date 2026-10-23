@@ -75,6 +75,7 @@ async function reconcile(): Promise<void> {
           sql: "UPDATE booking_calendar_events SET cancelledAt = ?, snapshot = ? WHERE eventId = ? AND cancelledAt IS NULL",
           args: [new Date().toISOString(), booking.rows.length ? JSON.stringify(booking.rows[0]) : String(current.rows[0].snapshot), link.eventId],
         });
+        await transaction.execute({ sql: "INSERT INTO booking_cancellation_emails (eventId) VALUES (?) ON CONFLICT(eventId) DO NOTHING", args: [link.eventId] });
         if (booking.rows.length) await transaction.execute({ sql: "DELETE FROM bookings WHERE id = ?", args: [booking.rows[0].id] });
       }
       await transaction.commit();

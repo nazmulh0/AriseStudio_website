@@ -40,6 +40,9 @@ async function openDatabase(): Promise<Client> {
     await client.execute(`CREATE TABLE IF NOT EXISTS calendar_sync_state (
       connectionId TEXT PRIMARY KEY, syncToken TEXT NOT NULL
     )`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS booking_cancellation_emails (
+      eventId TEXT PRIMARY KEY, sentAt TEXT, claimUntil INTEGER NOT NULL DEFAULT 0
+    )`);
     return client;
   } catch (error) { client.close(); throw error; }
 }

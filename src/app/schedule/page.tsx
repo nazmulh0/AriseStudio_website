@@ -1,3 +1,5 @@
+import { connection } from "next/server";
+import { getBookingHost } from "@/lib/bookingHost";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { Loader2 } from "lucide-react";
@@ -7,6 +9,11 @@ export const metadata: Metadata = {
   title: "Schedule a Call | AriseStudio",
   description: "Book a 30-minute technical architecture discovery call with AriseStudio's lead engineering team.",
 };
+
+async function Scheduler() {
+  await connection();
+  return <AppointmentScheduler host={getBookingHost()} />;
+}
 
 export default function SchedulePage() {
   return (
@@ -34,7 +41,7 @@ export default function SchedulePage() {
             </div>
           }
         >
-          <AppointmentScheduler />
+          <Scheduler />
         </Suspense>
       </div>
     </div>

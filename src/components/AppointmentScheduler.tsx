@@ -16,6 +16,8 @@ import {
   Lock,
 } from "lucide-react";
 
+import type { BookingHost } from "@/lib/bookingHost";
+
 import { bookingSlots, bookingStartIso, bookingTimezones, HOST_TIMEZONE, hostToday, formatBookingDate, formatBookingTime, formatBookingRange, googleCalendarUrl } from "@/lib/booking";
 
 interface DaySchedule {
@@ -89,7 +91,7 @@ function generateRollingSchedule(
   return days;
 }
 
-export default function AppointmentScheduler() {
+export default function AppointmentScheduler({ host }: { host: BookingHost }) {
   const isClient = useIsClient();
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
@@ -369,8 +371,8 @@ export default function AppointmentScheduler() {
   };
 
   const calendarUrl = confirmedBooking ? googleCalendarUrl(confirmedBooking.startIso,
-    "30 minutes with AriseStudio Architecture Team",
-    `Technical Discovery Call with AriseStudio.\nAttendee: ${formData.name} (${formData.phone})\nEmail: ${formData.email}\nGoogle Meet: ${confirmedBooking.meetUrl}`,
+    `30 minutes with ${host.name} | AriseStudio`,
+    `Technical Discovery Call with AriseStudio.\nAttendee: ${formData.name} (${formData.phone})\nEmail: ${formData.email}\nHost: ${host.name} (${host.title})\nGoogle Meet: ${confirmedBooking.meetUrl}`,
     confirmedBooking.meetUrl) : "#";
 
   const monthHeader = `${monthNames[viewMonth]} ${viewYear}`;
@@ -382,13 +384,13 @@ export default function AppointmentScheduler() {
         {/* Host Info */}
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#004157] to-[#0a814f] border border-emerald-400/50 flex items-center justify-center text-xs font-mono font-bold text-emerald-300 shrink-0 shadow-sm">
-            FS
+            {host.initials}
           </div>
           <div className="leading-tight">
             <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-              <span>Farhan Kabir Sifat</span>
+              <span>{host.name}</span>
               <span className="w-1 h-1 rounded-full bg-emerald-400" />
-              <span className="text-[11px] font-mono text-emerald-400 font-normal">Principal Architect</span>
+              <span className="text-[11px] font-mono text-emerald-400 font-normal">{host.title}</span>
             </div>
             <div className="text-[11px] text-slate-400 flex items-center gap-1.5 font-mono mt-0.5">
               <Clock className="w-3 h-3 text-emerald-400/80" />
@@ -447,8 +449,7 @@ export default function AppointmentScheduler() {
           </h3>
 
           <p className="text-slate-300 text-sm max-w-lg mx-auto mt-2 leading-relaxed">
-            We have reserved your slot with an AriseStudio Principal Systems
-            Architect. {confirmedBooking.emailSent ? <>Confirmation details have been emailed to <strong>{formData.email}</strong>.</> : <>Confirmation email could not be sent. Please save these details or contact us directly.</>}
+            We have reserved your slot with {host.name}, {host.title}. {confirmedBooking.emailSent ? <>Confirmation details have been emailed to <strong>{formData.email}</strong>.</> : <>Confirmation email could not be sent. Please save these details or contact us directly.</>}
           </p>
 
           <div className="my-8 max-w-md mx-auto p-5 rounded-2xl bg-[#004157]/30 border border-white/[0.08] text-left space-y-3 font-mono text-xs">

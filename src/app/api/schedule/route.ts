@@ -1,4 +1,6 @@
-import { NextResponse, connection } from "next/server";
+import { NextResponse, connection, after } from "next/server";
+import { getBookingHost } from "@/lib/bookingHost";
+import { sendPendingCancellationEmails } from "@/lib/cancellationEmail";
 import { randomUUID } from "node:crypto";
 import { syncCancelledBookings } from "@/lib/bookingSync";
 import nodemailer from "nodemailer";
@@ -37,11 +39,13 @@ export async function POST(req: Request) {
       company: { max: 300 }, date: { min: 1, max: 60 }, timeSlot: { min: 1, max: 10 },
       timezone: { max: 100 }, service: { max: 100 }, notes: { max: 5000 },
     });
+    const host = getBookingHost();
     const displayTimezone = timezone || HOST_TIMEZONE;
     if (!bookingTimezones.some(zone => zone.value === displayTimezone)) throw new SubmissionError("Please choose a supported timezone.");
     const startIso = bookingStartIso(date, timeSlot);
     if (!startIso || Date.parse(startIso) <= Date.now()) throw new SubmissionError("Please choose a valid future appointment during studio hours.");
     limitSubmission(req, "schedule", email);
+    after(sendPendingCancellationEmails);
     await syncCancelledBookings();
     const eventId = randomUUID().replace(/-/g, "");
     await reserveBooking({ name, email, phone, company, date, timeSlot, timezone: displayTimezone, service, notes }, { eventId, connectionId: googleCalendarConnectionId() || "" });
@@ -56,7 +60,7 @@ export async function POST(req: Request) {
     try {
       const gcal = await createGoogleCalendarEvent({
         title: `30-Min Discovery Session | AriseStudio with ${name.trim()}`,
-        description: `Technical Discovery Consultation with AriseStudio.\n\nAttendee: ${name.trim()} (${phone.trim()})\nEmail: ${email.trim()}${notesStr ? `\nNotes: ${notesStr}` : ""}\n\nHost: Farhan Kabir Sifat (Principal Systems Architect)`,
+        description: `Technical Discovery Consultation with AriseStudio.\n\nAttendee: ${name.trim()} (${phone.trim()})\nEmail: ${email.trim()}${notesStr ? `\nNotes: ${notesStr}` : ""}\n\nHost: ${host.name} (${host.title})`,
         attendeeName: name.trim(),
         attendeeEmail: email.trim(),
         startIso,
@@ -116,8 +120,8 @@ export async function POST(req: Request) {
         const timeRangeStr = formatBookingRange(startIso, displayTimezone);
         const displayDate = formatBookingDate(startIso, displayTimezone);
         const hasNotes = Boolean(bookingData.notes && bookingData.notes.length > 0 && bookingData.notes !== "No additional notes provided");
-        const gCalUrl = googleCalendarUrl(startIso, "30m Architecture Discovery | AriseStudio",
-          `30-Minute Architecture Discovery Session with AriseStudio.\nAttendee: ${name} (${phone})\nEmail: ${email}${hasNotes ? `\nNotes: ${notesStr}` : ""}\nGoogle Meet: ${googleMeetUrl}`,
+        const gCalUrl = googleCalendarUrl(startIso, `30 minutes with ${host.name} | AriseStudio`,
+          `30-Minute Architecture Discovery Session with AriseStudio.\nAttendee: ${name} (${phone})\nEmail: ${email}\nHost: ${host.name} (${host.title})${hasNotes ? `\nNotes: ${notesStr}` : ""}\nGoogle Meet: ${googleMeetUrl}`,
           googleMeetUrl);
 
         const htmlContent = `
@@ -192,7 +196,7 @@ export async function POST(req: Request) {
                 30 minutes with AriseStudio
               </h1>
               <p class="text-sub" style="color: #475569; font-size: 13.5px; line-height: 1.45; margin: 0 0 16px 0;">
-                Hi ${escapeHtml(bookingData.name)}, your discovery session has been scheduled with our Principal Systems Architect. Here are your meeting details:
+                Hi ${escapeHtml(bookingData.name)}, your discovery session has been scheduled with ${escapeHtml(host.name)}, ${escapeHtml(host.title)}. Here are your meeting details:
               </p>
 
               <!-- Session Highlight Card (Compact) -->
@@ -230,7 +234,7 @@ export async function POST(req: Request) {
                     <!-- Host Row -->
                     <div class="border-inner" style="border-top: 1px solid #e2e8f0; padding-top: 8px; margin-top: 8px; font-size: 12.5px;">
                       <span class="text-muted" style="color: #64748b; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">Host</span>
-                      <strong class="text-strong" style="color: #0f172a;">Farhan Kabir Sifat</strong> &nbsp;·&nbsp; <span class="text-sub" style="color: #475569;">Principal Systems Architect</span>
+                      <strong class="text-strong" style="color: #0f172a;">${escapeHtml(host.name)}</strong> &nbsp;·&nbsp; <span class="text-sub" style="color: #475569;">${escapeHtml(host.title)}</span>
                     </div>
                   </td>
                 </tr>
@@ -376,6 +380,7 @@ export async function POST(req: Request) {
 export async function GET() {
   await connection();
   try {
+    after(sendPendingCancellationEmails);
     await syncCancelledBookings();
     const database = await getDatabase();
     const result = await database.execute("SELECT date, timeSlot FROM bookings");
