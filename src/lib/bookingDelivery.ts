@@ -72,7 +72,7 @@ export async function processBookingDelivery(eventId: string): Promise<void> {
       const result = await createGoogleCalendarEvent({
         eventId, attempt: Number(delivery.attempts) > 1 || delivery.state !== "pending" || delivery.calendarEventUrl ? 1 : 0, startIso,
         title: `30-Min Discovery Session | AriseStudio with ${booking.name}`,
-        description: `Technical Discovery Consultation with AriseStudio.\n\nAttendee: ${booking.name} (${booking.phone})\nEmail: ${booking.email}${booking.notes ? `\nNotes: ${booking.notes}` : ""}\n\nHost: ${host.name} (${host.title})`,
+        description: `Technical Discovery Consultation with AriseStudio.\n\nAttendee: ${booking.name} (${booking.phone})\nEmail: ${booking.email}${booking.notes ? `\nNotes: ${booking.notes}` : ""}\n\nHost: ${host.name} (${host.title})\n\nTo cancel with a note, edit the section below, save the event, then delete it.\nCancellation note:\n`,
         attendeeName: booking.name, attendeeEmail: booking.email,
       });
       state = result.success && result.meetUrl ? "ready" : result.status || "failed";

@@ -741,13 +741,31 @@ test('matching premium templates escape user data and use the configured brand o
   assert.throws(() => load('src/lib/bookingEmail.ts').confirmationEmail({ ...base, notes: '', startIso: meeting.startIso, googleMeetUrl: 'javascript:alert(1)' }), /Invalid Google Meet URL/);
 });
 
+test('Calendar events include an empty host cancellation section without sending instructions as customer notes', async t => {
+  const sent = [];
+  const ctx = calendarSetup(t, { nodemailer: { createTransport: () => ({ sendMail: async mail => sent.push(mail) }) } }, mailEnv);
+  const route = ctx.load('src/app/api/schedule/route.ts');
+  assert.equal((await route.POST(req(base))).status, 200);
+  const event = ctx.created[0];
+  assert.match(event.description, /Host: [^\n]+\n\nTo cancel with a note, edit the section below, save the event, then delete it\.\nCancellation note:\n$/);
+  assert.doesNotMatch(sent.find(mail => mail.to === base.email).html, /To cancel with a note|Cancellation note:/);
+  sent.length = 0;
+  ctx.setFeed([{ id: event.eventId, status: 'cancelled', description: event.description }]);
+  ctx.tick(); await route.GET();
+  await ctx.load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails();
+  assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 0);
+  assert.equal(sent.length, 1);
+  assert.doesNotMatch(sent[0].html, /A note from your host|To cancel with a note/);
+  assert.doesNotMatch(sent[0].text, /Cancellation note:|To cancel with a note/);
+});
+
 test('saved Calendar description cancellation note survives archive and SMTP retries', async t => {
   let fail = false; const messages = [];
   const ctx = calendarSetup(t, { nodemailer: { createTransport: () => ({ sendMail: async mail => { if (fail) throw Error('offline'); messages.push(mail); } }) } }, mailEnv);
   const route = ctx.load('src/app/api/schedule/route.ts');
   await route.POST(req({ ...base, notes: 'Original booking notes stay intact.' }));
   messages.length = 0;
-  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled', description: `${ctx.created[0].description}\n\nCancellation note:\nAn urgent commitment has come up.\nPlease choose a new time.` }]);
+  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled', description: ctx.created[0].description.replace(/Cancellation note:\n$/, 'Cancellation note:\nAn urgent commitment has come up.\nPlease choose a new time.') }]);
   ctx.tick(); await route.GET();
   const archived = JSON.parse((await ctx.client.execute('SELECT snapshot FROM booking_calendar_events')).rows[0].snapshot);
   assert.equal(archived.notes, 'Original booking notes stay intact.');

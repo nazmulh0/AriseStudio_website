@@ -243,8 +243,14 @@ is required.
 
 ### Add a cancellation note from Google Calendar
 
-Before deleting an event, append a final section to its description, after the
-existing Host details, then **save** the event before deleting it:
+New booking events include a blank `Cancellation note:` section after the Host
+details, with an instruction immediately above it. In Google Calendar, open
+**Edit event**, write the note in that section, **save**, then **delete** the event.
+Leaving it blank sends the cancellation email without a note. The instruction is
+not included in customer confirmation/cancellation emails.
+
+For existing events without that section, append it after the Host details, then
+**save** before deleting:
 
 ```text
 Cancellation note:
@@ -263,3 +269,8 @@ field in the Events API; the latest inspected cancelled event did not return it.
 That dialog message cannot be copied automatically by this integration. An event
 response containing only its ID still cancels/releases its linked booking, but
 cannot supply a note. Already-sent cancellation emails are not replayed.
+
+New events have no invited customer guest, so Google's guest-cancellation message
+popup is not shown. This description section is the Calendar-only way to supply a
+note to the custom SMTP email; it does not restore or modify Google's Delete popup.
+Existing Calendar events are not rewritten by deploying this change.
