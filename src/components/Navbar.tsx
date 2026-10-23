@@ -112,7 +112,7 @@ export default function Navbar() {
                 </button>
                 {expertiseOpen && (
                   <div
-                    className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-2"
+                    className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-5"
                     id="expertise-links"
                   >
                     <div className="frosted-popover rounded-3xl p-2">

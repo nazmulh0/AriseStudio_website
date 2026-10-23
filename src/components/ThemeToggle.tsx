@@ -75,7 +75,7 @@ export default function ThemeToggle() {
           id="theme-options"
           role="group"
           aria-label="Color theme options"
-          className="frosted-popover absolute right-0 top-full z-20 mt-3 w-56 max-w-[calc(100vw-2rem)] rounded-2xl p-1.5"
+          className="frosted-popover absolute right-0 top-full z-20 mt-5 w-56 max-w-[calc(100vw-2rem)] rounded-2xl p-1.5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2"
         >
           <p className="px-3 pb-2 pt-2.5 text-[11px] font-semibold uppercase tracking-[.14em] text-ink">Appearance</p>
           {choices.map((choice) => (
