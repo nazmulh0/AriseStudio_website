@@ -1,191 +1,109 @@
-import { createHash } from "node:crypto";
-
-/**
- * Google Calendar API & Google Meet Integration
- * Creates official Google Calendar events with automatically generated unique Google Meet rooms.
- */
+import { createHash, randomUUID } from "node:crypto";
+import { setTimeout as delay } from "node:timers/promises";
+import { cleanEnvValue } from "./mail";
 
 interface CreateMeetingParams {
-  title: string;
-  description: string;
-  attendeeName: string;
-  attendeeEmail: string;
-  startIso: string;
-  eventId?: string;
+  title: string; description: string; attendeeName: string; attendeeEmail: string;
+  startIso: string; eventId?: string; attempt?: number;
 }
 
-interface CalendarEventResult {
+export interface CalendarEventResult {
   success: boolean;
+  status: "ready" | "pending" | "failed" | "cancelled";
+  retryable: boolean;
   meetUrl: string | null;
   eventId: string | null;
   calendarEventUrl: string | null;
   error?: string;
 }
 
-/**
- * Cleans environment variable value by trimming and removing outer quotes
- * (safeguards against values pasted into Vercel UI with surrounding quotes).
- */
-function cleanEnvValue(value?: string): string {
-  if (!value) return "";
-  let v = value.trim();
-  while ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
-    v = v.slice(1, -1).trim();
-  }
-  return v;
+class GoogleProviderError extends Error {
+  constructor(message: string, public retryable: boolean) { super(message); }
 }
 
-function getEnvFuzzy(targetNames: string[]): string {
-  for (const name of targetNames) {
-    if (process.env[name]) return cleanEnvValue(process.env[name]);
-  }
-  const normalizedTargets = targetNames.map((t) => t.toLowerCase().replace(/[^a-z0-9]/g, ""));
-  for (const [k, v] of Object.entries(process.env)) {
-    const cleanK = k.toLowerCase().replace(/[^a-z0-9]/g, "");
-    for (let i = 0; i < normalizedTargets.length; i++) {
-      if (cleanK === normalizedTargets[i] || cleanK.includes(normalizedTargets[i])) {
-        return cleanEnvValue(v);
-      }
-    }
-  }
-  return "";
-}
-
-/**
- * Exchanges Google OAuth2 Refresh Token for a fresh Access Token
- */
 async function getGoogleAccessToken(clientId: string, clientSecret: string, refreshToken: string): Promise<string> {
   const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    signal: AbortSignal.timeout(10000),
+    method: "POST", signal: AbortSignal.timeout(5000),
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      client_id: clientId,
-      client_secret: clientSecret,
-      refresh_token: refreshToken,
-      grant_type: "refresh_token",
-    }),
+    body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, refresh_token: refreshToken, grant_type: "refresh_token" }),
   });
-
   const data = await res.json();
-  if (!res.ok || !data.access_token) {
-    console.error("[Google OAuth Token Error]:", data);
-    throw new Error(data.error_description || data.error || "Failed to refresh Google access token.");
-  }
-
+  if (!res.ok || !data.access_token) throw new GoogleProviderError("Google authorization is unavailable.", res.status === 429 || res.status >= 500);
   return data.access_token;
 }
 
-/**
- * Creates an event on the primary Google Calendar with a unique Google Meet video room
- */
-export async function createGoogleCalendarEvent(params: CreateMeetingParams): Promise<CalendarEventResult> {
-  const clientId = getEnvFuzzy(["GOOGLE_CLIENT_ID", "CLIENT_ID"]);
-  const clientSecret = getEnvFuzzy(["GOOGLE_CLIENT_SECRET", "CLIENT_SECRET", "GOOGLE_SECRET", "GOOGLE_CLIENT", "GOCSPX"]);
-  const refreshToken = getEnvFuzzy(["GOOGLE_REFRESH_TOKEN", "REFRESH_TOKEN"]);
-
-  // If credentials are not configured, return null gracefully so fallback room is used
-  if (!clientId || !clientSecret || !refreshToken) {
-    const missing = [
-      !clientId && "GOOGLE_CLIENT_ID",
-      !clientSecret && "GOOGLE_CLIENT_SECRET",
-      !refreshToken && "GOOGLE_REFRESH_TOKEN",
-    ].filter(Boolean).join(", ");
-    console.warn(`[Google Calendar Notice]: Missing credentials in environment (${missing})`);
-    return {
-      success: false,
-      meetUrl: null,
-      eventId: null,
-      calendarEventUrl: null,
-      error: `Missing credentials in environment: ${missing}`,
-    };
-  }
-
-  try {
-    const accessToken = await getGoogleAccessToken(clientId, clientSecret, refreshToken);
-    const startIso = params.startIso;
-    const endIso = new Date(Date.parse(startIso) + 30 * 60000).toISOString();
-    const requestId = `arise-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-
-    const eventPayload = {
-      ...(params.eventId ? { id: params.eventId } : {}),
-      summary: params.title,
-      description: params.description,
-      start: {
-        dateTime: startIso,
-        timeZone: "UTC",
-      },
-      end: {
-        dateTime: endIso,
-        timeZone: "UTC",
-      },
-      attendees: [
-        { email: params.attendeeEmail, displayName: params.attendeeName },
-      ],
-      conferenceData: {
-        createRequest: {
-          requestId,
-          conferenceSolutionKey: {
-            type: "hangoutsMeet",
-          },
-        },
-      },
-      reminders: {
-        useDefault: false,
-        overrides: [
-          { method: "email", minutes: 24 * 60 },
-          { method: "popup", minutes: 15 },
-        ],
-      },
-    };
-
-    const res = await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendUpdates=none",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventPayload),
-      }
-    );
-
-    const data = await res.json();
-    if (!res.ok) {
-      console.error("[Google Calendar API Error]:", data);
-      return {
-        success: false,
-        meetUrl: null,
-        eventId: null,
-        calendarEventUrl: null,
-        error: data.error?.message || "Failed to create Google Calendar event.",
-      };
-    }
-
-    const meetUrl =
-      data.hangoutLink ||
-      data.conferenceData?.entryPoints?.find((ep: { entryPointType: string }) => ep.entryPointType === "video")?.uri ||
-      null;
-
-    return {
-      success: true,
-      meetUrl,
-      eventId: data.id || null,
-      calendarEventUrl: data.htmlLink || null,
-    };
-  } catch (err) {
-    console.error("[Google Calendar Creation Exception]:", err);
-    return {
-      success: false,
-      meetUrl: null,
-      eventId: null,
-      calendarEventUrl: null,
-      error: err instanceof Error ? err.message : "Unknown error during Google Calendar event creation",
-    };
-  }
+interface MeetingEvent {
+  id?: string; status?: string; htmlLink?: string; hangoutLink?: string;
+  organizer?: { self?: boolean }; start?: { dateTime?: string }; attendees?: { email?: string }[];
+  conferenceData?: { createRequest?: { status?: { statusCode?: string } }; entryPoints?: { entryPointType: string; uri?: string }[] };
 }
 
+export async function createGoogleCalendarEvent(params: CreateMeetingParams): Promise<CalendarEventResult> {
+  const clientId = cleanEnvValue(process.env.GOOGLE_CLIENT_ID), secret = cleanEnvValue(process.env.GOOGLE_CLIENT_SECRET), refresh = cleanEnvValue(process.env.GOOGLE_REFRESH_TOKEN);
+  const eventId = params.eventId || randomUUID().replace(/-/g, "");
+  let event: MeetingEvent | undefined;
+  const result = (status: CalendarEventResult["status"], retryable: boolean, error?: string): CalendarEventResult => ({
+    success: status === "ready", status, retryable, error,
+    meetUrl: status === "ready" ? event?.hangoutLink || event?.conferenceData?.entryPoints?.find(point => point.entryPointType === "video")?.uri || null : null,
+    eventId, calendarEventUrl: event?.htmlLink || null,
+  });
+  if (!clientId || !secret || !refresh) return result("failed", false, "Google Calendar credentials are missing.");
+  try {
+    const token = await getGoogleAccessToken(clientId, secret, refresh);
+    const options = { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, cache: "no-store" as const, signal: AbortSignal.timeout(12000) };
+    const base = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
+    const read = async (): Promise<MeetingEvent | undefined> => {
+      const response = await fetch(`${base}/${encodeURIComponent(eventId)}`, options);
+      if (response.status === 404) return undefined;
+      if (response.status === 410) return { id: eventId, status: "cancelled" };
+      const data = await response.json();
+      if (!response.ok) throw new GoogleProviderError("Google Calendar event lookup failed.", response.status === 429 || response.status >= 500);
+      if (data.id !== eventId || (data.status !== "cancelled" && (data.organizer?.self === false || Date.parse(data.start?.dateTime || "") !== Date.parse(params.startIso) || !data.attendees?.some((attendee: { email?: string }) => attendee.email?.toLowerCase() === params.attendeeEmail.toLowerCase())))) throw new GoogleProviderError("Calendar event identity does not match this reservation.", false);
+      return data;
+    };
+    if (params.attempt) event = await read();
+    if (!event) {
+      const response = await fetch(`${base}?conferenceDataVersion=1&sendUpdates=all`, {
+        ...options, method: "POST", body: JSON.stringify({
+          id: eventId, summary: params.title, description: params.description,
+          start: { dateTime: params.startIso, timeZone: "UTC" },
+          end: { dateTime: new Date(Date.parse(params.startIso) + 1800000).toISOString(), timeZone: "UTC" },
+          attendees: [{ email: params.attendeeEmail, displayName: params.attendeeName }],
+          conferenceData: { createRequest: { requestId: randomUUID(), conferenceSolutionKey: { type: "hangoutsMeet" } } },
+          reminders: { useDefault: false, overrides: [{ method: "email", minutes: 1440 }, { method: "popup", minutes: 15 }] },
+        }),
+      });
+      if (response.status === 409) event = await read();
+      else {
+        const data = await response.json();
+        if (!response.ok) {
+          const quota = data.error?.errors?.some((error: { reason?: string }) => ["rateLimitExceeded", "userRateLimitExceeded"].includes(error.reason || ""));
+          throw new GoogleProviderError("Google Calendar event creation failed.", response.status === 429 || response.status >= 500 || Boolean(quota));
+        }
+        event = data;
+      }
+    }
+    if (event?.status === "cancelled") return result("cancelled", false);
+    // A failed conference belongs to the same event; never insert another appointment.
+    if (params.attempt && event?.conferenceData?.createRequest?.status?.statusCode === "failure") {
+      const response = await fetch(`${base}/${encodeURIComponent(eventId)}?conferenceDataVersion=1&sendUpdates=all`, {
+        ...options, method: "PATCH", body: JSON.stringify({ conferenceData: { createRequest: { requestId: randomUUID(), conferenceSolutionKey: { type: "hangoutsMeet" } } } }),
+      });
+      if (!response.ok) throw new GoogleProviderError("Google Meet generation could not be restarted.", response.status === 429 || response.status >= 500);
+      event = await response.json();
+    }
+    for (let poll = 0; poll < 3; poll++) {
+      if (event?.status === "cancelled") return result("cancelled", false);
+      if (event?.hangoutLink || event?.conferenceData?.entryPoints?.some(point => point.entryPointType === "video" && point.uri)) return result("ready", false);
+      if (event?.conferenceData?.createRequest?.status?.statusCode === "failure") return result("failed", true, "Google Meet generation failed.");
+      if (poll < 2) { await delay(250 * 2 ** poll, undefined, { signal: options.signal }); event = await read() || event; }
+    }
+    return result("pending", true, "Google Meet is still being prepared.");
+  } catch (error) {
+    console.warn("[Google Calendar]:", error instanceof GoogleProviderError ? error.message : "Provider request interrupted.");
+    return result("failed", error instanceof GoogleProviderError ? error.retryable : true, "Meeting setup could not finish. Your reservation is saved.");
+  }
+}
 
 export interface CalendarEvent {
   id: string;
@@ -200,8 +118,8 @@ export interface CalendarEvent {
 
 // Scope sync state to the OAuth connection without requiring any new Google permissions.
 export function googleCalendarConnectionId(): string | null {
-  const clientId = getEnvFuzzy(["GOOGLE_CLIENT_ID", "CLIENT_ID"]);
-  const refresh = getEnvFuzzy(["GOOGLE_REFRESH_TOKEN", "REFRESH_TOKEN"]);
+  const clientId = cleanEnvValue(process.env.GOOGLE_CLIENT_ID);
+  const refresh = cleanEnvValue(process.env.GOOGLE_REFRESH_TOKEN);
   return clientId && refresh ? createHash("sha256").update(`${clientId}\n${refresh}`).digest("hex") : null;
 }
 
@@ -209,9 +127,9 @@ export function googleCalendarConnectionId(): string | null {
 export async function readGoogleCalendarChanges(tokens: Record<string, string>): Promise<{
   connectionId: string; events: CalendarEvent[]; syncToken: string;
 } | null> {
-  const clientId = getEnvFuzzy(["GOOGLE_CLIENT_ID", "CLIENT_ID"]);
-  const secret = getEnvFuzzy(["GOOGLE_CLIENT_SECRET", "CLIENT_SECRET", "GOOGLE_SECRET", "GOOGLE_CLIENT", "GOCSPX"]);
-  const refresh = getEnvFuzzy(["GOOGLE_REFRESH_TOKEN", "REFRESH_TOKEN"]);
+  const clientId = cleanEnvValue(process.env.GOOGLE_CLIENT_ID);
+  const secret = cleanEnvValue(process.env.GOOGLE_CLIENT_SECRET);
+  const refresh = cleanEnvValue(process.env.GOOGLE_REFRESH_TOKEN);
   if (!clientId || !secret || !refresh) return null;
   const accessToken = await getGoogleAccessToken(clientId, secret, refresh);
   const options = { headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" as const, signal: AbortSignal.timeout(10000) };

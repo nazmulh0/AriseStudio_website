@@ -44,6 +44,7 @@ function ContactForm() {
 
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [notificationPending, setNotificationPending] = useState(false);
   const [formData, setFormData] = useState(() => {
     const service = getInitialService(serviceParam, roleParam);
     const career = service === "careers-application";
@@ -80,6 +81,7 @@ function ContactForm() {
         throw new Error(data.error || "Failed to submit consultation request. Please try again.");
       }
 
+      setNotificationPending(!data.emailSent);
       setStatus("success");
     } catch (err: unknown) {
       console.error("[Submission Error]:", err);
@@ -92,6 +94,7 @@ function ContactForm() {
 
   const handleReset = () => {
     setStatus("idle");
+    setNotificationPending(false);
     setErrorMessage("");
     setFormData({
       name: "",
@@ -115,7 +118,9 @@ function ContactForm() {
             {isCareer ? "Application Received!" : "Consultation Request Received!"}
           </h3>
           <p className="text-slate-300 max-w-md mx-auto text-sm leading-relaxed">
-            {isCareer ? (
+            {notificationPending ? (
+              <>Thank you, <strong>{formData.name}</strong>. Your {isCareer ? "application" : "request"} is saved, but we could not notify our team yet. For urgent help, email <a href="mailto:contact@arisestudio.com" className="underline">contact@arisestudio.com</a>.</>
+            ) : isCareer ? (
               <>Thank you, <strong className="text-white">{formData.name}</strong>. Your application has been logged into our talent review queue. Our engineering leadership will review your profile and reach out via <strong className="text-white">{formData.email}</strong>.</>
             ) : (
               <>Thank you, <strong className="text-white">{formData.name}</strong>. Your consultation inquiry regarding <strong className="text-[#a7f3d0]">{formData.service}</strong> has been logged into our engineering dispatch queue. An architect will reach out via <strong className="text-white">{formData.email}</strong> within 24 hours.</>
@@ -146,10 +151,10 @@ function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 Your Full Name *
               </label>
-              <input
+              <input id="contact-name"
                 type="text"
                 required
                 disabled={status === "loading"}
@@ -161,10 +166,10 @@ function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 {isCareer ? "Email Address *" : "Corporate Email *"}
               </label>
-              <input
+              <input id="contact-email"
                 type="email"
                 required
                 disabled={status === "loading"}
@@ -178,10 +183,10 @@ function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-phone" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 Phone / WhatsApp
               </label>
-              <input
+              <input id="contact-phone"
                 type="tel"
                 disabled={status === "loading"}
                 value={formData.phone}
@@ -192,10 +197,10 @@ function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-company" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 {isCareer ? "Portfolio / GitHub / LinkedIn" : "Company Name"}
               </label>
-              <input
+              <input id="contact-company"
                 type="text"
                 disabled={status === "loading"}
                 value={formData.company}
@@ -208,10 +213,10 @@ function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-service" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 Primary Service Needed
               </label>
-              <select
+              <select id="contact-service"
                 disabled={status === "loading"}
                 value={formData.service}
                 onChange={(e) => {
@@ -236,10 +241,10 @@ function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-budget" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 {isCareer ? "Years of Experience" : "Estimated Budget Bracket"}
               </label>
-              <select
+              <select id="contact-budget"
                 disabled={status === "loading"}
                 value={formData.budget}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
@@ -266,12 +271,12 @@ function ContactForm() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
               {isCareer
                 ? "Cover Note, Background & Core Skills *"
                 : "Tell us about your project or current operational bottlenecks *"}
             </label>
-            <textarea
+              <textarea id="contact-message"
               required
               disabled={status === "loading"}
               rows={4}

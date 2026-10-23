@@ -43,6 +43,19 @@ async function openDatabase(): Promise<Client> {
     await client.execute(`CREATE TABLE IF NOT EXISTS booking_cancellation_emails (
       eventId TEXT PRIMARY KEY, sentAt TEXT, claimUntil INTEGER NOT NULL DEFAULT 0
     )`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS booking_delivery (
+      eventId TEXT PRIMARY KEY, recoveryHash TEXT NOT NULL UNIQUE,
+      state TEXT NOT NULL DEFAULT 'pending', meetUrl TEXT, calendarEventUrl TEXT,
+      clientEmailSentAt TEXT, hostEmailSentAt TEXT, attempts INTEGER NOT NULL DEFAULT 0,
+      claimUntil INTEGER NOT NULL DEFAULT 0, nextAttemptAt INTEGER
+    )`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS submission_limits (
+      key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires INTEGER NOT NULL
+    )`);
+    await client.execute("CREATE INDEX IF NOT EXISTS submission_limits_expiry ON submission_limits(expires)");
+    await client.execute(`CREATE TABLE IF NOT EXISTS contact_notification_delivery (
+      leadId INTEGER PRIMARY KEY, sentAt TEXT, claimUntil INTEGER NOT NULL DEFAULT 0
+    )`);
     return client;
   } catch (error) { client.close(); throw error; }
 }
@@ -82,7 +95,7 @@ export async function legacyBookedSlots(): Promise<string[]> {
   return (await legacyBookings()).filter(booking => !archived.has(bookingIdentity(booking))).map(booking => `${booking.date.trim()}_${booking.timeSlot.trim()}`);
 }
 
-export async function reserveBooking(booking: Booking, calendar?: { eventId: string; connectionId: string }): Promise<void> {
+export async function reserveBooking(booking: Booking, calendar?: { eventId: string; connectionId: string; recoveryHash?: string }): Promise<void> {
   const key = `${booking.date}_${booking.timeSlot}`.toLowerCase();
   if ((await legacyBookedSlots()).some(slot => slot.toLowerCase() === key)) throw new SubmissionError("This slot is already reserved. Please choose another time.", 409);
   const client = await getDatabase();
@@ -95,6 +108,9 @@ export async function reserveBooking(booking: Booking, calendar?: { eventId: str
     sql: `INSERT INTO booking_calendar_events (eventId, connectionId, bookingId, legacyKey, snapshot)
       SELECT ?, ?, id, ?, ? FROM bookings WHERE date = ? AND timeSlot = ? AND changes() = 1`,
     args: [calendar.eventId, calendar.connectionId, bookingIdentity(booking), JSON.stringify(booking), booking.date, booking.timeSlot],
-  }], "write"))[0] : await client.execute(insert);
+  }, ...(calendar.recoveryHash ? [{
+    sql: "INSERT INTO booking_delivery (eventId, recoveryHash, nextAttemptAt) SELECT ?, ?, 0 WHERE EXISTS (SELECT 1 FROM booking_calendar_events WHERE eventId = ?)",
+    args: [calendar.eventId, calendar.recoveryHash, calendar.eventId],
+  }] : [])], "write"))[0] : await client.execute(insert);
   if (result.rows.length !== 1) throw new SubmissionError("This slot is already reserved. Please choose another time.", 409);
 }

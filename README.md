@@ -86,9 +86,9 @@ Studio slots are defined in `Asia/Dhaka`; changing the display timezone converts
 instant using IANA timezone rules, including daylight saving and date changes. Calendar
 links, email times and provider events all use that reservation's UTC start time.
 
-Submission throttles apply per process (5 requests per IP per 10 minutes, 2 per email per
-hour, separately for contact and booking). Use a shared edge rate limiter before deploying
-multiple instances. Forwarded IP headers must be overwritten by the trusted hosting proxy.
+Submission throttles use atomic shared Turso counters (5 requests per IP per 10 minutes,
+2 per email per hour, separately for contact and booking). Expired counters are pruned
+and IP/email counter identities are hashed; multiple Vercel processes share the same limits. Forwarded IP headers must be overwritten by the trusted hosting proxy.
 
 ## Verification
 
@@ -174,3 +174,52 @@ a process crash after acceptance but before recording success can cause a duplic
 Email failure does not relock a cancelled slot. Delivery/retries run when the
 scheduler API is used, like the existing cancellation sync; no always-on worker
 or cron is added. No mail is sent merely by rendering the schedule page on the server.
+
+## Booking delivery and private recovery
+
+New reservations atomically store a provider event ID and a hashed recovery token in
+`booking_delivery`. The browser creates a 256-bit token before submitting, sends it
+in the Authorization header, and stores it in sessionStorage. The raw token is never
+stored in the database or included in a recovery URL. Treat the token as private: it
+grants access to that booking's details. The normal public availability API returns
+only occupied slots, not recovery details.
+
+`GET /api/schedule/booking` reads the receipt with `Authorization: Bearer <token>`.
+`POST` on that endpoint schedules a retry of the same reservation, subject to shared
+throttling. A token cannot be reused for a different booking. Refreshing the same
+browser tab restores the saved receipt; choosing “Schedule Another Call” clears the
+browser's recovery token. Visitors who disable browser storage should save their
+confirmation details. Already-existing historical bookings are not backfilled or
+recreated automatically.
+
+Google insert calls use `sendUpdates=all`. Pending conferences are read at most twice
+within the initial bounded request. Later attempts look up the stored event ID before
+inserting; an insert conflict also reads that same event. A failed conference is
+restarted on its existing event. Deleted events and mismatched event identities are
+never recreated. Only exact `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and
+`GOOGLE_REFRESH_TOKEN` names are accepted.
+
+Meet URL, Calendar URL, provider state, attempts, and independent customer/host email
+acknowledgments are persisted. Email is sent only once a Meet link is ready. A failed
+recipient does not block the other recipient or resend an already acknowledged mail.
+A ready room is reused when retrying mail. SMTP acceptance is not proof of inbox
+delivery. As with cancellation mail, a crash after SMTP acceptance but before saving
+its acknowledgment can cause a duplicate; SMTP provides no exactly-once guarantee.
+
+At most five automatic meeting-setup attempts use increasing retry delays. Pending
+email deliveries continue retrying with a delay capped at 15 minutes. The owner of a
+recovery token can explicitly retry after correcting a meeting-setup problem. Recovery is scheduled
+with Next.js `after()` on scheduler requests; it does not run continuously without site
+traffic. A scheduled worker is needed for a delivery-time guarantee when nobody uses
+the site. Existing reservations remain protected during provider or mail failures.
+
+Contact inquiries atomically enqueue a `contact_notification_delivery` record. A failed
+team notification remains queued and the UI clearly says that the request was saved
+but notification is pending. Contact submissions and scheduler traffic retry pending
+notifications. No customer message or old invitation is sent by schema initialization.
+
+All SMTP paths share bounded connection/greeting/socket timeouts. Meet creation also
+has an explicit request deadline. The new additive tables are `booking_delivery`,
+`submission_limits`, and `contact_notification_delivery`; existing booking history and
+cancellation mappings are retained. No new dependency, cron, or external queue service
+is required.

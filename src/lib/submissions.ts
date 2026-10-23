@@ -1,20 +1,27 @@
+import { createHash } from "node:crypto";
+import { getDatabase } from "./turso";
+
 export class SubmissionError extends Error {
   constructor(message: string, public status = 400) { super(message); }
 }
 
-// shortcut: per-process throttling; use a shared edge limiter before running multiple server instances.
-const requests = new Map<string, { count: number; expires: number }>();
-export function limitSubmission(req: Request, scope: string, email?: string): void {
+export async function limitSubmission(req: Request, scope: string, email?: string): Promise<void> {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "anonymous";
-  const key = `${scope}:${email ? `email:${email.toLowerCase()}` : `ip:${ip}`}`;
-  const now = Date.now();
-  for (const [key, entry] of requests) if (entry.expires <= now) requests.delete(key);
-  const entry = requests.get(key) || { count: 0, expires: now + (email ? 3600000 : 600000) };
-  if (entry.count >= (email ? 2 : 5) || (!requests.has(key) && requests.size >= 10000)) {
-    throw new SubmissionError("Too many requests. Please try again later.", 429);
-  }
-  entry.count++;
-  requests.set(key, entry);
+  const identity = email ? `email:${email.toLowerCase()}` : `ip:${ip}`;
+  const key = `${scope}:${createHash("sha256").update(identity).digest("hex")}`;
+  const now = Date.now(), expires = now + (email ? 3600000 : 600000), limit = email ? 2 : 5;
+  const database = await getDatabase();
+  const result = await database.batch([
+    { sql: "DELETE FROM submission_limits WHERE expires <= ?", args: [now] },
+    {
+      sql: `INSERT INTO submission_limits (key, count, expires)
+        SELECT ?, 1, ? WHERE EXISTS (SELECT 1 FROM submission_limits WHERE key = ?) OR (SELECT count(*) FROM submission_limits) < 10000
+        ON CONFLICT(key) DO UPDATE SET count = submission_limits.count + 1
+        WHERE submission_limits.count < ? RETURNING count`,
+      args: [key, expires, key, limit],
+    },
+  ], "write");
+  if (!result[1].rows.length) throw new SubmissionError("Too many requests. Please try again later.", 429);
 }
 
 export async function readSubmission(req: Request, fields: Record<string, { max: number; min?: number }>): Promise<Record<string, string>> {

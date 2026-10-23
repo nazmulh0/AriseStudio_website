@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useSyncExternalStore, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useSyncExternalStore, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
   Clock,
@@ -280,7 +280,13 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
     meetUrl: string;
     startIso: string;
     emailSent: boolean;
+    gcalStatus: string;
   } | null>(null);
+
+  const [recoveryToken, setRecoveryToken] = useState<string | null>(null);
+  const recoveryRef = useRef<string | null>(null);
+  const [recoveryNotice, setRecoveryNotice] = useState("");
+  const [retrying, setRetrying] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -288,6 +294,59 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
     phone: "",
     notes: "",
   });
+
+  const applyReceipt = useCallback((data: { emailSent: boolean; booking: { date: string; timeSlot: string; timezone: string; googleMeetUrl: string; startIso: string; gcalStatus: string; name: string; email: string; phone: string; notes: string } }) => {
+    setConfirmedBooking({ date: data.booking.date, timeSlot: data.booking.timeSlot, timezone: data.booking.timezone,
+      meetUrl: data.booking.googleMeetUrl, startIso: data.booking.startIso, emailSent: data.emailSent, gcalStatus: data.booking.gcalStatus });
+    setFormData({ name: data.booking.name, email: data.booking.email, phone: data.booking.phone, notes: data.booking.notes });
+    setBookedSlots(previous => Array.from(new Set([...previous, `${data.booking.date}_${data.booking.timeSlot}`])));
+    setIsBookingOpen(false); setStatus("confirmed"); setRecoveryNotice("");
+  }, []);
+
+  const recoveryInterval = confirmedBooking?.gcalStatus === "cancelled" ? 0 : confirmedBooking?.meetUrl && confirmedBooking.emailSent ? 30000 : 5000;
+  useEffect(() => {
+    if (status === "loading") return;
+    let token = recoveryToken;
+    try { token ||= sessionStorage.getItem("arisestudio.booking"); } catch { /* Storage may be disabled. */ }
+    if (!token || !/^[a-f0-9]{64}$/.test(token)) return;
+    recoveryRef.current = token;
+    const controller = new AbortController();
+    let loading = false;
+    const refresh = async () => {
+      if (loading || document.visibilityState !== "visible") return;
+      loading = true;
+      try {
+        const response = await fetch("/api/schedule/booking", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store", signal: controller.signal });
+        if (response.status === 404) {
+          try { sessionStorage.removeItem("arisestudio.booking"); } catch { /* Storage may be disabled. */ }
+          recoveryRef.current = null; setRecoveryToken(null); return;
+        }
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error("Could not refresh your saved booking. Please try again shortly.");
+        if (!controller.signal.aborted) { applyReceipt(data); setRecoveryToken(token); }
+      } catch (error) {
+        if (!controller.signal.aborted) setRecoveryNotice(error instanceof Error ? error.message : "Could not refresh your saved booking.");
+      } finally { loading = false; }
+    };
+    void refresh();
+    const timer = recoveryInterval ? setInterval(() => { void refresh(); }, recoveryInterval) : undefined;
+    const onFocus = () => { void refresh(); };
+    window.addEventListener("focus", onFocus);
+    return () => { controller.abort(); clearInterval(timer); window.removeEventListener("focus", onFocus); };
+  }, [recoveryToken, status, applyReceipt, recoveryInterval]);
+
+  const retryDelivery = async () => {
+    if (!recoveryToken) return;
+    setRetrying(true); setRecoveryNotice("");
+    try {
+      const response = await fetch("/api/schedule/booking", { method: "POST", headers: { Authorization: `Bearer ${recoveryToken}` } });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || "Could not retry your saved booking.");
+      applyReceipt(data);
+      setRecoveryNotice("Checking your saved booking again. This page will update automatically.");
+    } catch (error) { setRecoveryNotice(error instanceof Error ? error.message : "Could not retry your saved booking."); }
+    finally { setRetrying(false); }
+  };
 
   const activeDay = scheduleDays[selectedDayIndex] || scheduleDays[0];
 
@@ -325,9 +384,12 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
     setErrorMessage("");
 
     try {
+      const token = recoveryRef.current || Array.from(crypto.getRandomValues(new Uint8Array(32)), value => value.toString(16).padStart(2, "0")).join("");
+      recoveryRef.current = token;
+      try { sessionStorage.setItem("arisestudio.booking", token); } catch { /* The current page still holds the recovery token. */ }
       const res = await fetch("/api/schedule", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -351,17 +413,8 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
         throw new Error(data.error || "Failed to schedule appointment.");
       }
 
-      setConfirmedBooking({
-        date: activeDay.fullDate,
-        timeSlot: selectedSlot,
-        timezone: selectedTimezone,
-        meetUrl: data.booking.googleMeetUrl,
-        startIso: data.booking.startIso,
-        emailSent: data.emailSent,
-      });
-      const newSlotKey = `${activeDay.fullDate}_${selectedSlot}`;
-      setBookedSlots(prev => Array.from(new Set([...prev, newSlotKey])));
-      setStatus("confirmed");
+      applyReceipt(data);
+      setRecoveryToken(token);
     } catch (err) {
       setStatus("error");
       setErrorMessage(
@@ -441,15 +494,15 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
           </div>
 
           <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-            Slot Reserved
+            {confirmedBooking.gcalStatus === "cancelled" ? "Session Cancelled" : "Slot Reserved"}
           </span>
 
           <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-3">
-            Your 30-Min Architecture Call is Scheduled!
+            {confirmedBooking.gcalStatus === "cancelled" ? "This session has been cancelled" : confirmedBooking.meetUrl ? "Your 30-Min Architecture Call is Scheduled!" : confirmedBooking.gcalStatus === "failed" ? "Your slot is saved. Meeting setup needs another attempt." : "Your slot is saved. We are preparing your meeting."}
           </h3>
 
           <p className="text-slate-300 text-sm max-w-lg mx-auto mt-2 leading-relaxed">
-            We have reserved your slot with {host.name}, {host.title}. {confirmedBooking.emailSent ? <>Confirmation details have been emailed to <strong>{formData.email}</strong>.</> : <>Confirmation email could not be sent. Please save these details or contact us directly.</>}
+            Your session with {host.name}, {host.title}. {confirmedBooking.gcalStatus === "cancelled" ? <>Please choose a new time below.</> : confirmedBooking.emailSent ? <>Confirmation details have been emailed to <strong>{formData.email}</strong>.</> : <>Confirmation email is pending. We will retry it; you can also save these details.</>}
           </p>
 
           <div className="my-8 max-w-md mx-auto p-5 rounded-2xl bg-[#004157]/30 border border-white/[0.08] text-left space-y-3 font-mono text-xs">
@@ -482,14 +535,16 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
               <div className="flex flex-col gap-1 pt-1">
                 <span className="text-slate-400">Video Conference:</span>
                 <span className="text-slate-200">
-                  Our team will send your meeting link separately. Please contact us if you need it sooner.
+                  {confirmedBooking.gcalStatus === "cancelled" ? "This appointment is cancelled. Please do not use its previous meeting link." : confirmedBooking.gcalStatus === "failed" ? "We could not finish meeting setup. Retry this saved booking below or contact us; you do not need to reserve another slot." : "Meeting setup is pending. We are checking the same booking and will update this page when the link is ready."}
                 </span>
               </div>
             )}
           </div>
 
+          {recoveryNotice && <p role="status" className="mb-4 text-sm text-amber-300">{recoveryNotice}</p>}
+          {confirmedBooking.gcalStatus !== "cancelled" && (!confirmedBooking.meetUrl || !confirmedBooking.emailSent) && <button type="button" disabled={retrying || !recoveryToken} onClick={retryDelivery} className="mb-5 px-5 py-2 rounded-xl border border-emerald-500/50 text-emerald-300 text-sm disabled:opacity-50">{retrying ? "Checking…" : "Retry meeting / email delivery"}</button>}
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
+            {confirmedBooking.gcalStatus !== "cancelled" && <a
               href={calendarUrl}
               target="_blank"
               rel="noreferrer"
@@ -497,9 +552,11 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
             >
               <CalendarIcon className="w-4 h-4" />
               Add to Google Calendar
-            </a>
+            </a>}
             <button
               onClick={() => {
+                try { sessionStorage.removeItem("arisestudio.booking"); } catch { /* Storage may be disabled. */ }
+                recoveryRef.current = null; setRecoveryToken(null); setConfirmedBooking(null);
                 setStatus("idle");
                 setIsBookingOpen(false);
                 setSelectedSlot(null);
@@ -928,7 +985,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                   onChange={(e) =>
                     setFormData({ ...formData, notes: e.target.value })
                   }
-                  placeholder="Any questions, topics, or custom link..."
+                  placeholder="Questions or topics you would like to discuss..."
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-white text-xs sm:text-sm focus:border-emerald-400 focus:outline-none placeholder:text-slate-500"
                 />
               </div>

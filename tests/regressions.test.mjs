@@ -11,7 +11,7 @@ import * as crypto from 'node:crypto';
 import { createClient } from '@libsql/client';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const external = { 'node:crypto': crypto, path, 'fs/promises': fsPromises, nodemailer, '@libsql/client': { createClient } };
+const external = { 'node:timers/promises': { setTimeout: async () => {} }, 'node:crypto': crypto, path, 'fs/promises': fsPromises, nodemailer, '@libsql/client': { createClient } };
 const NOW = Date.UTC(2030, 0, 6);
 let clockNow = NOW;
 class Clock extends Date {
@@ -95,7 +95,7 @@ for (const [label, changes] of Object.entries({
   const { load, events, client } = setup(t);
   assert.equal((await load('src/app/api/schedule/route.ts').POST(req({ ...base, ...changes }))).status, 400);
   assert.equal(events(), 0);
-  assert.equal((await client.execute("SELECT name FROM sqlite_master WHERE name='bookings'")).rows.length, 0);
+  assert.equal((await client.execute('SELECT * FROM bookings')).rows.length, 0);
 });
 
 test('storage failure returns 503 and creates no external event', async t => {
@@ -472,5 +472,202 @@ test('availability schedules cancellation mail after the response, even if a Cal
   const tasks = []; const ctx = calendarSetup(t, { 'next/server': { ...next, after: task => tasks.push(task) } }, mailEnv);
   const route = ctx.load('src/app/api/schedule/route.ts'); await route.POST(req(base));
   ctx.tick(); ctx.fail(); assert.equal((await route.GET()).status, 200);
-  assert.equal(tasks.length, 2); assert.ok(tasks.every(task => typeof task === 'function'));
+  assert.ok(tasks.length >= 2); assert.ok(tasks.every(task => typeof task === 'function'));
+});
+
+const meeting = { title: 'Discovery', description: '', attendeeName: base.name, attendeeEmail: base.email, startIso: '2030-01-07T04:00:00.000Z', eventId: 'test-event' };
+const providerEvent = extra => ({ id: meeting.eventId, status: 'confirmed', organizer: { self: true }, start: { dateTime: meeting.startIso }, attendees: [{ email: base.email }], htmlLink: 'https://calendar.google.com/test-event', ...extra });
+function creation(handler, env = googleEnv) {
+  return app({ fetch: async (url, options) => url.includes('oauth2') ? { ok: true, status: 200, json: async () => ({ access_token: 'mock' }) } : handler(new URL(url), options) }, env)('src/lib/googleCalendar.ts');
+}
+const providerResponse = (body, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
+
+test('delayed Meet generation is read on the same event and guest updates are enabled', async () => {
+  let posts = 0, reads = 0;
+  const google = creation(async (url, options) => {
+    assert.ok(options.signal);
+    if (options.method === 'POST') { posts++; assert.equal(url.searchParams.get('sendUpdates'), 'all'); return providerResponse(providerEvent({ conferenceData: { createRequest: { status: { statusCode: 'pending' } } } })); }
+    reads++; assert.ok(url.pathname.endsWith('/test-event'));
+    return providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/ready' }));
+  });
+  const result = await google.createGoogleCalendarEvent(meeting);
+  assert.equal(result.status, 'ready'); assert.equal(result.meetUrl, 'https://meet.google.com/ready'); assert.equal(posts, 1); assert.equal(reads, 1);
+});
+
+test('pending conference retains event metadata and has a bounded poll count', async () => {
+  let calls = 0; const google = creation(async () => { calls++; return providerResponse(providerEvent({ conferenceData: { createRequest: { status: { statusCode: 'pending' } } } })); });
+  const result = await google.createGoogleCalendarEvent(meeting);
+  assert.equal(result.success, false); assert.equal(result.status, 'pending'); assert.equal(result.eventId, meeting.eventId);
+  assert.equal(result.calendarEventUrl, 'https://calendar.google.com/test-event'); assert.equal(result.retryable, true); assert.equal(calls, 3);
+});
+
+test('conference failure is a failure, and recovery patches the existing event', async () => {
+  let patches = 0, posts = 0;
+  const google = creation(async (_url, options) => {
+    if (options.method === 'POST') posts++;
+    if (options.method === 'PATCH') { patches++; return providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/recovered' })); }
+    return providerResponse(providerEvent({ conferenceData: { createRequest: { status: { statusCode: 'failure' } } } }));
+  });
+  assert.equal((await google.createGoogleCalendarEvent(meeting)).status, 'failed');
+  const recovered = await google.createGoogleCalendarEvent({ ...meeting, attempt: 1 });
+  assert.equal(recovered.status, 'ready'); assert.equal(patches, 1); assert.equal(posts, 1);
+});
+
+test('uncertain insert recovery reads the same event without inserting a second meeting', async () => {
+  let posts = 0;
+  const google = creation(async (_url, options) => {
+    if (options.method === 'POST') { posts++; throw Error('response lost after insert'); }
+    return providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/existing' }));
+  });
+  assert.equal((await google.createGoogleCalendarEvent(meeting)).retryable, true);
+  const recovered = await google.createGoogleCalendarEvent({ ...meeting, attempt: 1 });
+  assert.equal(recovered.status, 'ready'); assert.equal(posts, 1);
+});
+
+test('insert conflict reads the existing event instead of returning a false failure', async () => {
+  const google = creation(async (_url, options) => options.method === 'POST' ? providerResponse({}, 409) : providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/existing' })));
+  assert.equal((await google.createGoogleCalendarEvent(meeting)).status, 'ready');
+});
+
+test('deleted or mismatched events are never recreated during recovery', async () => {
+  let posts = 0;
+  const gone = creation(async (_url, options) => { if (options.method === 'POST') posts++; return providerResponse({}, 410); });
+  assert.equal((await gone.createGoogleCalendarEvent({ ...meeting, attempt: 1 })).status, 'cancelled'); assert.equal(posts, 0);
+  const wrong = creation(async () => providerResponse(providerEvent({ attendees: [{ email: 'different@example.test' }] })));
+  const result = await wrong.createGoogleCalendarEvent({ ...meeting, attempt: 1 }); assert.equal(result.status, 'failed'); assert.equal(result.retryable, false);
+});
+
+for (const [status, retryable] of [[400, false], [429, true], [503, true]]) test(`Calendar HTTP ${status} is classified for safe recovery`, async () => {
+  const google = creation(async () => providerResponse({ error: { message: 'provider error' } }, status));
+  const result = await google.createGoogleCalendarEvent(meeting); assert.equal(result.status, 'failed'); assert.equal(result.retryable, retryable);
+});
+
+test('missing canonical secret fails before OAuth instead of guessing from other env keys', async () => {
+  let requests = 0; const google = creation(async () => { requests++; throw Error('unexpected fetch'); }, { GOOGLE_CLIENT_ID: 'id', GOOGLE_REFRESH_TOKEN: 'refresh', OTHER_GOOGLE_CLIENT_SECRET: 'wrong' });
+  const result = await google.createGoogleCalendarEvent(meeting); assert.equal(result.status, 'failed'); assert.equal(result.retryable, false); assert.equal(requests, 0);
+});
+
+const recoveryRequest = (token, method = 'GET') => new Request('http://local.test/api/schedule/booking', { method, headers: token ? { authorization: `Bearer ${token}` } : {} });
+function postWithToken(token, changes = {}, ip = '127.0.0.1') {
+  const r = req({ ...base, ...changes }, ip); return new Request(r, { headers: { ...Object.fromEntries(r.headers), authorization: `Bearer ${token}` } });
+}
+
+test('saved booking recovers a delayed link and survives a new app instance', async t => {
+  let ready = false; const attempts = [];
+  const google = { googleCalendarConnectionId: () => 'test-connection', readGoogleCalendarChanges: async () => null, createGoogleCalendarEvent: async params => { attempts.push(params); return ready ? { success: true, status: 'ready', meetUrl: 'https://meet.google.com/recovered', calendarEventUrl: 'https://calendar.google.com/same' } : { success: false, status: 'pending', retryable: true, meetUrl: null, calendarEventUrl: 'https://calendar.google.com/same' }; } };
+  const { load, client } = setup(t, { '@/lib/googleCalendar': google });
+  const first = await load('src/app/api/schedule/route.ts').POST(req(base));
+  assert.equal(first.body.booking.gcalStatus, 'pending'); assert.equal(first.body.booking.calendarEventUrl, 'https://calendar.google.com/same');
+  const token = first.body.recoveryToken;
+  assert.match(token, /^[a-f0-9]{64}$/); assert.notEqual((await client.execute('SELECT recoveryHash FROM booking_delivery')).rows[0].recoveryHash, token);
+  ready = true; clockNow += 61000;
+  await Promise.all([load('src/lib/bookingDelivery.ts').processPendingBookingDeliveries(), load('src/lib/bookingDelivery.ts').processPendingBookingDeliveries()]);
+  assert.equal(attempts.length, 2); assert.equal(attempts[0].eventId, attempts[1].eventId); assert.equal(attempts[1].attempt, 1);
+  const fresh = app({ 'next/server': next, '@libsql/client': { createClient: () => client }, '@/lib/googleCalendar': google }, { TURSO_DATABASE_URL: 'file::memory:' });
+  const receipt = await fresh('src/app/api/schedule/booking/route.ts').GET(recoveryRequest(token));
+  assert.equal(receipt.body.booking.googleMeetUrl, 'https://meet.google.com/recovered'); assert.equal((await client.execute('SELECT * FROM bookings')).rows.length, 1);
+});
+
+test('recovery needs the private token and never accepts another payload on it', async t => {
+  const { load } = setup(t); const route = load('src/app/api/schedule/route.ts'); const token = 'a'.repeat(64);
+  assert.equal((await route.POST(postWithToken(token))).status, 200);
+  assert.equal((await route.POST(postWithToken(token, { name: 'Different' }))).status, 409);
+  const recovery = load('src/app/api/schedule/booking/route.ts');
+  assert.equal((await recovery.GET(recoveryRequest())).status, 401);
+  assert.equal((await recovery.GET(recoveryRequest('b'.repeat(64)))).status, 404);
+  assert.equal((await recovery.GET(recoveryRequest('invalid'))).status, 400);
+  const valid = await recovery.GET(recoveryRequest(token)); assert.equal(valid.body.booking.name, base.name); assert.equal(valid.body.booking.recoveryHash, undefined);
+});
+
+test('concurrent retries of the same token reserve once and create one provider event', async t => {
+  const { load, client, events } = setup(t); const route = load('src/app/api/schedule/route.ts'); const token = 'c'.repeat(64);
+  const results = await Promise.all([route.POST(postWithToken(token, {}, 'one')), route.POST(postWithToken(token, {}, 'two'))]);
+  assert.deepEqual(results.map(r => r.status), [200, 200]); assert.equal((await client.execute('SELECT * FROM bookings')).rows.length, 1); assert.equal(events(), 1);
+});
+
+test('notes cannot become a Meet URL and failed provider attempts remain safely reserved', async t => {
+  const { load, client } = setup(t, { '@/lib/googleCalendar': { googleCalendarConnectionId: () => 'test-connection', readGoogleCalendarChanges: async () => null, createGoogleCalendarEvent: async () => ({ success: false, status: 'failed', retryable: true, meetUrl: null }) } });
+  const r = await load('src/app/api/schedule/route.ts').POST(req({ ...base, notes: 'My site https://example.test' }));
+  assert.equal(r.body.booking.googleMeetUrl, ''); assert.equal(r.body.booking.gcalStatus, 'failed'); assert.equal((await client.execute('SELECT * FROM bookings')).rows.length, 1);
+});
+
+for (const failedRecipient of ['host@example.test', base.email]) test(`failure for ${failedRecipient} does not block the other email or resend its success`, async t => {
+  let fail = true; const sent = [];
+  const { load, client, events } = setup(t, { nodemailer: { createTransport: () => ({ sendMail: async mail => { sent.push(mail.to); if (fail && mail.to === failedRecipient) throw Error('recipient rejected'); } }) } }, { ...mailEnv, CONTACT_NOTIFICATION_EMAIL: 'host@example.test' });
+  const r = await load('src/app/api/schedule/route.ts').POST(req(base));
+  assert.ok(sent.includes(base.email)); assert.ok(sent.includes('host@example.test')); assert.equal(r.body.emailSent, failedRecipient !== base.email);
+  fail = false; clockNow += 61000; await load('src/lib/bookingDelivery.ts').processPendingBookingDeliveries();
+  assert.equal(sent.filter(to => to === failedRecipient).length, 2); assert.equal(sent.filter(to => to !== failedRecipient).length, 1); assert.equal(events(), 1);
+  const delivery = (await client.execute('SELECT * FROM booking_delivery')).rows[0]; assert.ok(delivery.clientEmailSentAt); assert.ok(delivery.hostEmailSentAt);
+});
+
+test('manual recovery schedules the existing event and cancelled sessions reject retries', async t => {
+  const tasks = []; const ctx = calendarSetup(t, { 'next/server': { ...next, after: task => tasks.push(task) } });
+  const first = await ctx.load('src/app/api/schedule/route.ts').POST(req(base));
+  const recovery = ctx.load('src/app/api/schedule/booking/route.ts');
+  assert.equal((await recovery.POST(recoveryRequest(first.body.recoveryToken, 'POST'))).status, 200); assert.ok(tasks.length);
+  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled' }]); ctx.tick(); await ctx.load('src/app/api/schedule/route.ts').GET();
+  assert.equal((await recovery.POST(recoveryRequest(first.body.recoveryToken, 'POST'))).status, 409);
+  assert.equal((await recovery.GET(recoveryRequest(first.body.recoveryToken))).body.booking.gcalStatus, 'cancelled');
+});
+
+test('rate limits share atomic counters between independent app instances and expire', async t => {
+  const { load, client } = setup(t);
+  const other = app({ '@libsql/client': { createClient: () => client } }, { TURSO_DATABASE_URL: 'file::memory:' });
+  const a = load('src/lib/submissions.ts'), b = other('src/lib/submissions.ts');
+  const results = await Promise.all(Array.from({ length: 6 }, (_, i) => (i % 2 ? a : b).limitSubmission(req(lead, 'same-ip'), 'shared-limit').then(() => 200, error => error.status)));
+  assert.equal(results.filter(status => status === 200).length, 5); assert.equal(results.filter(status => status === 429).length, 1);
+  assert.doesNotMatch(String((await client.execute('SELECT key FROM submission_limits')).rows[0].key), /same-ip/);
+  clockNow += 600001; await b.limitSubmission(req(lead, 'same-ip'), 'shared-limit');
+});
+
+test('saved contact notification retries independently without duplicating a lead', async t => {
+  let fail = true, sends = 0;
+  const { load, client } = setup(t, { nodemailer: { createTransport: () => ({ sendMail: async () => { sends++; if (fail) throw Error('offline'); } }) } }, mailEnv);
+  const result = await load('src/app/api/contact/route.ts').POST(req(lead));
+  assert.equal(result.body.emailSent, false); assert.match(result.body.emailNotice, /request is saved/);
+  assert.equal((await client.execute('SELECT sentAt FROM contact_notification_delivery')).rows[0].sentAt, null);
+  fail = false; clockNow += 61000; await load('src/lib/contactNotification.ts').sendPendingContactNotifications(); await load('src/lib/contactNotification.ts').sendPendingContactNotifications();
+  assert.equal(sends, 2); assert.equal((await client.execute('SELECT * FROM contact_leads')).rows.length, 1); assert.ok((await client.execute('SELECT sentAt FROM contact_notification_delivery')).rows[0].sentAt);
+});
+
+test('all submission mail uses bounded SMTP connection, greeting and idle timeouts', () => {
+  let options; const load = app({ nodemailer: { createTransport: value => { options = value; return {}; } } }, mailEnv);
+  load('src/lib/mail.ts').mailTransport(); assert.equal(options.connectionTimeout, 5000); assert.equal(options.greetingTimeout, 5000); assert.equal(options.socketTimeout, 8000);
+});
+
+test('ready bookings keep failed email retryable after the provider attempt budget is used', async t => {
+  const { load, client, events } = setup(t, { nodemailer: { createTransport: () => ({ sendMail: async () => { throw Error('SMTP offline'); } }) } }, mailEnv);
+  await load('src/app/api/schedule/route.ts').POST(req(base));
+  await client.execute('UPDATE booking_delivery SET attempts = 5, nextAttemptAt = 0');
+  await load('src/lib/bookingDelivery.ts').processPendingBookingDeliveries();
+  const row = (await client.execute('SELECT * FROM booking_delivery')).rows[0]; assert.equal(row.state, 'ready'); assert.ok(Number(row.nextAttemptAt) > clockNow); assert.equal(events(), 1);
+});
+
+test('quota-related 403 is recoverable while permission-related 403 is not', async () => {
+  const quota = creation(async () => providerResponse({ error: { errors: [{ reason: 'userRateLimitExceeded' }] } }, 403));
+  const permission = creation(async () => providerResponse({ error: { errors: [{ reason: 'forbidden' }] } }, 403));
+  assert.equal((await quota.createGoogleCalendarEvent(meeting)).retryable, true);
+  assert.equal((await permission.createGoogleCalendarEvent(meeting)).retryable, false);
+});
+
+
+test('cancelled events with a stale Meet link are never reported ready', async () => {
+  let calls = 0;
+  const google = creation(async () => providerResponse(providerEvent(++calls === 1 ? {} : { status: 'cancelled', hangoutLink: 'https://meet.google.com/old' })));
+  const result = await google.createGoogleCalendarEvent(meeting);
+  assert.equal(result.status, 'cancelled'); assert.equal(result.meetUrl, null);
+});
+
+test('malformed SMTP configuration preserves the saved contact and pending notification', async t => {
+  const { load, client } = setup(t, {}, { ...mailEnv, SMTP_PORT: 'invalid' });
+  const response = await load('src/app/api/contact/route.ts').POST(req(lead));
+  assert.equal(response.status, 200); assert.equal(response.body.emailSent, false);
+  assert.equal((await client.execute('SELECT * FROM contact_leads')).rows.length, 1);
+  assert.equal((await client.execute('SELECT sentAt FROM contact_notification_delivery')).rows[0].sentAt, null);
+});
+
+test('recovery authorization requires a Bearer token instead of a raw header value', () => {
+  const load = app({}, {});
+  assert.throws(() => load('src/lib/bookingDelivery.ts').requestBookingToken(new Request('http://local.test', { headers: { authorization: 'a'.repeat(64) } })), /Invalid booking recovery token/);
 });

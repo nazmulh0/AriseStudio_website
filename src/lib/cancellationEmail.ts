@@ -1,11 +1,10 @@
 import { createHash } from "node:crypto";
-import nodemailer from "nodemailer";
+import { mailTransport, cleanEnvValue as clean } from "./mail";
 import { getDatabase } from "./turso";
 import { getBookingHost } from "./bookingHost";
 import { googleCalendarConnectionId } from "@/lib/googleCalendar";
 import { bookingStartIso, bookingTimezones, formatBookingDate, formatBookingRange, HOST_TIMEZONE } from "./booking";
 
-const clean = (value?: string) => (value || "").trim().replace(/^(["'])(.*)\1$/, "$2").trim();
 const escapeHtml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
 function siteUrl(): string {
@@ -61,10 +60,11 @@ export function renderCancellationEmail(booking: { name: string; date: string; t
 
 // Called with Next.js after() so SMTP cannot delay availability or reservation responses.
 export async function sendPendingCancellationEmails(): Promise<void> {
-  const host = clean(process.env.SMTP_HOST), user = clean(process.env.SMTP_USER), pass = clean(process.env.SMTP_PASS);
   const connectionId = googleCalendarConnectionId();
-  if (!host || !user || !pass || !connectionId) return;
+  if (!connectionId) return;
   try {
+    const mail = mailTransport();
+    if (!mail) return;
     const database = await getDatabase();
     const pending = await database.execute({
       sql: `SELECT mail.eventId, event.snapshot FROM booking_cancellation_emails mail
@@ -74,8 +74,6 @@ export async function sendPendingCancellationEmails(): Promise<void> {
       args: [Date.now(), connectionId],
     });
     if (!pending.rows.length) return;
-    const port = Number(clean(process.env.SMTP_PORT) || "587");
-    const transporter = nodemailer.createTransport({ host, port, secure: port === 465, auth: { user, pass }, connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000 });
     for (const row of pending.rows) {
       const claim = await database.execute({
         sql: "UPDATE booking_cancellation_emails SET claimUntil = ? WHERE eventId = ? AND sentAt IS NULL AND claimUntil <= ? RETURNING eventId",
@@ -85,12 +83,12 @@ export async function sendPendingCancellationEmails(): Promise<void> {
       try {
         const booking: unknown = JSON.parse(String(row.snapshot));
         if (!booking || typeof booking !== "object" || !("name" in booking) || typeof booking.name !== "string" || !("email" in booking) || typeof booking.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(booking.email) || !("date" in booking) || typeof booking.date !== "string" || !("timeSlot" in booking) || typeof booking.timeSlot !== "string") throw new Error("Invalid cancelled booking snapshot.");
-        const mail = renderCancellationEmail({ name: booking.name, date: booking.date, timeSlot: booking.timeSlot, timezone: "timezone" in booking && typeof booking.timezone === "string" ? booking.timezone : HOST_TIMEZONE });
-        await transporter.sendMail({
-          from: `"AriseStudio Appointments" <${user}>`, to: booking.email,
-          replyTo: clean(process.env.CONTACT_NOTIFICATION_EMAIL) || user,
+        const content = renderCancellationEmail({ name: booking.name, date: booking.date, timeSlot: booking.timeSlot, timezone: "timezone" in booking && typeof booking.timezone === "string" ? booking.timezone : HOST_TIMEZONE });
+        await mail.transporter.sendMail({
+          from: `"AriseStudio Appointments" <${mail.sender}>`, to: booking.email,
+          replyTo: clean(process.env.CONTACT_NOTIFICATION_EMAIL) || mail.sender,
           messageId: `<cancellation.${createHash("sha256").update(String(row.eventId)).digest("hex")}@${new URL(siteUrl()).hostname}>`,
-          ...mail,
+          ...content,
         });
         // shortcut: SMTP acceptance before a process crash can duplicate mail; use provider idempotency for exactly-once delivery.
         await database.execute({ sql: "UPDATE booking_cancellation_emails SET sentAt = ? WHERE eventId = ?", args: [new Date().toISOString(), row.eventId] });
