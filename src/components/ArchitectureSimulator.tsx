@@ -153,44 +153,46 @@ export default function ArchitectureSimulator() {
   const currentScenario = scenarios.find((s) => s.id === activeTab) || scenarios[0];
 
   return (
-    <div className="rounded-3xl bg-[#09101d] border border-white/[0.08] shadow-2xl overflow-hidden relative">
+    <div className="rounded-3xl bg-canvas border border-line shadow-sm overflow-hidden relative">
       {/* Chrome Top Header Bar */}
-      <div className="bg-[#0f172a]/90 px-6 py-4 border-b border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-surface-raised/90 px-6 py-4 border-b border-line flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-rose-500/80" />
-            <span className="w-3 h-3 rounded-full bg-amber-500/80" />
-            <span className="w-3 h-3 rounded-full bg-emerald-500" />
+            <span className="w-3 h-3 rounded-full bg-danger/80" />
+            <span className="w-3 h-3 rounded-full bg-warning/80" />
+            <span className="w-3 h-3 rounded-full bg-accent" />
           </div>
-          <span className="font-mono text-xs text-slate-400 pl-2 border-l border-slate-700">
+          <span className="font-mono text-xs text-muted pl-2 border-l border-line">
             AriseStudio Sample Architecture Explorer
           </span>
         </div>
 
         {/* Live Status Pill */}
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             INTERACTIVE DEMO
           </span>
 
-          <div className="inline-flex rounded-lg bg-slate-900 p-0.5 border border-slate-800 text-xs font-medium">
+          <div className="inline-flex rounded-lg bg-surface-muted p-0.5 border border-line text-xs font-medium">
             <button
+              aria-pressed={viewMode === "flow"}
               onClick={() => setViewMode("flow")}
               className={`px-3 py-1 rounded-md transition-colors ${
                 viewMode === "flow" 
-                  ? "bg-emerald-500 text-slate-950 font-semibold" 
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-accent text-on-accent font-semibold"
+                  : "text-muted hover:text-ink"
               }`}
             >
               Pipeline Topology
             </button>
             <button
+              aria-pressed={viewMode === "payload"}
               onClick={() => setViewMode("payload")}
               className={`px-3 py-1 rounded-md transition-colors ${
                 viewMode === "payload" 
-                  ? "bg-emerald-500 text-slate-950 font-semibold" 
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-accent text-on-accent font-semibold"
+                  : "text-muted hover:text-ink"
               }`}
             >
               Sample JSON
@@ -200,42 +202,43 @@ export default function ArchitectureSimulator() {
       </div>
 
       {/* Scenario Selector Tabs */}
-      <div className="p-4 sm:p-6 bg-slate-900/50 border-b border-white/[0.06] flex flex-wrap gap-2">
+      <div className="p-4 sm:p-6 bg-surface-muted/50 border-b border-line flex flex-wrap gap-2">
         {scenarios.map((sc) => (
           <button
             key={sc.id}
+            aria-pressed={activeTab === sc.id}
             onClick={() => setActiveTab(sc.id)}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-colors flex items-center gap-2 ${
               activeTab === sc.id
-                ? "bg-[#004157] text-white border border-emerald-500/40 shadow-lg shadow-emerald-500/10"
-                : "bg-slate-800/40 text-slate-400 hover:text-white hover:bg-slate-800/80 border border-transparent"
+                ? "bg-accent text-on-accent border border-accent/40 shadow-sm "
+                : "bg-surface-muted/40 text-muted hover:text-ink hover:bg-surface-muted/80 border border-transparent"
             }`}
           >
-            {sc.id === "ecommerce" && <ShoppingCart className="w-4 h-4 text-emerald-400" />}
-            {sc.id === "erp" && <Database className="w-4 h-4 text-emerald-400" />}
-            {sc.id === "sentry" && <ShieldCheck className="w-4 h-4 text-emerald-400" />}
+            {sc.id === "ecommerce" && <ShoppingCart className="w-4 h-4" />}
+            {sc.id === "erp" && <Database className="w-4 h-4" />}
+            {sc.id === "sentry" && <ShieldCheck className="w-4 h-4" />}
             <span>{sc.name}</span>
           </button>
         ))}
       </div>
 
       {/* Scenario Overview Bar */}
-      <div className="px-6 py-4 bg-slate-900/20 border-b border-white/[0.06] grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
+      <div className="px-6 py-4 bg-surface-muted/20 border-b border-line grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
         <div>
-          <span className="text-slate-500 block">THROUGHPUT:</span>
-          <span className="text-white font-semibold text-sm">{currentScenario.throughput}</span>
+          <span className="text-subtle block">THROUGHPUT:</span>
+          <span className="text-ink font-semibold text-sm">{currentScenario.throughput}</span>
         </div>
         <div>
-          <span className="text-slate-500 block">AVG LATENCY:</span>
-          <span className="text-emerald-400 font-semibold text-sm">{currentScenario.latency}</span>
+          <span className="text-subtle block">AVG LATENCY:</span>
+          <span className="text-accent font-semibold text-sm">{currentScenario.latency}</span>
         </div>
         <div>
-          <span className="text-slate-500 block">FAILOVER ARCHITECTURE:</span>
-          <span className="text-sky-300 font-semibold text-xs">{currentScenario.resilience}</span>
+          <span className="text-subtle block">FAILOVER ARCHITECTURE:</span>
+          <span className="text-info font-semibold text-xs">{currentScenario.resilience}</span>
         </div>
         <div>
-          <span className="text-slate-500 block">STATUS:</span>
-          <span className="text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+          <span className="text-subtle block">STATUS:</span>
+          <span className="text-accent font-semibold flex items-center gap-1.5 mt-0.5">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Deterministic Execution
           </span>
@@ -244,7 +247,7 @@ export default function ArchitectureSimulator() {
 
       {/* Main Interactive Display */}
       <div className="p-6 sm:p-8">
-        <p className="text-sm text-slate-300 max-w-3xl mb-6 leading-relaxed">
+        <p className="text-sm text-muted max-w-3xl mb-6 leading-relaxed">
           {currentScenario.summary}
         </p>
 
@@ -253,37 +256,37 @@ export default function ArchitectureSimulator() {
             {currentScenario.nodes.map((node, i) => (
               <div 
                 key={i} 
-                className="p-5 rounded-2xl bg-slate-900/80 border border-white/[0.08] hover:border-emerald-500/40 transition-all flex flex-col justify-between group"
+                className="p-5 rounded-2xl bg-surface-muted/80 border border-line hover:border-accent/40 transition-colors flex flex-col justify-between group"
               >
                 <div>
-                  <div className="text-[11px] font-mono font-semibold text-emerald-400 uppercase tracking-wider mb-2">
+                  <div className="text-xs font-semibold text-accent uppercase tracking-wider mb-2">
                     Phase {i + 1}
                   </div>
-                  <h4 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  <h4 className="text-sm font-bold text-ink group-hover:text-accent transition-colors">
                     {node.title}
                   </h4>
-                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-muted mt-2 leading-relaxed">
                     {node.description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <div className="mt-4 pt-3 border-t border-line text-xs text-accent flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                   {node.status}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl bg-[#030712] border border-white/[0.08] p-5 font-mono text-xs text-slate-300 overflow-x-auto">
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-slate-500 text-[11px]">
+          <div className="rounded-2xl bg-canvas border border-line p-5 font-mono text-xs text-muted overflow-x-auto">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-line text-subtle text-xs">
               <span className="flex items-center gap-2">
-                <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                <Terminal className="w-3.5 h-3.5 text-accent" />
                 Raw Event Payload Stream
               </span>
               <span>Content-Type: application/json</span>
             </div>
-            <pre className="text-emerald-400 leading-relaxed">
+            <pre className="text-accent leading-relaxed">
               {currentScenario.samplePayload}
             </pre>
           </div>

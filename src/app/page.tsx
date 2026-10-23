@@ -1,416 +1,347 @@
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  ArrowRight, 
-  CheckCircle2, 
-  ShoppingCart, 
-  Database, 
+import {
+  ArrowRight,
+  ArrowDown,
+  Check,
+  ShoppingCart,
+  Database,
+  Workflow,
+  Headphones,
+  Quote,
   Layers,
-  Headphones, 
-  Sparkles,
-  Quote
 } from "lucide-react";
-import { servicesData, testimonialsData, engagementModels } from "@/data/companyData";
-import ArchitectureSimulator from "@/components/ArchitectureSimulator";
+import {
+  servicesData,
+  testimonialsData,
+  engagementModels,
+} from "@/data/companyData";
 import SavingsCalculator from "@/components/SavingsCalculator";
-import TechStackIcons from "@/components/TechStackIcons";
+
+const icons = [ShoppingCart, Database, Workflow, Headphones];
 
 export default function HomePage() {
   return (
-    <div className="relative overflow-hidden bg-[#080c14]">
-      {/* Subtle Linear-style Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/12 via-slate-900/0 to-transparent blur-3xl pointer-events-none -z-10" />
-
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 md:pt-40 md:pb-28 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Live Studio Status Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/5 text-emerald-300 text-xs sm:text-sm font-medium mb-8 backdrop-blur-md">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Dhaka Studio · 40+ Production Deployments · 24/7 SLA Active</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.08]">
-              Automate the Repetitive. <br />
-              <span className="gradient-text-teal-emerald">Engineer for Exponential Scale.</span>
-            </h1>
-
-            {/* Sub-headline */}
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              AriseStudio builds high-throughput <strong>E-Commerce Automation</strong>, bespoke <strong>ERP & CRM Systems</strong>, robotic process pipelines, and round-the-clock <strong>24/7 Managed IT Support</strong>. We eliminate manual bottlenecks so teams focus on high-margin growth.
+    <div className="bg-canvas">
+      <section className="mx-auto max-w-7xl px-5 pb-16 pt-32 sm:px-8 lg:pb-24 lg:pt-40">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_1fr] lg:gap-16">
+          <div>
+            <p className="mb-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[.18em] text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Dhaka studio. Global partnerships.
             </p>
-
-            {/* Action Buttons */}
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <h1 className="text-[2.6rem] font-semibold leading-[1.12] tracking-[-.055em] text-ink sm:text-6xl lg:text-[4.1rem]">
+              Less manual work.
+              <br />
+              <span className="text-accent">More room to grow.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+              Automation and custom software built around the way your business
+              works. Connect your commerce, simplify operations and give your
+              team time for what matters.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/contact"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 transition-all shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5 text-sm sm:text-base"
+                href="/schedule"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
               >
-                Schedule an Architecture Audit
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                Book a discovery call{" "}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href="/services"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-slate-200 bg-[#0d1322] hover:bg-[#131c31] border border-white/[0.08] hover:border-emerald-500/30 transition-all text-sm sm:text-base hover:text-white"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-line bg-surface px-6 text-sm font-semibold text-ink hover:bg-surface-muted"
               >
-                Explore Modules & Stack
+                Explore our services
               </Link>
             </div>
-
-            {/* Executive SLA & Trust Bar */}
-            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 p-4 sm:p-6 rounded-2xl bg-[#0c1220]/80 border border-white/[0.08] backdrop-blur-md">
-              <div className="text-center p-3 border-r border-white/[0.06] last:border-none">
-                <p className="text-3xl sm:text-4xl font-extrabold text-white font-mono">99.98%</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Guaranteed SLA Uptime</p>
-              </div>
-              <div className="text-center p-3 md:border-r border-white/[0.06] last:border-none">
-                <p className="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono">&lt; 15 min</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Critical Escalation Response</p>
-              </div>
-              <div className="text-center p-3 border-r border-white/[0.06] last:border-none">
-                <p className="text-3xl sm:text-4xl font-extrabold text-sky-400 font-mono">100%</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Client Code & IP Ownership</p>
-              </div>
-              <div className="text-center p-3">
-                <p className="text-3xl sm:text-4xl font-extrabold text-teal-300 font-mono">0</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Per-User SaaS License Tax</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Flagship Venture / Product Incubator: AriseSell */}
-      <section id="products" className="py-12 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-[#0c1220] border border-white/[0.08] hover:border-emerald-500/30 transition-all shadow-xl p-8 sm:p-12 overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-7 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Flagship In-House Product</span>
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
-                  Meet <span className="gradient-text-teal-emerald">AriseSell</span> — Unified Multi-Channel E-Commerce Automation
-                </h2>
-                <p className="text-slate-300 text-base leading-relaxed">
-                  Engineered and incubated directly by AriseStudio, <strong>AriseSell</strong> bridges online storefronts, warehouse inventories, parcel couriers, and accounting ledgers into one autonomous engine. No more copy-pasting tracking numbers or inventory overselling.
-                </p>
-                <div className="grid grid-cols-2 gap-3 pt-2 text-sm text-slate-300">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Real-time Multi-Warehouse Sync</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Courier API Auto-Consignment</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Omnichannel POS & Web Harmony</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Automated Return & RMA Workflows</span>
-                  </div>
-                </div>
-                <div className="pt-4 flex flex-wrap items-center gap-4">
-                  <Link
-                    href="/contact?service=arisesell"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 transition-colors text-sm shadow-md shadow-emerald-500/20"
-                  >
-                    Request AriseSell Demo & Pilot
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                  <span className="text-xs font-mono text-slate-400">
-                    Deployed across 14+ enterprise retail stores
-                  </span>
-                </div>
-              </div>
-
-              {/* Product Card Visual */}
-              <div className="lg:col-span-5 flex justify-center">
-                <div className="p-8 rounded-2xl bg-[#080c14] border border-white/[0.08] shadow-xl flex flex-col items-center text-center relative max-w-sm w-full">
-                  <div className="w-32 h-32 relative mb-4 p-3 bg-slate-900/60 rounded-xl border border-white/[0.08] flex items-center justify-center shadow-md">
-                    <Image
-                      src="/brand/arisesell-icon.svg"
-                      alt="AriseSell Icon"
-                      width={120}
-                      height={120}
-                      className="w-full h-full object-contain"
-                      priority
-                    />
-                  </div>
-                  
-                  {/* Cropped White Brand Logo Banner */}
-                  <div className="w-full px-4 py-2 mt-1">
-                    <Image
-                      src="/brand/arisesell-logo-white-cropped.png"
-                      alt="AriseSell Official Logo"
-                      width={200}
-                      height={46}
-                      className="w-auto h-8 mx-auto object-contain"
-                    />
-                  </div>
-
-                  <p className="text-xs text-emerald-400 font-mono uppercase tracking-wider mt-2">
-                    Incubated by AriseStudio
-                  </p>
-                  <div className="mt-3 w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
-                    <span>API SYNC STATUS:</span>
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      100% OPERATIONAL
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Architecture Blueprint Simulator */}
-      <section className="py-16 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-8">
-            <span className="text-xs font-mono font-semibold tracking-wider uppercase text-emerald-400 bg-[#004157]/40 px-3 py-1 rounded-full border border-emerald-500/30">
-              Interactive System Topology
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3 tracking-tight">
-              Under the Hood: High-Resilience Engineering
-            </h2>
-            <p className="text-slate-400 mt-2 text-sm sm:text-base leading-relaxed">
-              Explore how AriseStudio orchestrates zero-loss data pipelines, distributed mutex locks, and automated courier APIs. Toggle tabs below to inspect sample execution flows and payloads.
+            <p className="mt-4 text-xs text-subtle">
+              30 minutes · Google Meet · A conversation about your goals
             </p>
           </div>
-
-          <ArchitectureSimulator />
-        </div>
-      </section>
-
-      {/* Core Services Section */}
-      <section className="py-20 relative" id="services">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div className="max-w-2xl">
-              <span className="text-xs font-semibold tracking-wider uppercase text-emerald-400 bg-[#004157]/40 px-3 py-1 rounded-full border border-emerald-500/30">
-                Engineering Modules
+          <figure
+            className="relative rounded-[28px] border border-line bg-surface p-6 shadow-sm sm:p-8"
+            aria-label="Illustrative operations workflow: orders connect to automation, inventory and customer updates"
+          >
+            <div className="mb-8 flex items-center justify-between border-b border-line pb-5">
+              <span className="text-sm font-semibold text-ink">
+                Your business, connected
               </span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 tracking-tight">
-                Architectural Capabilities Designed for Reliability
-              </h2>
-              <p className="text-slate-400 mt-3 text-base">
-                Whether you need to eliminate spreadsheet copy-pasting, develop a custom company-wide ERP, or secure your infrastructure 24/7, our pods deliver production-grade code.
+              <span className="rounded-full bg-surface-muted px-3 py-1 text-[11px] font-semibold text-muted">
+                Workflow preview
+              </span>
+            </div>
+            <div className="mx-auto flex max-w-xs flex-col items-center">
+              <div className="flex w-full items-center gap-4 rounded-2xl border border-line bg-canvas p-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                  <ShoppingCart className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold">An order comes in</p>
+                  <p className="mt-1 text-xs text-muted">
+                    Online store, marketplace or POS
+                  </p>
+                </div>
+              </div>
+              <div className="flex h-10 items-center text-accent">
+                <ArrowDown className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <div className="w-full rounded-2xl border border-accent/30 bg-accent/10 p-5">
+                <div className="flex items-center gap-3">
+                  <Workflow
+                    className="h-5 w-5 text-accent"
+                    aria-hidden="true"
+                  />
+                  <p className="text-sm font-semibold text-ink">
+                    Your automation layer
+                  </p>
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-muted">
+                  The right information reaches the right system, without the
+                  repetitive work.
+                </p>
+              </div>
+              <div className="flex h-10 items-center text-accent">
+                <ArrowDown className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <div className="grid w-full grid-cols-2 gap-3">
+                {["Stock updated", "Team notified"].map((label) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-2 rounded-xl border border-line bg-canvas px-3 py-4 text-xs font-medium"
+                  >
+                    <Check
+                      className="h-4 w-4 shrink-0 text-accent"
+                      aria-hidden="true"
+                    />
+                    {label}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <figcaption className="mt-7 text-center text-xs text-subtle">
+              A simple example. Built around your actual workflow.
+            </figcaption>
+          </figure>
+        </div>
+        <div className="mt-14 grid grid-cols-3 gap-4 border-y border-line py-7 sm:mt-20">
+          {[
+            { value: "40+", label: "Production deployments" },
+            { value: "14+", label: "Retail stores connected" },
+            { value: "Your code", label: "Your ownership" },
+          ].map((item) => (
+            <div key={item.label} className="text-center">
+              <p className="text-xl font-semibold tracking-tight text-ink sm:text-3xl">
+                {item.value}
+              </p>
+              <p className="mt-2 text-[11px] leading-relaxed text-muted sm:text-xs">
+                {item.label}
               </p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:pb-24">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+              What we do
+            </p>
+            <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              Make your systems work together.
+            </h2>
+          </div>
+          <Link
+            href="/services"
+            className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-accent"
+          >
+            All services <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {servicesData.map((service, index) => {
+            const Icon = icons[index];
+            return (
+              <Link
+                key={service.id}
+                href={`/services#${service.id}`}
+                className="group rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-accent/50 sm:p-8"
+              >
+                <div className="mb-6 flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <ArrowRight
+                    className="h-4 w-4 text-subtle group-hover:text-accent"
+                    aria-hidden="true"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold tracking-tight text-ink">
+                  {service.title}
+                </h3>
+                <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted">
+                  {service.shortDesc}
+                </p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section id="products" className="border-y border-line bg-surface-muted">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:py-20">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+              Built at AriseStudio
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              Meet AriseSell.
+            </h2>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
+              Bring orders, inventory, couriers and customer conversations into
+              one connected commerce platform.
+            </p>
+            <ul className="mt-6 space-y-3 text-sm text-muted">
+              {[
+                "Connected online and in-store operations",
+                "Inventory and courier automation",
+                "One place for your team to work",
+              ].map((text) => (
+                <li key={text} className="flex items-center gap-3">
+                  <Check
+                    className="h-4 w-4 shrink-0 text-accent"
+                    aria-hidden="true"
+                  />
+                  {text}
+                </li>
+              ))}
+            </ul>
             <Link
-              href="/services"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+              href="/contact?service=arisesell"
+              className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
             >
-              View detailed service specifications <ArrowRight className="w-4 h-4" />
+              Discuss AriseSell{" "}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {servicesData.map((service) => {
-              let IconComponent = ShoppingCart;
-              if (service.id === "erp-crm") IconComponent = Database;
-              if (service.id === "business-automation") IconComponent = Layers;
-              if (service.id === "it-support") IconComponent = Headphones;
-
-              return (
-                <div
-                  key={service.id}
-                  className="rounded-2xl bg-[#0c1220] border border-white/[0.08] p-8 hover:border-emerald-500/35 transition-all hover:shadow-xl hover:shadow-black/30 flex flex-col justify-between group"
-                >
-                  <div>
-                    <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:bg-emerald-400 group-hover:text-slate-950 transition-all">
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white group-hover:text-emerald-300 transition-colors">
-                      {service.title}
-                    </h3>
-                    <p className="text-slate-300 mt-3 text-sm leading-relaxed">
-                      {service.fullDesc}
-                    </p>
-
-                    <div className="mt-6 space-y-2.5">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 font-mono">
-                        Key Capabilities & Deliverables:
-                      </p>
-                      {service.features.slice(0, 3).map((feat, idx) => (
-                        <div key={idx} className="flex items-start gap-2.5 text-sm text-slate-300">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                          <span>{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-8 pt-6 border-t border-white/[0.06] flex items-center justify-between">
-                    <div className="flex flex-wrap gap-1.5">
-                      {service.techStack.slice(0, 4).map((tech) => (
-                        <span key={tech} className="text-xs px-2.5 py-1 rounded-md bg-white/[0.04] text-emerald-300 font-mono border border-white/[0.08]">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <Link
-                      href={`/services#${service.id}`}
-                      className="text-xs font-semibold text-emerald-400 hover:text-white flex items-center gap-1 group-hover:translate-x-1 transition-all"
-                    >
-                      Specifications <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Savings & ROI Estimator */}
-      <section className="py-16 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SavingsCalculator />
-        </div>
-      </section>
-
-      {/* Verified Client Testimonials Section */}
-      <section className="py-24 bg-[#080c14] border-y border-white/[0.06] relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-semibold tracking-wider uppercase text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-              Verified Client Endorsements
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3 tracking-tight">
-              Real Impact Reported by Enterprise Leaders
-            </h2>
-            <p className="text-slate-400 mt-3 text-base">
-              Here is what founders, COOs, and engineering directors say about partnering with our technical teams.
+          <div className="rounded-3xl border border-line bg-surface p-8 sm:p-12">
+            <Image
+              src="/brand/arisesell-icon.svg"
+              alt="AriseSell"
+              width={80}
+              height={80}
+              className="mb-6 h-20 w-20"
+            />
+            <p className="text-2xl font-semibold tracking-tight text-ink">
+              From order to fulfilment.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonialsData.map((test) => (
-              <div
-                key={test.id}
-                className="rounded-2xl bg-[#0c1220] border border-white/[0.08] p-8 flex flex-col justify-between hover:border-emerald-500/30 transition-all shadow-md relative"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
-                      <Quote className="w-5 h-5" />
-                    </span>
-                    <span className="text-xs font-mono text-emerald-400 font-semibold px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
-                      {test.impactMetric}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-slate-300 leading-relaxed italic">
-                    &ldquo;{test.quote}&rdquo;
-                  </p>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-white/[0.06] flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#0d1527] border border-emerald-500/25 flex items-center justify-center font-bold text-emerald-300 text-sm">
-                    {test.author.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">{test.author}</h4>
-                    <p className="text-xs text-slate-400">
-                      {test.role}, <span className="text-slate-300">{test.company}</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Engagement Models & Delivery Process */}
-      <section className="py-24 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-semibold tracking-wider uppercase text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-              Clear Engagement Framework
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3">
-              How We Deliver: Predictable, Transparent, Accountable
-            </h2>
-            <p className="text-slate-400 mt-3 text-base">
-              No bloated contracts or ambiguous hours. Choose the engagement structure that aligns with your engineering timeline.
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              A platform designed to reduce the daily handoffs between your
+              sales, operations and delivery teams.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {engagementModels.map((model, idx) => (
-              <div 
-                key={idx}
-                className={`p-8 rounded-2xl border transition-all flex flex-col justify-between ${
-                  idx === 1 
-                    ? "bg-[#0d1527] border-emerald-500/40 shadow-xl shadow-emerald-500/5 relative"
-                    : "bg-[#0c1220] border-white/[0.08] hover:border-white/[0.14]"
-                }`}
-              >
-                <div>
-                  {idx === 1 && (
-                    <span className="inline-block mb-3 px-3 py-1 rounded-full bg-emerald-400 text-slate-950 font-bold text-[11px] uppercase tracking-wider">
-                      Most Popular For Scaling
-                    </span>
-                  )}
-                  <h3 className="text-2xl font-bold text-white">{model.title}</h3>
-                  <p className="text-xs font-mono text-emerald-400 mt-1 font-semibold">{model.timeline}</p>
-                  <p className="text-sm text-slate-300 mt-3 leading-relaxed">{model.subtitle}</p>
-
-                  <div className="my-6 p-3 rounded-xl bg-slate-900/60 border border-white/[0.06] text-xs text-slate-400">
-                    <strong className="text-slate-300 block mb-1">Best suited for:</strong>
-                    {model.bestFor}
-                  </div>
-
-                  <div className="space-y-2.5">
-                    {model.features.map((feat, fIdx) => (
-                      <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-300">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-4">
-                  <Link
-                    href={`/contact?service=${idx === 0 ? "business-automation" : idx === 1 ? "custom-erp-crm" : "managed-it-support"}`}
-                    className={`w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold transition-all ${
-                      idx === 1
-                        ? "bg-emerald-400 text-slate-950 hover:bg-emerald-300 shadow-lg shadow-emerald-500/20"
-                        : "bg-slate-800 text-white hover:bg-slate-700"
-                    }`}
-                  >
-                    Select Engagement
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ))}
+            <div className="mt-8 flex items-center justify-between gap-2 border-t border-line pt-5 text-xs text-muted">
+              <span>Sales</span>
+              <span aria-hidden="true">→</span>
+              <span>Inventory</span>
+              <span aria-hidden="true">→</span>
+              <span>Delivery</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Tech Stack Banner */}
-      <section className="py-16 bg-[#080c14] border-t border-white/[0.06]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs font-mono uppercase tracking-widest text-emerald-400/90 mb-8">
-            Engineered on Battle-Tested Enterprise Foundations
-          </p>
-          <TechStackIcons />
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+              Client perspectives
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              Good work. Lasting partnerships.
+            </h2>
+          </div>
+          <Link
+            href="/case-studies"
+            className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-accent"
+          >
+            Read the case studies{" "}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
+        <div className="grid gap-5 lg:grid-cols-3">
+          {testimonialsData.map((testimonial) => (
+            <figure
+              key={testimonial.id}
+              className="flex flex-col justify-between rounded-2xl border border-line bg-surface p-6 sm:p-7"
+            >
+              <div>
+                <Quote
+                  className="mb-5 h-5 w-5 text-accent"
+                  aria-hidden="true"
+                />
+                <blockquote className="text-sm leading-[1.8] text-muted">
+                  “{testimonial.quote}”
+                </blockquote>
+              </div>
+              <figcaption className="mt-6 border-t border-line pt-5">
+                <p className="text-sm font-semibold text-ink">
+                  {testimonial.author}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  {testimonial.role} · {testimonial.company}
+                </p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:pb-24">
+        <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+          Working together
+        </p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+          Start where you need us.
+        </h2>
+        <div className="mt-8 grid gap-5 lg:grid-cols-3">
+          {engagementModels.map((model, index) => (
+            <div
+              key={model.title}
+              className="flex flex-col border-t border-line pt-6"
+            >
+              <span className="text-xs font-semibold text-accent">
+                0{index + 1}
+              </span>
+              <h3 className="mt-4 text-xl font-semibold text-ink">
+                {model.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                {model.subtitle}
+              </p>
+              <p className="mt-3 text-xs text-subtle">{model.timeline}</p>
+              <Link
+                href={`/contact?service=${index === 0 ? "business-automation" : index === 1 ? "custom-erp-crm" : "managed-it-support"}`}
+                className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-accent"
+              >
+                Discuss your project{" "}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          ))}
+        </div>
+        <details className="mt-12 rounded-2xl border border-line bg-surface">
+          <summary className="flex min-h-16 items-center justify-between gap-4 px-6 py-5 text-sm font-semibold text-ink">
+            <span className="flex items-center gap-3">
+              <Layers className="h-4 w-4 text-accent" aria-hidden="true" />
+              Estimate the time your team could recover
+            </span>
+            <span aria-hidden="true">+</span>
+          </summary>
+          <div className="border-t border-line">
+            <SavingsCalculator />
+          </div>
+        </details>
       </section>
     </div>
   );

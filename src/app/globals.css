@@ -1,93 +1,82 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #080c14;
-  --foreground: #f8fafc;
-  
-  /* Authentic Brand Palette */
-  --brand-navy-deep: #080c14;
-  --brand-surface: #0d1322;
-  --brand-surface-elevated: #111827;
-  --brand-teal-deep: #004157;
-  --brand-emerald: #10b981;
-  --brand-emerald-light: #34d399;
-  --brand-cyan-accent: #38bdf8;
-  --brand-border: rgba(255, 255, 255, 0.08);
-  --brand-border-hover: rgba(16, 185, 129, 0.35);
+  color-scheme: light;
+  --canvas: #f7f9f5;
+  --surface: #ffffff;
+  --surface-muted: #eef4ef;
+  --surface-raised: #e4eee6;
+  --ink: #1b2d24;
+  --muted: #526759;
+  --subtle: #5c6f63;
+  --line: #d5e2d8;
+  --accent: #16714b;
+  --accent-strong: #105735;
+  --on-accent: #ffffff;
+  --info: #0f766e;
+  --danger: #b42332;
+  --warning: #87500b;
 }
-
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  overflow-x: hidden;
+.dark {
+  color-scheme: dark;
+  --canvas: #071b14;
+  --surface: #0d261d;
+  --surface-muted: #102e23;
+  --surface-raised: #183b2d;
+  --ink: #f2f8f4;
+  --muted: #b4ccbf;
+  --subtle: #9eb8aa;
+  --line: #2b4b3d;
+  --accent: #2cc78a;
+  --accent-strong: #73e3b0;
+  --on-accent: #071b14;
+  --info: #7cdbc8;
+  --danger: #fda4af;
+  --warning: #f8d182;
 }
-
-/* Custom subtle scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-on-accent: var(--on-accent);
+  --color-info: var(--info);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --font-sans: var(--font-manrope), Arial, Helvetica, sans-serif;
 }
-::-webkit-scrollbar-track {
-  background: #080c14;
+html { scroll-padding-top: 88px; }
+body { background: var(--canvas); color: var(--ink); font-family: var(--font-sans); }
+::selection { background: var(--accent); color: var(--on-accent); }
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 9999px;
+:where(button, a, input, select, textarea) { -webkit-tap-highlight-color: transparent; }
+button:not(:disabled), summary { cursor: pointer; }
+a, button, input, select, textarea { touch-action: manipulation; }
+.reflective-header { background: var(--surface); border-bottom: 1px solid var(--line); }
+.glass, .enterprise-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 20px -12px rgb(8 40 24 / 12%);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+.enterprise-card-active, .enterprise-pill { background: var(--surface-muted); border: 1px solid var(--line); color: var(--accent); }
+.gradient-text-teal-emerald, .gradient-text-white-emerald { color: var(--accent); }
+.brand-logo-dark { display: none; }
+.dark .brand-logo-light { display: none; }
+.dark .brand-logo-dark { display: block; }
+body:has([data-compact-footer]) .footer-cta { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
-
-/* AriseSell-style Reflective Glass Header */
-.reflective-header,
-.enosis-navbar-bg {
-  background-color: rgba(8, 12, 22, 0.65);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  backdrop-filter: blur(28px) saturate(190%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 20px -2px rgba(0, 0, 0, 0.35);
-}
-
-/* AriseSell-style Glass Panels & Cards */
-.glass,
-.enterprise-card {
-  background-color: rgba(13, 19, 34, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  backdrop-filter: blur(24px) saturate(160%);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 8px 32px -8px rgba(0, 0, 0, 0.4);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass:hover,
-.enterprise-card:hover {
-  border-color: rgba(16, 185, 129, 0.4);
-  background-color: rgba(16, 24, 42, 0.75);
-  transform: translateY(-2px);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 16px 40px -12px rgba(0, 0, 0, 0.6), 0 0 24px -4px rgba(16, 185, 129, 0.2);
-}
-
-.enterprise-card-active {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 8px 24px -6px rgba(16, 185, 129, 0.2);
-}
-
-.enterprise-pill {
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #6ee7b7;
-}
-
-/* Crisp Clean Gradient Typography */
-.gradient-text-teal-emerald {
-  background: linear-gradient(135deg, #ffffff 15%, #34d399 70%, #10b981 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-text-white-emerald {
-  background: linear-gradient(135deg, #ffffff 40%, #a7f3d0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+input:not([type="range"]), select, textarea { border-color: #82998a; }
+.dark input:not([type="range"]), .dark select, .dark textarea { border-color: #577d65; }
+summary::marker { color: var(--accent); }

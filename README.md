@@ -274,3 +274,35 @@ New events have no invited customer guest, so Google's guest-cancellation messag
 popup is not shown. This description section is the Calendar-only way to supply a
 note to the custom SMTP email; it does not restore or modify Google's Delete popup.
 Existing Calendar events are not rewritten by deploying this change.
+
+## Website themes and design checks
+
+The header colour-theme button switches between warm ivory/forest green and dark
+evergreen/mint on every route. The first visit follows the operating-system
+preference; an explicit choice is stored as `arisestudio-theme` in localStorage.
+A small script in the document head applies it before the body paints. The switch
+still works if browser storage is blocked. No theme cookie or server lookup is
+required.
+
+Website colours use semantic roles in `src/app/globals.css` (`canvas`, `surface`,
+`ink`, `muted`, `accent`, `on-accent`, and `line`). Both palettes must maintain the
+selected contrast checks in the regression suite. Manrope is self-hosted through
+`next/font/local`; its SIL Open Font License is included alongside the font.
+Email templates retain their email-safe font and light palette.
+
+On mobile, the scheduler displays the selected day's slots in two columns; the
+weekly grid remains on desktop. Both views use the same reservation handlers,
+timezone conversion and availability state. No booking/provider/storage protocol
+was changed for the visual redesign.
+
+The contact and schedule pages link to a plain-language data-use notice and omit
+the repeated enquiry banner. Placeholder phone/social links are hidden until real
+business destinations are supplied. Client stories and reported outcomes remain
+published with the owner's confirmation that they are verified and approved.
+The ROI calculator explicitly labels its 85% and 50-week planning assumptions and
+does not promise a fixed payback period or cash saving.
+
+Canonical URLs, social cards, robots and sitemap use `SITE_URL`, then Vercel's
+production origin, then the current production domain. Keep `SITE_URL` set to your
+public production origin. The GitHub checks workflow runs type, lint, regression
+and production-build checks without provider credentials.

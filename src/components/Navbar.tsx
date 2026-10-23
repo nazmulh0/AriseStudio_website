@@ -1,210 +1,216 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-import { 
-  Menu, 
-  X, 
-  ChevronDown, 
-  ShoppingCart, 
-  Database, 
-  Layers, 
-  Headphones, 
+import { usePathname } from "next/navigation";
+import { useRef, useState } from "react";
+import {
+  Menu,
+  X,
+  ChevronDown,
   ArrowRight,
-  Sparkles
+  ShoppingCart,
+  Database,
+  Layers,
+  Headphones,
 } from "lucide-react";
+import BrandLogo from "./BrandLogo";
+import ThemeToggle from "./ThemeToggle";
+
+const links = [
+  { name: "About", href: "/about" },
+  { name: "Expertise", href: "/services" },
+  { name: "Solutions", href: "/solutions" },
+  { name: "Case Studies", href: "/case-studies" },
+  { name: "Careers", href: "/careers" },
+  { name: "Contact", href: "/contact" },
+];
+const services = [
+  {
+    name: "E-commerce automation",
+    href: "/services#ecommerce",
+    icon: ShoppingCart,
+  },
+  { name: "Custom ERP & CRM", href: "/services#erp-crm", icon: Database },
+  {
+    name: "Business automation",
+    href: "/services#business-automation",
+    icon: Layers,
+  },
+  {
+    name: "Managed IT & cloud",
+    href: "/services#it-support",
+    icon: Headphones,
+  },
+];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [expertiseDropdown, setExpertiseDropdown] = useState(false);
-
-  const scheduleHref = "/schedule";
-
-  const navLinks = [
-    { name: "About", href: "/about" },
-    { 
-      name: "Expertise", 
-      href: "/services", 
-      hasDropdown: true 
-    },
-    { name: "Solutions", href: "/solutions" },
-    { name: "Case Studies", href: "/case-studies" },
-    { name: "Careers", href: "/careers" },
-    { name: "Contact", href: "/contact" },
-  ];
-
-  const serviceCategories = [
-    {
-      title: "E-Commerce Automation",
-      desc: "Multi-channel syncing, inventory bots & order fulfillment pipelines",
-      icon: ShoppingCart,
-      href: "/services#ecommerce",
-    },
-    {
-      title: "Custom CRM & ERP",
-      desc: "Tailored resource planning, customer data pipelines & reporting",
-      icon: Database,
-      href: "/services#erp-crm",
-    },
-    {
-      title: "Business Process Automation",
-      desc: "RPA, automated invoicing, AI document extraction & approvals",
-      icon: Layers,
-      href: "/services#business-automation",
-    },
-    {
-      title: "Managed IT & 24/7 Support",
-      desc: "Cloud infrastructure, DevOps, cyber protection & rapid response",
-      icon: Headphones,
-      href: "/services#it-support",
-    },
-  ];
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [expertiseOpen, setExpertiseOpen] = useState(false);
+  const expertiseTrigger = useRef<HTMLButtonElement>(null);
+  const mobileTrigger = useRef<HTMLButtonElement>(null);
+  const navClass = (href: string) =>
+    `inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-semibold transition-colors ${pathname === href ? "bg-surface-muted text-accent" : "text-muted hover:bg-surface-muted hover:text-ink"}`;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 reflective-header">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
-        <div className="flex items-center justify-between h-[68px]">
-          
-          {/* Official AriseStudio Brand Logo */}
-          <Link href="/" className="flex items-center group select-none py-1">
-            {/* Official AriseStudio Vector Wordmark Logo */}
-            <div className="relative h-10 sm:h-12 w-48 sm:w-60 flex items-center">
-              <Image 
-                src="/brand/arisestudio-logo-darkmode.png" 
-                alt="AriseStudio Official Logo"
-                fill
-                sizes="(max-width: 640px) 192px, 240px"
-                className="object-contain filter drop-shadow group-hover:brightness-110 transition-all"
-                priority
-              />
-            </div>
-          </Link>
-
-          {/* Desktop Navigation Links — AriseSell-style Floating Glass Pill */}
-          <nav className="hidden lg:flex items-center">
-            <div className="relative rounded-full border border-white/[0.1] bg-white/[0.04] p-1 shadow-sm backdrop-blur-md">
-              <div className="flex items-center gap-0.5">
-                {navLinks.map((link) => {
-                  if (link.hasDropdown) {
-                    return (
-                      <div 
-                        key={link.name} 
-                        className="relative"
-                        onMouseEnter={() => setExpertiseDropdown(true)}
-                        onMouseLeave={() => setExpertiseDropdown(false)}
-                      >
-                        <Link
-                          href={link.href}
-                          className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all tracking-wide group"
-                        >
-                          <span>{link.name}</span>
-                          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${expertiseDropdown ? "rotate-180 text-emerald-400" : "group-hover:text-emerald-400"}`} />
-                        </Link>
-
-                        {/* Mega Dropdown for Expertise */}
-                        {expertiseDropdown && (
-                          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[540px] bg-[#0c1220]/95 border border-white/[0.1] rounded-2xl shadow-2xl p-4 grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-1 duration-150 backdrop-blur-2xl">
-                            {serviceCategories.map((srv) => {
-                              const Icon = srv.icon;
-                              return (
-                                <Link
-                                  key={srv.title}
-                                  href={srv.href}
-                                  onClick={() => setExpertiseDropdown(false)}
-                                  className="group p-3 rounded-xl hover:bg-white/[0.05] transition-all border border-transparent hover:border-emerald-500/25"
-                                >
-                                  <div className="flex items-start gap-3">
-                                    <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
-                                      <Icon className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                      <h4 className="text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors">
-                                        {srv.title}
-                                      </h4>
-                                      <p className="text-xs text-slate-400 mt-1 line-clamp-2">
-                                        {srv.desc}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </Link>
-                              );
-                            })}
-                            <div className="col-span-2 pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-xs text-slate-400 px-2">
-                              <span className="flex items-center gap-1.5">
-                                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                                Looking for bespoke architecture?
-                              </span>
-                              <Link href="/contact" className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1">
-                                Schedule a free technical audit <ArrowRight className="w-3 h-3" />
-                              </Link>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
+    <header
+      className="reflective-header fixed inset-x-0 top-0 z-50"
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && mobileOpen) {
+          setMobileOpen(false);
+          mobileTrigger.current?.focus();
+        }
+      }}
+    >
+      <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-3 px-5 sm:px-8">
+        <Link
+          href="/"
+          onClick={() => setMobileOpen(false)}
+          aria-label="AriseStudio home"
+        >
+          <BrandLogo priority />
+        </Link>
+        <nav
+          aria-label="Main navigation"
+          className="hidden xl:flex items-center gap-1"
+        >
+          {links.map((link) =>
+            link.href === "/services" ? (
+              <div
+                key={link.href}
+                className="relative"
+                onMouseEnter={() => setExpertiseOpen(true)}
+                onMouseLeave={(event) => {
+                  if (!event.currentTarget.contains(document.activeElement))
+                    setExpertiseOpen(false);
+                }}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget))
+                    setExpertiseOpen(false);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setExpertiseOpen(false);
+                    expertiseTrigger.current?.focus();
                   }
-
-                  return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className="px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all tracking-wide"
-                    >
-                      {link.name}
-                    </Link>
-                  );
-                })}
+                }}
+              >
+                <button
+                  ref={expertiseTrigger}
+                  type="button"
+                  aria-expanded={expertiseOpen}
+                  aria-controls="expertise-links"
+                  aria-current={pathname === "/services" ? "page" : undefined}
+                  onClick={() => setExpertiseOpen((open) => !open)}
+                  className={navClass(link.href)}
+                >
+                  Expertise{" "}
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform ${expertiseOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </button>
+                {expertiseOpen && (
+                  <div
+                    className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-2"
+                    id="expertise-links"
+                  >
+                    <div className="rounded-2xl border border-line bg-surface p-2 shadow-lg">
+                      <Link
+                        href="/services"
+                        onClick={() => setExpertiseOpen(false)}
+                        className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-bold text-accent hover:bg-surface-muted"
+                      >
+                        All services{" "}
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                      {services.map((service) => (
+                        <Link
+                          key={service.href}
+                          href={service.href}
+                          onClick={() => setExpertiseOpen(false)}
+                          className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm text-muted hover:bg-surface-muted hover:text-ink"
+                        >
+                          <service.icon
+                            className="h-4 w-4 text-accent"
+                            aria-hidden="true"
+                          />
+                          {service.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          </nav>
-
-          {/* AriseSell-Style Pill Button: "Schedule a Call" */}
-          <div className="hidden lg:flex items-center">
-            <Link
-              href={scheduleHref}
-              className="inline-flex items-center justify-center px-4.5 py-2 rounded-full border border-emerald-500/40 hover:border-emerald-400 text-[13px] font-semibold text-emerald-300 hover:text-white bg-emerald-500/15 hover:bg-emerald-500/25 transition-all duration-200 shadow-[0_2px_12px_rgba(16,185,129,0.18)]"
-            >
-              Schedule a Call
-            </Link>
-          </div>
-
-          {/* Mobile menu toggle */}
-          <div className="flex items-center lg:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.05] focus:outline-none"
-              aria-label="Toggle navigation"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={pathname === link.href ? "page" : undefined}
+                className={navClass(link.href)}
+              >
+                {link.name}
+              </Link>
+            ),
+          )}
+        </nav>
+        <div className="flex shrink-0 items-center gap-2">
+          <ThemeToggle />
+          <Link
+            href="/schedule"
+            className="hidden sm:inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[13px] font-semibold text-on-accent hover:bg-accent-strong"
+          >
+            Book a call{" "}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </Link>
+          <button
+            ref={mobileTrigger}
+            type="button"
+            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMobileOpen((open) => !open)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line text-ink hover:bg-surface-muted xl:hidden"
+          >
+            {mobileOpen ? (
+              <X className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            )}
+          </button>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="lg:hidden bg-[#0c1220]/98 backdrop-blur-xl border-b border-white/[0.08] px-6 pt-3 pb-6 space-y-3">
-          {navLinks.map((link) => (
+      {mobileOpen && (
+        <nav
+          id="mobile-navigation"
+          aria-label="Mobile navigation"
+          className="max-h-[calc(100dvh-76px)] overflow-y-auto border-t border-line bg-surface px-5 py-4 xl:hidden"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setMobileOpen(false);
+              mobileTrigger.current?.focus();
+            }
+          }}
+        >
+          {links.map((link) => (
             <Link
-              key={link.name}
+              key={link.href}
               href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:text-white hover:bg-white/[0.05]"
+              aria-current={pathname === link.href ? "page" : undefined}
+              onClick={() => setMobileOpen(false)}
+              className={`block rounded-xl px-3 py-3 text-sm font-semibold ${pathname === link.href ? "bg-surface-muted text-accent" : "text-muted hover:bg-surface-muted"}`}
             >
               {link.name}
             </Link>
           ))}
-          <div className="pt-3 border-t border-white/[0.08]">
-            <Link
-              href={scheduleHref}
-              onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center w-full py-2.5 rounded-full border border-emerald-500/30 text-sm font-medium text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 transition-all"
-            >
-              Schedule a Call
-            </Link>
-          </div>
-        </div>
+          <Link
+            href="/schedule"
+            onClick={() => setMobileOpen(false)}
+            className="mt-3 flex min-h-12 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-on-accent"
+          >
+            Book a discovery call
+          </Link>
+        </nav>
       )}
     </header>
   );

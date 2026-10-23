@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/site";
 import { Metadata } from "next";
 import Link from "next/link";
 import { 
@@ -10,10 +11,7 @@ import {
   Quote
 } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Case Studies & Client Success | AriseStudio",
-  description: "Real-world engineering case studies showcasing automation, custom ERP overhauls, and IT infrastructure results by AriseStudio.",
-};
+export const metadata: Metadata = pageMetadata("Case Studies & Client Success | AriseStudio", "Real-world engineering case studies showcasing automation, custom ERP overhauls, and IT infrastructure results by AriseStudio.", "/case-studies");
 
 const fullStudies = [
   {
@@ -65,22 +63,22 @@ const fullStudies = [
 
 export default function CaseStudiesPage() {
   return (
-    <div className="pt-32 pb-24 relative bg-[#09101d] overflow-hidden">
+    <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
       {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-[#004157]/25 via-[#0a814f]/15 to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-[#004157]/20 blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-accent/25 via-accent/15 to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-accent/10 blur-[130px] pointer-events-none -z-10" />
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 text-center">
-        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-emerald-300 bg-[#004157]/40 border border-emerald-500/30">
-          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-accent bg-accent/10 border border-accent/30">
+          <Sparkles className="w-3.5 h-3.5 text-accent" />
           Proven Field Deployments
         </span>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mt-4 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-ink mt-4 tracking-tight">
           Client Case Studies & <br className="hidden sm:inline" />
           <span className="gradient-text-teal-emerald">Measurable Commercial Outcomes</span>
         </h1>
-        <p className="mt-4 text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+        <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           Explore how AriseStudio has eliminated operational bottlenecks, replaced fragile spreadsheets with custom platforms, and protected system uptime for fast-growing enterprises.
         </p>
       </div>
@@ -89,21 +87,21 @@ export default function CaseStudiesPage() {
         {fullStudies.map((study, idx) => (
           <article
             key={idx}
-            className="rounded-3xl bg-[#09101d] border border-white/[0.08] p-8 sm:p-12 shadow-2xl hover:border-emerald-500/30 transition-all"
+            className="rounded-3xl bg-canvas border border-line p-8 sm:p-12 shadow-sm hover:border-accent/30 transition-colors"
           >
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-line">
               <div>
-                <span className="text-xs font-mono uppercase text-emerald-400 font-semibold">
+                <span className="text-xs uppercase text-accent font-semibold">
                   {study.industry}
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                <h2 className="text-2xl sm:text-3xl font-bold text-ink mt-1">
                   {study.title}
                 </h2>
-                <p className="text-sm text-slate-400 mt-1">Client: <span className="text-slate-200 font-semibold">{study.client}</span></p>
+                <p className="text-sm text-muted mt-1">Client: <span className="text-ink font-semibold">{study.client}</span></p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {study.tech.map((t) => (
-                  <span key={t} className="text-xs px-2.5 py-1 rounded-md bg-[#004157]/30 text-emerald-300 font-mono border border-emerald-500/20">
+                  <span key={t} className="text-xs px-2.5 py-1 rounded-md bg-accent/10 text-accent border border-accent/20">
                     {t}
                   </span>
                 ))}
@@ -112,34 +110,34 @@ export default function CaseStudiesPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-8">
               {/* Problem */}
-              <div className="p-6 rounded-2xl bg-slate-900/80 border border-rose-500/20">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-rose-400 mb-3 flex items-center gap-2">
+              <div className="p-6 rounded-2xl bg-surface-muted/80 border border-danger/20">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-danger mb-3 flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4" /> The Bottleneck
                 </h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
+                <p className="text-sm text-muted leading-relaxed">
                   {study.overview}
                 </p>
               </div>
 
               {/* Solution */}
-              <div className="p-6 rounded-2xl bg-[#004157]/20 border border-emerald-500/30">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 mb-3 flex items-center gap-2">
+              <div className="p-6 rounded-2xl bg-accent/10 border border-accent/30">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-accent mb-3 flex items-center gap-2">
                   <Zap className="w-4 h-4" /> Architectural Solution
                 </h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
+                <p className="text-sm text-muted leading-relaxed">
                   {study.solution}
                 </p>
               </div>
 
               {/* Verified Results */}
-              <div className="p-6 rounded-2xl bg-[#004157]/30 border border-emerald-500/40">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300 mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-emerald-400" /> Commercial Returns
+              <div className="p-6 rounded-2xl bg-accent/10 border border-accent/40">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-accent mb-3 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-accent" /> Commercial Returns
                 </h3>
                 <div className="space-y-2.5">
                   {study.results.map((res, rIdx) => (
-                    <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
+                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                       <span>{res}</span>
                     </div>
                   ))}
@@ -148,19 +146,19 @@ export default function CaseStudiesPage() {
             </div>
 
             {/* Direct Client Quote Callout */}
-            <div className="mt-6 p-5 rounded-2xl bg-[#004157]/30 border border-emerald-500/20 flex items-start gap-4">
-              <Quote className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="mt-6 p-5 rounded-2xl bg-accent/10 border border-accent/20 flex items-start gap-4">
+              <Quote className="w-5 h-5 text-accent shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm text-slate-200 italic">&ldquo;{study.quote}&rdquo;</p>
-                <p className="text-xs font-mono text-emerald-400 mt-2 font-semibold">— {study.quoteAuthor}</p>
+                <p className="text-sm text-ink italic">&ldquo;{study.quote}&rdquo;</p>
+                <p className="text-xs text-accent mt-2 font-semibold">— {study.quoteAuthor}</p>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between">
-              <span className="text-xs text-slate-400">Facing a similar operational hurdle?</span>
+            <div className="mt-8 pt-6 border-t border-line flex items-center justify-between">
+              <span className="text-xs text-muted">Facing a similar operational hurdle?</span>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-400 hover:text-emerald-300"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent"
               >
                 Schedule an architecture audit <ArrowRight className="w-4 h-4" />
               </Link>

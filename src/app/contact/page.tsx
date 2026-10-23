@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { 
   Mail, 
-  Phone, 
   MapPin, 
   Send, 
   CheckCircle2, 
@@ -108,29 +107,29 @@ function ContactForm() {
   };
 
   return (
-    <div className="p-8 sm:p-12 rounded-3xl enterprise-card relative shadow-2xl">
+    <div className="p-8 sm:p-12 rounded-3xl enterprise-card relative shadow-sm">
       {status === "success" ? (
         <div className="py-12 text-center space-y-5 animate-in fade-in duration-300">
-          <div className="w-20 h-20 rounded-full bg-[#004157]/40 border-2 border-[#10b981] text-[#10b981] mx-auto flex items-center justify-center shadow-lg shadow-[#10b981]/20">
+          <div className="w-20 h-20 rounded-full bg-accent/10 border-2 border-accent text-accent mx-auto flex items-center justify-center shadow-sm ">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-white">
+          <h3 className="text-2xl sm:text-3xl font-bold text-ink">
             {isCareer ? "Application Received!" : "Consultation Request Received!"}
           </h3>
-          <p className="text-slate-300 max-w-md mx-auto text-sm leading-relaxed">
+          <p className="text-muted max-w-md mx-auto text-sm leading-relaxed">
             {notificationPending ? (
               <>Thank you, <strong>{formData.name}</strong>. Your {isCareer ? "application" : "request"} is saved, but we could not notify our team yet. For urgent help, email <a href="mailto:contact@arisestudio.com" className="underline">contact@arisestudio.com</a>.</>
             ) : isCareer ? (
-              <>Thank you, <strong className="text-white">{formData.name}</strong>. Your application has been logged into our talent review queue. Our engineering leadership will review your profile and reach out via <strong className="text-white">{formData.email}</strong>.</>
+              <>Thank you, <strong className="text-ink">{formData.name}</strong>. Your application has been logged into our talent review queue. Our engineering leadership will review your profile and reach out via <strong className="text-ink">{formData.email}</strong>.</>
             ) : (
-              <>Thank you, <strong className="text-white">{formData.name}</strong>. Your consultation inquiry regarding <strong className="text-[#a7f3d0]">{formData.service}</strong> has been logged into our engineering dispatch queue. An architect will reach out via <strong className="text-white">{formData.email}</strong> within 24 hours.</>
+              <>Thank you, <strong className="text-ink">{formData.name}</strong>. Your consultation inquiry regarding <strong className="text-accent">{formData.service}</strong> has been logged into our engineering dispatch queue. An architect will reach out via <strong className="text-ink">{formData.email}</strong> within 24 hours.</>
             )}
           </p>
           <div className="pt-4">
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#004157]/60 hover:bg-[#004157] border border-[#10b981]/40 text-sm font-semibold text-white transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 hover:bg-accent border border-accent/40 text-sm font-semibold text-ink transition-colors hover:scale-105"
             >
               <RefreshCw className="w-4 h-4" />
               {isCareer ? "Submit Another Application" : "Submit Another Inquiry"}
@@ -140,8 +139,8 @@ function ContactForm() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           {status === "error" && (
-            <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-sm flex items-start gap-3 animate-in fade-in">
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-xl bg-danger/40 border border-danger/40 text-danger text-sm flex items-start gap-3 animate-in fade-in">
+              <AlertCircle className="w-5 h-5 text-danger shrink-0 mt-0.5" />
               <div>
                 <strong className="block font-semibold">Submission Failed</strong>
                 <span>{errorMessage}</span>
@@ -151,7 +150,7 @@ function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 Your Full Name *
               </label>
               <input id="contact-name"
@@ -161,12 +160,12 @@ function ContactForm() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g. Farhan Rahman"
-                className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 {isCareer ? "Email Address *" : "Corporate Email *"}
               </label>
               <input id="contact-email"
@@ -176,14 +175,14 @@ function ContactForm() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder={isCareer ? "you@example.com" : "farhan@company.com"}
-                className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="contact-phone" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-phone" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 Phone / WhatsApp
               </label>
               <input id="contact-phone"
@@ -192,12 +191,12 @@ function ContactForm() {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="+880 17... / +1 ..."
-                className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="contact-company" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-company" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 {isCareer ? "Portfolio / GitHub / LinkedIn" : "Company Name"}
               </label>
               <input id="contact-company"
@@ -206,14 +205,14 @@ function ContactForm() {
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 placeholder={isCareer ? "https://github.com/... or linkedin.com/..." : "Your Organization"}
-                className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="contact-service" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-service" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 Primary Service Needed
               </label>
               <select id="contact-service"
@@ -228,7 +227,7 @@ function ContactForm() {
                   if (!isNowCareer && wasCareer) newBudget = "$3,000 - $8,000";
                   setFormData({ ...formData, service: newService, budget: newBudget });
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60"
               >
                 <option value="e-commerce-automation">E-Commerce Automation System</option>
                 <option value="arisesell-deployment">AriseSell Platform Deployment</option>
@@ -241,14 +240,14 @@ function ContactForm() {
             </div>
 
             <div>
-              <label htmlFor="contact-budget" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label htmlFor="contact-budget" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
                 {isCareer ? "Years of Experience" : "Estimated Budget Bracket"}
               </label>
               <select id="contact-budget"
                 disabled={status === "loading"}
                 value={formData.budget}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60"
               >
                 {isCareer ? (
                   <>
@@ -271,7 +270,7 @@ function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
               {isCareer
                 ? "Cover Note, Background & Core Skills *"
                 : "Tell us about your project or current operational bottlenecks *"}
@@ -287,14 +286,15 @@ function ContactForm() {
                   ? "Share your core stack, relevant projects or open-source work, and what excites you about joining AriseStudio..."
                   : "Describe your current systems, what you wish to automate, and your target completion timeline..."
               }
-              className="w-full px-4 py-3 rounded-xl bg-[#09101d] border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-[#10b981] text-sm disabled:opacity-60 transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
             />
           </div>
 
+          <p className="text-xs leading-relaxed text-muted">We use your details to respond to this request. <Link href="/privacy" className="font-semibold text-accent underline underline-offset-4">Privacy notice</Link></p>
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full py-4 rounded-xl font-semibold text-slate-950 bg-[#10b981] hover:bg-[#34d399] transition-all shadow-lg shadow-[#10b981]/25 flex items-center justify-center gap-2 text-sm disabled:opacity-75 disabled:cursor-not-allowed hover:-translate-y-0.5"
+            className="w-full py-4 rounded-xl font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shadow-sm  flex items-center justify-center gap-2 text-sm disabled:opacity-75 disabled:cursor-not-allowed hover:-translate-y-0.5"
           >
             {status === "loading" ? (
               <>
@@ -316,37 +316,37 @@ function ContactForm() {
 
 export default function ContactPage() {
   return (
-    <div className="pt-32 pb-24 relative bg-[#09101d] overflow-hidden">
+    <div data-compact-footer className="pt-32 pb-24 relative bg-canvas overflow-hidden">
       {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-[#004157]/30 via-[#0a814f]/20 to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-[#004157]/20 blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-accent/30 via-accent/20 to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-accent/10 blur-[130px] pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
-        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-[#a7f3d0] bg-[#004157]/40 border border-[#10b981]/30">
+        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-accent bg-accent/10 border border-accent/30">
           Get in Touch
         </span>
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white mt-4 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl font-bold text-ink mt-4 tracking-tight">
           Let&apos;s Engineer Your <br className="hidden sm:inline" />
           <span className="gradient-text-teal-emerald">System Together</span>
         </h1>
-        <p className="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">
+        <p className="mt-4 text-lg text-muted max-w-2xl mx-auto">
           Share your requirements with our solutions architects. We evaluate your workflow and respond within 24 hours with an actionable roadmap.
         </p>
 
         {/* Live Call Scheduler CTA */}
-        <div className="mt-8 max-w-xl mx-auto p-4 rounded-2xl bg-[#004157]/40 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-lg">
+        <div className="mt-8 max-w-xl mx-auto p-4 rounded-2xl bg-accent/10 border border-accent/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white">Prefer an instant 30-min live call?</p>
-              <p className="text-xs text-slate-300">Pick an open slot on our Google Meet scheduler.</p>
+              <p className="text-sm font-bold text-ink">Prefer an instant 30-min live call?</p>
+              <p className="text-xs text-muted">Pick an open slot on our Google Meet scheduler.</p>
             </div>
           </div>
           <Link
             href="/schedule"
-            className="px-5 py-2.5 rounded-full text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 transition-all shrink-0 shadow-md shadow-emerald-500/20"
+            className="px-5 py-2.5 rounded-full text-xs font-bold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm "
           >
             Schedule a Call
           </Link>
@@ -356,69 +356,61 @@ export default function ContactPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Column: Direct Contact & Guarantees */}
-          <div className="lg:col-span-5 space-y-8">
+          <div className="order-2 lg:order-1 lg:col-span-5 space-y-8">
             <div className="p-8 rounded-3xl enterprise-card space-y-6">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-[#10b981]" />
+              <h3 className="text-xl font-bold text-ink flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-accent" />
                 AriseStudio Solutions Desk
               </h3>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 Whether you need immediate 24/7 IT support, a full ERP migration, or high-volume e-commerce automation, we are ready to assist.
               </p>
 
               <div className="space-y-4 pt-2 text-sm">
-                <div className="flex items-start gap-3 text-slate-300">
-                  <MapPin className="w-5 h-5 text-[#10b981] shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 text-muted">
+                  <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-white block">Headquarters:</strong>
+                    <strong className="text-ink block">Headquarters:</strong>
                     Dhaka, Bangladesh (Serving clients globally across US, UK, EU & APAC)
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-slate-300">
-                  <Mail className="w-5 h-5 text-[#10b981] shrink-0" />
+                <div className="flex items-center gap-3 text-muted">
+                  <Mail className="w-5 h-5 text-accent shrink-0" />
                   <div>
-                    <strong className="text-white block">Direct Email:</strong>
-                    <a href="mailto:contact@arisestudio.com" className="text-[#38bdf8] hover:underline">
+                    <strong className="text-ink block">Direct Email:</strong>
+                    <a href="mailto:contact@arisestudio.com" className="text-info hover:underline">
                       contact@arisestudio.com
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-slate-300">
-                  <Phone className="w-5 h-5 text-[#10b981] shrink-0" />
-                  <div>
-                    <strong className="text-white block">Direct Line:</strong>
-                    <a href="tel:+8801700000000" className="text-slate-300 hover:text-white">
-                      +880 (17) 0000-0000
-                    </a>
-                  </div>
-                </div>
+
               </div>
             </div>
 
             {/* SLA & Security Trust Badges */}
-            <div className="p-6 rounded-2xl bg-[#09101d] border border-[#004157]/50 space-y-3">
-              <div className="flex items-center gap-3 text-sm text-slate-300">
-                <Clock className="w-4 h-4 text-[#10b981] shrink-0" />
-                <span><strong>Guaranteed Response:</strong> Under 24 hours on business days</span>
+            <div className="p-6 rounded-2xl bg-canvas border border-accent/50 space-y-3">
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <Clock className="w-4 h-4 text-accent shrink-0" />
+                <span><strong>Response target:</strong> Under 24 hours on business days</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-300">
-                <ShieldCheck className="w-4 h-4 text-[#38bdf8] shrink-0" />
-                <span><strong>Strict Confidentiality:</strong> NDA signed upon initial contact</span>
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <ShieldCheck className="w-4 h-4 text-info shrink-0" />
+                <span><strong>Strict Confidentiality:</strong> NDA available before sharing sensitive details</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-[#a7f3d0] shrink-0" />
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
                 <span><strong>Free Architecture Audit:</strong> No commitment or sales pressure</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Suspense wrapped form */}
-          <div className="lg:col-span-7">
+          <div className="order-1 lg:order-2 lg:col-span-7">
             <Suspense fallback={
-              <div className="p-12 rounded-3xl enterprise-card text-center text-slate-400">
-                <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#10b981] mb-2" />
+              <div className="p-12 rounded-3xl enterprise-card text-center text-muted">
+                <Loader2 className="w-6 h-6 animate-spin mx-auto text-accent mb-2" />
                 <span>Loading consultation desk...</span>
               </div>
             }>

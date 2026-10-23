@@ -861,3 +861,45 @@ test('both emails retain a personal greeting, brief polite message and matching 
   assert.match(confirmed.html, /Thank you for booking with AriseStudio/);
   assert.match(cancelled.html, /We’re sorry for the change of plans/);
 });
+
+for (const scenario of [
+  { stored: 'light', systemDark: true, expected: false },
+  { stored: 'dark', systemDark: false, expected: true },
+  { stored: null, systemDark: true, expected: true },
+  { stored: 'invalid', systemDark: false, expected: false },
+  { blocked: true, systemDark: true, expected: true },
+]) test(`first-paint theme respects preference ${JSON.stringify(scenario)}`, () => {
+  const { themeScript, THEME_KEY } = app()('src/lib/theme.ts');
+  const classes = new Set(['font-manrope']);
+  vm.runInNewContext(themeScript, {
+    localStorage: { getItem: key => { assert.equal(key, THEME_KEY); if (scenario.blocked) throw Error('storage blocked'); return scenario.stored; } },
+    matchMedia: () => ({ matches: scenario.systemDark }),
+    document: { documentElement: { classList: { toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name) } } },
+  });
+  assert.equal(classes.has('dark'), scenario.expected); assert.ok(classes.has('font-manrope'));
+});
+
+test('light and dark theme text and primary action pairs retain readable contrast', () => {
+  const css = fs.readFileSync(path.join(root, 'src/app/globals.css'), 'utf8');
+  const luminance = hex => {
+    const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
+    return rgb.reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
+  };
+  const ratio = (a, b) => { const [low, high] = [luminance(a), luminance(b)].sort((a, b) => a - b); return (high + .05) / (low + .05); };
+  for (const selector of [':root', '.dark']) {
+    const block = css.slice(css.indexOf(`${selector} {`)).split('}')[0];
+    const values = Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[a-f0-9]{6})/g)].map(match => [match[1], match[2]]));
+    for (const surface of ['canvas', 'surface', 'surface-muted', 'surface-raised']) for (const text of ['ink', 'muted', 'subtle', 'accent']) {
+      assert.ok(ratio(values[text], values[surface]) >= 4.5, `${selector} ${text} on ${surface}: ${ratio(values[text], values[surface])}`);
+    }
+    for (const fill of ['accent', 'accent-strong']) assert.ok(ratio(values['on-accent'], values[fill]) >= 4.5, `${selector} primary ${fill}`);
+  }
+});
+
+test('page metadata shares the configured origin without credentials and keeps canonical paths distinct', () => {
+  const site = app({}, { SITE_URL: '"https://studio.example.test/some/path"' })('src/lib/site.ts');
+  assert.equal(site.siteOrigin(), 'https://studio.example.test');
+  assert.equal(site.pageMetadata('Contact', 'Talk with us', '/contact').alternates.canonical, '/contact');
+  assert.equal(site.pageMetadata('Services', 'What we build', '/services').openGraph.url, '/services');
+  assert.throws(() => app({}, { SITE_URL: 'https://user:pass@example.test' })('src/lib/site.ts').siteOrigin(), /without credentials/);
+});

@@ -31,7 +31,7 @@ export const servicesData: ServiceItem[] = [
   {
     id: "ecommerce",
     title: "E-Commerce Automation Systems",
-    shortDesc: "Automate inventory sync, multi-store order routing, dynamic courier dispatches, and warehouse logistics.",
+    shortDesc: "Keep orders, stock and deliveries in sync across your stores and sales channels.",
     fullDesc: "We build unified, event-driven commerce backbones that synchronize orders, multi-warehouse stock levels, parcel courier APIs (Pathao, Steadfast, DHL, FedEx), and accounting software without manual intervention.",
     iconName: "ShoppingCart",
     features: [
@@ -51,8 +51,8 @@ export const servicesData: ServiceItem[] = [
   {
     id: "erp-crm",
     title: "Custom ERP & CRM Engineering",
-    shortDesc: "Tailor-made enterprise resource planning and client management systems mapped to your exact workflow.",
-    fullDesc: "Off-the-shelf software forces growing enterprises to twist their workflows around rigid templates and punitive per-user seat licenses. AriseStudio engineers custom, modular ERP and CRM platforms designed around your exact operational hierarchy.",
+    shortDesc: "Bring your sales, customer records and daily operations into software built for your team.",
+    fullDesc: "Your software should reflect the way your team works. We build modular ERP and CRM systems that connect departments, support your sales process and give you clear operational reporting.",
     iconName: "Database",
     features: [
       "End-to-End Sales Pipeline & Lead Scoring Automation",
@@ -71,7 +71,7 @@ export const servicesData: ServiceItem[] = [
   {
     id: "business-automation",
     title: "End-to-End Business Automation & RPA",
-    shortDesc: "Eliminate repetitive manual busywork with deterministic workflow engines, document OCR, and automated triggers.",
+    shortDesc: "Spend less time copying information, checking documents and chasing approvals.",
     fullDesc: "We audit your manual bottlenecks—spreadsheets, email approval chains, and repetitive copying across legacy portals—and engineer autonomous event-driven pipelines that run quietly 24/7.",
     iconName: "Layers",
     features: [
@@ -91,7 +91,7 @@ export const servicesData: ServiceItem[] = [
   {
     id: "it-support",
     title: "24/7 Managed IT Support & DevOps",
-    shortDesc: "Round-the-clock server health monitoring, disaster recovery, cloud cost optimization, and rapid L1–L3 incident response.",
+    shortDesc: "Keep your systems running with monitoring, cloud support, backups and incident response.",
     fullDesc: "Ensure mission-critical systems and corporate workstations never suffer downtime. Our dedicated engineering desk handles zero-downtime deployments, security patching, cloud provisioning, and active surveillance 24/7/365.",
     iconName: "Headphones",
     features: [

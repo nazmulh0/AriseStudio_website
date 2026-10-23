@@ -107,20 +107,20 @@ export default function TechStackIcons() {
       {techIcons.map((tech) => (
         <div
           key={tech.name}
-          className="group relative p-3 sm:p-3.5 rounded-2xl bg-[#09101d] border border-white/[0.08] hover:border-emerald-500/50 hover:bg-[#004157]/30 hover:-translate-y-1 transition-all duration-200 shadow-md flex items-center justify-center"
+          className="group relative p-3 sm:p-3.5 rounded-2xl bg-canvas border border-line hover:border-accent/50 hover:bg-accent/10 hover:-translate-y-1 transition-colors duration-200 shadow-sm flex items-center justify-center"
           title={tech.name}
         >
           <svg
             role="img"
             viewBox="0 0 24 24"
-            className="w-5 h-5 sm:w-6 sm:h-6 fill-slate-400 group-hover:fill-white transition-colors duration-200"
+            className="w-5 h-5 sm:w-6 sm:h-6 fill-muted group-hover:fill-accent transition-colors duration-200"
             aria-label={tech.name}
           >
             <path d={tech.path} />
           </svg>
 
           {/* Clean hover tooltip popup */}
-          <span className="pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-[11px] font-mono text-slate-200 whitespace-nowrap shadow-xl z-20">
+          <span className="pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 px-2.5 py-1 rounded-md bg-surface-muted border border-line text-xs text-ink whitespace-nowrap shadow-sm z-20">
             {tech.name}
           </span>
         </div>
