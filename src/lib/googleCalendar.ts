@@ -35,12 +35,14 @@ async function getGoogleAccessToken(clientId: string, clientSecret: string, refr
 interface MeetingEvent {
   id?: string; status?: string; htmlLink?: string; hangoutLink?: string;
   organizer?: { self?: boolean }; start?: { dateTime?: string }; attendees?: { email?: string }[];
+  extendedProperties?: { private?: { ariseStudioBooking?: string } };
   conferenceData?: { createRequest?: { status?: { statusCode?: string } }; entryPoints?: { entryPointType: string; uri?: string }[] };
 }
 
 export async function createGoogleCalendarEvent(params: CreateMeetingParams): Promise<CalendarEventResult> {
   const clientId = cleanEnvValue(process.env.GOOGLE_CLIENT_ID), secret = cleanEnvValue(process.env.GOOGLE_CLIENT_SECRET), refresh = cleanEnvValue(process.env.GOOGLE_REFRESH_TOKEN);
   const eventId = params.eventId || randomUUID().replace(/-/g, "");
+  const bookingMarker = createHash("sha256").update(JSON.stringify([eventId, params.startIso, params.attendeeEmail.toLowerCase()])).digest("hex");
   let event: MeetingEvent | undefined;
   const result = (status: CalendarEventResult["status"], retryable: boolean, error?: string): CalendarEventResult => ({
     success: status === "ready", status, retryable, error,
@@ -58,19 +60,23 @@ export async function createGoogleCalendarEvent(params: CreateMeetingParams): Pr
       if (response.status === 410) return { id: eventId, status: "cancelled" };
       const data = await response.json();
       if (!response.ok) throw new GoogleProviderError("Google Calendar event lookup failed.", response.status === 429 || response.status >= 500);
-      if (data.id !== eventId || (data.status !== "cancelled" && (data.organizer?.self === false || Date.parse(data.start?.dateTime || "") !== Date.parse(params.startIso) || !data.attendees?.some((attendee: { email?: string }) => attendee.email?.toLowerCase() === params.attendeeEmail.toLowerCase())))) throw new GoogleProviderError("Calendar event identity does not match this reservation.", false);
+      const marker = data.extendedProperties?.private?.ariseStudioBooking;
+      // Existing invited events keep their original attendee identity check.
+      const matchesBooking = marker ? marker === bookingMarker : data.attendees?.some((attendee: { email?: string }) => attendee.email?.toLowerCase() === params.attendeeEmail.toLowerCase());
+      if (data.id !== eventId || (data.status !== "cancelled" && (data.organizer?.self === false || Date.parse(data.start?.dateTime || "") !== Date.parse(params.startIso) || !matchesBooking))) throw new GoogleProviderError("Calendar event identity does not match this reservation.", false);
       return data;
     };
     if (params.attempt) event = await read();
     if (!event) {
-      const response = await fetch(`${base}?conferenceDataVersion=1&sendUpdates=all`, {
+      const response = await fetch(`${base}?conferenceDataVersion=1&sendUpdates=none`, {
         ...options, method: "POST", body: JSON.stringify({
           id: eventId, summary: params.title, description: params.description,
           start: { dateTime: params.startIso, timeZone: "UTC" },
           end: { dateTime: new Date(Date.parse(params.startIso) + 1800000).toISOString(), timeZone: "UTC" },
-          attendees: [{ email: params.attendeeEmail, displayName: params.attendeeName }],
+          // SMTP is the only customer notification channel, including organizer cancellations.
+          extendedProperties: { private: { ariseStudioBooking: bookingMarker } },
           conferenceData: { createRequest: { requestId: randomUUID(), conferenceSolutionKey: { type: "hangoutsMeet" } } },
-          reminders: { useDefault: false, overrides: [{ method: "email", minutes: 1440 }, { method: "popup", minutes: 15 }] },
+          reminders: { useDefault: false, overrides: [{ method: "popup", minutes: 15 }] },
         }),
       });
       if (response.status === 409) event = await read();
@@ -86,7 +92,7 @@ export async function createGoogleCalendarEvent(params: CreateMeetingParams): Pr
     if (event?.status === "cancelled") return result("cancelled", false);
     // A failed conference belongs to the same event; never insert another appointment.
     if (params.attempt && event?.conferenceData?.createRequest?.status?.statusCode === "failure") {
-      const response = await fetch(`${base}/${encodeURIComponent(eventId)}?conferenceDataVersion=1&sendUpdates=all`, {
+      const response = await fetch(`${base}/${encodeURIComponent(eventId)}?conferenceDataVersion=1&sendUpdates=none`, {
         ...options, method: "PATCH", body: JSON.stringify({ conferenceData: { createRequest: { requestId: randomUUID(), conferenceSolutionKey: { type: "hangoutsMeet" } } } }),
       });
       if (!response.ok) throw new GoogleProviderError("Google Meet generation could not be restarted.", response.status === 429 || response.status >= 500);
@@ -109,6 +115,7 @@ export interface CalendarEvent {
   id: string;
   status: string;
   summary?: string;
+  description?: string;
   organizer?: { self?: boolean; email?: string };
   start?: { dateTime?: string };
   end?: { dateTime?: string };

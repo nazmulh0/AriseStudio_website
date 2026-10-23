@@ -24,6 +24,24 @@ function matchesLegacy(event: CalendarEvent, booking: Booking): boolean {
     event.attendees?.some(attendee => attendee.email?.toLowerCase() === booking.email.trim().toLowerCase()));
 }
 
+// The Calendar cancellation dialog message is not an Events API field.
+function cancellationNote(description?: string): string | undefined {
+  if (typeof description !== "string") return;
+  const entities: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+  const text = description.replace(/<br\s*\/?>|<\/(?:div|p|li)>/gi, "\n").replace(/<[^>]*>/g, "")
+    .replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi, (match, entity: string) => {
+      if (!entity.startsWith("#")) return entities[entity.toLowerCase()];
+      const code = entity[1].toLowerCase() === "x" ? parseInt(entity.slice(2), 16) : Number(entity.slice(1));
+      return code >= 0 && code <= 0x10ffff ? String.fromCodePoint(code) : match;
+    }).replace(/\r\n?/g, "\n");
+  const markers = Array.from(text.matchAll(/^\s*Cancellation note:[ \t]*/gim));
+  const marker = markers[markers.length - 1];
+  // Generated Host details follow customer input; only a section appended after them is authoritative.
+  const hosts = Array.from(text.matchAll(/^Host:/gim));
+  if (!marker || marker.index < (hosts[hosts.length - 1]?.index ?? -1)) return;
+  return text.slice(marker.index + marker[0].length).trim() || undefined;
+}
+
 async function reconcile(): Promise<void> {
   const database = await getDatabase();
   const rows = await database.execute("SELECT * FROM bookings");
@@ -73,7 +91,7 @@ async function reconcile(): Promise<void> {
         });
         await transaction.execute({
           sql: "UPDATE booking_calendar_events SET cancelledAt = ?, snapshot = ? WHERE eventId = ? AND cancelledAt IS NULL",
-          args: [new Date().toISOString(), booking.rows.length ? JSON.stringify(booking.rows[0]) : String(current.rows[0].snapshot), link.eventId],
+          args: [new Date().toISOString(), JSON.stringify({ ...(booking.rows[0] || snapshot), cancellationNote: cancellationNote(event.description) }), link.eventId],
         });
         await transaction.execute({ sql: "INSERT INTO booking_cancellation_emails (eventId) VALUES (?) ON CONFLICT(eventId) DO NOTHING", args: [link.eventId] });
         if (booking.rows.length) await transaction.execute({ sql: "DELETE FROM bookings WHERE id = ?", args: [booking.rows[0].id] });

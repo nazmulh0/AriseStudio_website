@@ -37,7 +37,11 @@ export function formatBookingTime(startIso: string, timeZone: string, includeZon
 }
 
 export function formatBookingRange(startIso: string, timeZone: string): string {
-  return `${formatBookingTime(startIso, timeZone)} – ${formatBookingTime(new Date(Date.parse(startIso) + 30 * 60000).toISOString(), timeZone)}`;
+  const endIso = new Date(Date.parse(startIso) + 30 * 60000).toISOString();
+  const formatter = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short" });
+  const zone = (iso: string) => formatter.formatToParts(new Date(iso)).find(part => part.type === "timeZoneName")?.value;
+  const sameZone = zone(startIso) === zone(endIso);
+  return `${formatBookingTime(startIso, timeZone, !sameZone)} – ${formatBookingTime(endIso, timeZone)}`;
 }
 
 export function googleCalendarUrl(startIso: string, title: string, details: string, location: string): string {

@@ -192,7 +192,23 @@ browser's recovery token. Visitors who disable browser storage should save their
 confirmation details. Already-existing historical bookings are not backfilled or
 recreated automatically.
 
-Google insert calls use `sendUpdates=all`. Pending conferences are read at most twice
+Google insert and conference-retry calls use `sendUpdates=none`. New events are
+organizer-only: the customer is not added as a Calendar attendee, so booking and
+organizer cancellation notices go through custom SMTP rather than Google guest
+invitations. Meet creation stays enabled. Customers can save their own copy using
+“Add to Google Calendar” in the confirmation; that copy does not automatically
+sync later cancellations. Google Meet admission follows the organizer account’s
+settings. A private hashed booking marker validates recovery of events without
+attendees; older invited events retain the original attendee identity checks.
+Existing invitations are not recalled or rewritten by this change; Google may
+still notify their guests when edited or deleted directly in Calendar.
+
+Confirmation and cancellation emails share one responsive, table-based layout,
+with inline styles, host details from env, matching status treatment, and direct
+Join / Rebook actions. Images use the configured site origin rather than an
+upstream GitHub URL. Neither path adds a second ICS invitation email.
+
+Pending conferences are read at most twice
 within the initial bounded request. Later attempts look up the stored event ID before
 inserting; an insert conflict also reads that same event. A failed conference is
 restarted on its existing event. Deleted events and mismatched event identities are
@@ -223,3 +239,27 @@ has an explicit request deadline. The new additive tables are `booking_delivery`
 `submission_limits`, and `contact_notification_delivery`; existing booking history and
 cancellation mappings are retained. No new dependency, cron, or external queue service
 is required.
+
+
+### Add a cancellation note from Google Calendar
+
+Before deleting an event, append a final section to its description, after the
+existing Host details, then **save** the event before deleting it:
+
+```text
+Cancellation note:
+An urgent commitment has come up. Please choose another available time.
+```
+
+The cancellation sync saves that section in the archived snapshot and the custom
+SMTP email shows it as “A note from your host” in HTML and plain text. Line breaks
+are preserved and HTML is escaped. Without a note, no empty note panel is shown.
+The original customer's booking notes and attendee response comments are never
+used as a cancellation reason. Do not put additional session details after the
+cancellation note section; the rest of the description belongs to that note.
+
+Google Calendar’s delete-dialog message is not available as a cancellation-note
+field in the Events API; the latest inspected cancelled event did not return it.
+That dialog message cannot be copied automatically by this integration. An event
+response containing only its ID still cancels/releases its linked booking, but
+cannot supply a note. Already-sent cancellation emails are not replayed.

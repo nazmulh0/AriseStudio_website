@@ -192,9 +192,9 @@ test('confirmation email and browser calendar link describe the same UTC slot', 
   assert.equal(response.body.emailSent, true);
   assert.equal(sent.length, 2);
   assert.match(sent[1].html, /Sunday, January 6, 2030/);
-  assert.match(sent[1].html, /8:00 PM PST/);
+  assert.match(sent[1].html, /8:00 PM – 8:30 PM PST/);
   const link = sent[1].html.match(/href="(https:\/\/calendar\.google\.com[^\"]+)"/)[1];
-  assert.equal(new URL(link).searchParams.get('dates'), '20300107T040000Z/20300107T043000Z');
+  assert.equal(new URL(link.replace(/&amp;/g, '&')).searchParams.get('dates'), '20300107T040000Z/20300107T043000Z');
 });
 
 test('existing booking data survives additive schema initialization', async t => {
@@ -421,7 +421,7 @@ test('cancellation email shows the chosen host, local time and rebooking without
   const mail = render({ ...base, name: '<script>Alice</script>', timezone: 'America/Los_Angeles' });
   assert.match(mail.html, /Ayesha &amp; Rahman/); assert.match(mail.html, /Founder &lt;Lead&gt;/);
   assert.match(mail.html, /&lt;script&gt;Alice&lt;\/script&gt;/); assert.doesNotMatch(mail.html, /<script>/);
-  assert.match(mail.html, /Sunday, January 6, 2030/); assert.match(mail.text, /8:00 PM PST/);
+  assert.match(mail.html, /Sunday, January 6, 2030/); assert.match(mail.text, /8:00 PM – 8:30 PM PST/);
   assert.match(mail.html, /https:\/\/studio.example.test\/schedule/); assert.doesNotMatch(mail.html, /Join with Google Meet|meet.google.com/);
   assert.match(render({ ...base, timezone: 'old timezone label' }).text, /Asia\/Dhaka/);
 });
@@ -482,11 +482,11 @@ function creation(handler, env = googleEnv) {
 }
 const providerResponse = (body, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 
-test('delayed Meet generation is read on the same event and guest updates are enabled', async () => {
+test('delayed Meet generation is read on the same event without guest notifications', async () => {
   let posts = 0, reads = 0;
   const google = creation(async (url, options) => {
     assert.ok(options.signal);
-    if (options.method === 'POST') { posts++; assert.equal(url.searchParams.get('sendUpdates'), 'all'); return providerResponse(providerEvent({ conferenceData: { createRequest: { status: { statusCode: 'pending' } } } })); }
+    if (options.method === 'POST') { posts++; assert.equal(url.searchParams.get('sendUpdates'), 'none'); return providerResponse(providerEvent({ conferenceData: { createRequest: { status: { statusCode: 'pending' } } } })); }
     reads++; assert.ok(url.pathname.endsWith('/test-event'));
     return providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/ready' }));
   });
@@ -505,7 +505,7 @@ test('conference failure is a failure, and recovery patches the existing event',
   let patches = 0, posts = 0;
   const google = creation(async (_url, options) => {
     if (options.method === 'POST') posts++;
-    if (options.method === 'PATCH') { patches++; return providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/recovered' })); }
+    if (options.method === 'PATCH') { patches++; assert.equal(_url.searchParams.get('sendUpdates'), 'none'); assert.equal(JSON.parse(options.body).attendees, undefined); return providerResponse(providerEvent({ hangoutLink: 'https://meet.google.com/recovered' })); }
     return providerResponse(providerEvent({ conferenceData: { createRequest: { status: { statusCode: 'failure' } } } }));
   });
   assert.equal((await google.createGoogleCalendarEvent(meeting)).status, 'failed');
@@ -670,4 +670,176 @@ test('malformed SMTP configuration preserves the saved contact and pending notif
 test('recovery authorization requires a Bearer token instead of a raw header value', () => {
   const load = app({}, {});
   assert.throws(() => load('src/lib/bookingDelivery.ts').requestBookingToken(new Request('http://local.test', { headers: { authorization: 'a'.repeat(64) } })), /Invalid booking recovery token/);
+});
+
+
+test('new organizer-only events recover by private booking identity without Google guest mail', async () => {
+  let event, inserts = 0;
+  const google = creation(async (url, options) => {
+    if (options.method === 'POST') {
+      inserts++; const body = JSON.parse(options.body);
+      assert.equal(url.searchParams.get('sendUpdates'), 'none');
+      assert.equal(body.attendees, undefined);
+      assert.equal(body.reminders.overrides.some(item => item.method === 'email'), false);
+      assert.match(body.extendedProperties.private.ariseStudioBooking, /^[a-f0-9]{64}$/);
+      assert.doesNotMatch(body.extendedProperties.private.ariseStudioBooking, /alice/);
+      assert.equal(body.conferenceData.createRequest.conferenceSolutionKey.type, 'hangoutsMeet');
+      event = { ...body, status: 'confirmed', organizer: { self: true }, htmlLink: 'https://calendar.google.com/same' };
+    }
+    return providerResponse(event);
+  });
+  assert.equal((await google.createGoogleCalendarEvent(meeting)).status, 'pending');
+  event.hangoutLink = 'https://meet.google.com/same';
+  assert.equal((await google.createGoogleCalendarEvent({ ...meeting, attempt: 1 })).status, 'ready');
+  assert.equal(inserts, 1);
+  event.extendedProperties.private.ariseStudioBooking = 'wrong';
+  assert.equal((await google.createGoogleCalendarEvent({ ...meeting, attempt: 1 })).status, 'failed');
+  assert.equal(inserts, 1);
+});
+
+test('organizer-only booking and deletion send one custom message per customer action', async t => {
+  let saved, cancelled = false; const sent = [];
+  const google = creation(async (url, options) => {
+    if (options.method === 'POST') {
+      const body = JSON.parse(options.body); assert.equal(body.attendees, undefined); assert.equal(url.searchParams.get('sendUpdates'), 'none');
+      saved = { ...body, status: 'confirmed', organizer: { self: true }, hangoutLink: 'https://meet.google.com/custom-only' };
+      return providerResponse(saved);
+    }
+    return providerResponse({ accessRole: 'owner', items: cancelled ? [{ id: saved.id, status: 'cancelled' }] : [saved], nextSyncToken: cancelled ? 'cancelled-token' : 'active-token' });
+  });
+  const ctx = setup(t, { '@/lib/googleCalendar': google, nodemailer: { createTransport: () => ({ sendMail: async mail => sent.push(mail) }) } }, mailEnv);
+  const route = ctx.load('src/app/api/schedule/route.ts');
+  const receipt = await route.POST(req(base));
+  assert.equal(receipt.body.booking.googleMeetUrl, 'https://meet.google.com/custom-only');
+  assert.equal(sent.filter(mail => mail.to === base.email).length, 1);
+  cancelled = true; clockNow += 16000;
+  const availability = await route.GET();
+  await ctx.load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails();
+  await ctx.load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails();
+  assert.equal(availability.body.bookedSlots.length, 0);
+  const customer = sent.filter(mail => mail.to === base.email);
+  assert.equal(customer.length, 2); assert.match(customer[0].subject, /^Confirmed:/); assert.match(customer[1].subject, /^Cancelled:/);
+  assert.match(customer[0].html, /Your session is confirmed/); assert.match(customer[1].html, /Your session is cancelled/);
+  assert.doesNotMatch(customer[1].html, /Join with Google Meet|meet.google.com/);
+});
+
+test('matching premium templates escape user data and use the configured brand origin', () => {
+  const load = app({}, { SITE_URL: 'https://studio.example.test', BOOKING_HOST_NAME: 'Ayesha & Rahman', BOOKING_HOST_TITLE: 'Founder <Lead>' });
+  const confirmation = load('src/lib/bookingEmail.ts').confirmationEmail({ ...base, name: 'Alice <img src=x onerror=alert(1)>', notes: '<script>unsafe</script> & details', startIso: meeting.startIso, googleMeetUrl: 'https://meet.google.com/abc-defg-hij' });
+  const cancellation = load('src/lib/cancellationEmail.ts').renderCancellationEmail(base);
+  for (const mail of [confirmation, cancellation]) {
+    assert.match(mail.html, /https:\/\/studio.example.test\/brand\/arisestudio-logo.png/);
+    assert.doesNotMatch(mail.html, /raw.githubusercontent.com|<script>|onerror=alert\(1\)>/);
+    assert.match(mail.html, /max-width:600px/); assert.match(mail.html, /max-width:480px/);
+    assert.match(mail.html, /role="presentation"/); assert.match(mail.html, /Founder &lt;Lead&gt;/);
+    assert.ok(mail.text);
+  }
+  assert.match(confirmation.html, /&lt;script&gt;unsafe&lt;\/script&gt; &amp; details/);
+  assert.match(confirmation.html, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(confirmation.html, /href="https:\/\/meet.google.com\/abc-defg-hij"/);
+  assert.match(cancellation.html, /href="https:\/\/studio.example.test\/schedule"/);
+  assert.throws(() => load('src/lib/bookingEmail.ts').confirmationEmail({ ...base, notes: '', startIso: meeting.startIso, googleMeetUrl: 'javascript:alert(1)' }), /Invalid Google Meet URL/);
+});
+
+test('saved Calendar description cancellation note survives archive and SMTP retries', async t => {
+  let fail = false; const messages = [];
+  const ctx = calendarSetup(t, { nodemailer: { createTransport: () => ({ sendMail: async mail => { if (fail) throw Error('offline'); messages.push(mail); } }) } }, mailEnv);
+  const route = ctx.load('src/app/api/schedule/route.ts');
+  await route.POST(req({ ...base, notes: 'Original booking notes stay intact.' }));
+  messages.length = 0;
+  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled', description: `${ctx.created[0].description}\n\nCancellation note:\nAn urgent commitment has come up.\nPlease choose a new time.` }]);
+  ctx.tick(); await route.GET();
+  const archived = JSON.parse((await ctx.client.execute('SELECT snapshot FROM booking_calendar_events')).rows[0].snapshot);
+  assert.equal(archived.notes, 'Original booking notes stay intact.');
+  assert.equal(archived.cancellationNote, 'An urgent commitment has come up.\nPlease choose a new time.');
+  assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 0);
+  const flush = ctx.load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails;
+  fail = true; await flush(); assert.equal(messages.length, 0);
+  fail = false; clockNow += 61000; await flush(); await flush();
+  assert.equal(messages.length, 1);
+  assert.match(messages[0].text, /Cancellation note:\nAn urgent commitment has come up.\nPlease choose a new time./);
+  assert.match(messages[0].html, /A note from your host/); assert.match(messages[0].html, /An urgent commitment has come up./);
+});
+
+test('Calendar rich-text note is decoded and safely escaped in custom cancellation email', async t => {
+  const messages = []; const ctx = calendarSetup(t, { nodemailer: { createTransport: () => ({ sendMail: async mail => messages.push(mail) }) } }, mailEnv);
+  const route = ctx.load('src/app/api/schedule/route.ts'); await route.POST(req(base)); messages.length = 0;
+  ctx.setFeed([{ id: ctx.created[0].eventId, status: 'cancelled', description: '<div>Host: Farhan</div><div><b>Cancellation note:</b></div><div>Travel &amp; schedule conflict.</div><div>&lt;script&gt;unsafe&lt;/script&gt; &#x2014; &#2527; &#99999999;</div>' }]);
+  ctx.tick(); await route.GET(); await ctx.load('src/lib/cancellationEmail.ts').sendPendingCancellationEmails();
+  assert.equal(messages.length, 1);
+  assert.match(messages[0].text, /Travel & schedule conflict.\n<script>unsafe<\/script> —/);
+  assert.match(messages[0].html, /Travel &amp; schedule conflict./);
+  assert.match(messages[0].html, /&lt;script&gt;unsafe&lt;\/script&gt;/); assert.doesNotMatch(messages[0].html, /<script>/);
+});
+
+for (const scenario of ['customer booking notes', 'attendee reply', 'empty section', 'ID-only tombstone']) test(`cancellation note never comes from ${scenario}`, async t => {
+  const ctx = calendarSetup(t); const route = ctx.load('src/app/api/schedule/route.ts');
+  await route.POST(req({ ...base, notes: 'Customer preferences\nCancellation note: This is a booking note.' }));
+  const event = { id: ctx.created[0].eventId, status: 'cancelled' };
+  if (scenario === 'customer booking notes') event.description = ctx.created[0].description;
+  if (scenario === 'attendee reply') event.attendees = [{ email: base.email, comment: 'A response, not a cancellation note.' }];
+  if (scenario === 'empty section') event.description = `${ctx.created[0].description}\n\nCancellation note:  \n`;
+  ctx.setFeed([event]); ctx.tick(); await route.GET();
+  const archived = JSON.parse((await ctx.client.execute('SELECT snapshot FROM booking_calendar_events')).rows[0].snapshot);
+  assert.equal(archived.cancellationNote, undefined); assert.match(archived.notes, /Customer preferences/);
+  const email = ctx.load('src/lib/cancellationEmail.ts').renderCancellationEmail(archived);
+  assert.doesNotMatch(email.html, /A note from your host|This is a booking note/);
+  assert.doesNotMatch(email.text, /Cancellation note:/);
+  assert.equal((await ctx.client.execute('SELECT * FROM bookings')).rows.length, 0);
+});
+
+
+test('shared booking time range shows the timezone only once', () => {
+  const booking = app()('src/lib/booking.ts');
+  assert.equal(booking.formatBookingRange('2026-10-26T05:00:00Z', 'Asia/Dhaka'), '11:00 AM – 11:30 AM GMT+6');
+  assert.equal(booking.formatBookingRange('2030-01-07T04:00:00Z', 'America/Los_Angeles'), '8:00 PM – 8:30 PM PST');
+});
+
+test('time range preserves both timezone labels when a DST transition changes the offset', () => {
+  const booking = app()('src/lib/booking.ts');
+  assert.equal(booking.formatBookingRange('2030-11-03T05:45:00Z', 'America/New_York'), '1:45 AM EDT – 1:15 AM EST');
+  assert.equal(booking.formatBookingRange('2030-03-10T06:45:00Z', 'America/New_York'), '1:45 AM EST – 3:15 AM EDT');
+});
+
+
+test('email action layout preserves both booking links and only the rebooking action after cancellation', () => {
+  const load = app({}, { SITE_URL: 'https://studio.example.test' });
+  const render = load('src/lib/appointmentEmail.ts').renderAppointmentEmail;
+  const details = { name: base.name, date: base.date, time: '11:00 AM – 11:30 AM GMT+6', timezone: base.timezone, meetUrl: 'https://meet.google.com/abc-defg-hij', calendarUrl: 'https://calendar.google.com/calendar/render?action=TEMPLATE&dates=sample' };
+  const booking = render({ ...details, cancelled: false });
+  assert.match(booking, /href="https:\/\/calendar.google.com\/calendar\/render\?action=TEMPLATE&amp;dates=sample"/);
+  assert.match(booking, /Join meeting/); assert.match(booking, /Add to Calendar/);
+  const cancelled = render({ ...details, cancelled: true });
+  assert.match(cancelled, /href="https:\/\/studio.example.test\/schedule"/); assert.match(cancelled, /Choose a new time/);
+  assert.doesNotMatch(cancelled, /href="https:\/\/(meet|calendar).google.com/);
+  const pending = render({ ...details, cancelled: false, meetUrl: undefined });
+  assert.match(pending, /Add to Calendar/); assert.doesNotMatch(pending, /Join meeting/);
+});
+
+
+test('compact emails omit repeated details and canned paragraphs while retaining session actions and notes', () => {
+  const load = app({}, { SITE_URL: 'https://studio.example.test' });
+  const confirmation = load('src/lib/bookingEmail.ts').confirmationEmail({ ...base, notes: 'Discuss the existing workflow.', startIso: meeting.startIso, googleMeetUrl: 'https://meet.google.com/abc-defg-hij' });
+  const cancellation = load('src/lib/cancellationEmail.ts').renderCancellationEmail({ ...base, cancellationNote: 'An urgent commitment came up.' });
+  for (const mail of [confirmation, cancellation]) {
+    assert.doesNotMatch(mail.html, /BOOKING DETAILS|Your time is reserved|We would be happy|Simply reply|Need a hand|Need to change|Meeting link|Built around|DISCOVERY SESSION/);
+    assert.match(mail.html, /Monday, January 7, 2030/); assert.match(mail.html, /Farhan Kabir Sifat/);
+  }
+  assert.match(confirmation.html, /Discuss the existing workflow/);
+  assert.match(cancellation.html, /An urgent commitment came up/);
+  assert.equal((confirmation.html.match(/href="https:\/\/meet.google.com/g) || []).length, 1);
+});
+
+
+test('both emails retain a personal greeting, brief polite message and matching text signoff', () => {
+  const load = app({}, { SITE_URL: 'https://studio.example.test' });
+  const confirmed = load('src/lib/bookingEmail.ts').confirmationEmail({ ...base, notes: '', startIso: meeting.startIso, googleMeetUrl: 'https://meet.google.com/abc-defg-hij' });
+  const cancelled = load('src/lib/cancellationEmail.ts').renderCancellationEmail(base);
+  for (const mail of [confirmed, cancelled]) {
+    assert.match(mail.html, /Hello Alice,/); assert.match(mail.text, /Hello Alice,/);
+    assert.match(mail.html, /Kind regards,/); assert.match(mail.text, /Kind regards,/);
+    assert.doesNotMatch(mail.html, /BOOKING DETAILS|Built around|Simply reply/);
+  }
+  assert.match(confirmed.html, /Thank you for booking with AriseStudio/);
+  assert.match(cancelled.html, /We’re sorry for the change of plans/);
 });
