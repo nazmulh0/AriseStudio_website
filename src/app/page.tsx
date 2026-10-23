@@ -23,7 +23,7 @@ const icons = [ShoppingCart, Database, Workflow, Headphones];
 export default function HomePage() {
   return (
     <div className="bg-canvas">
-      <section className="mx-auto max-w-7xl px-5 pb-16 pt-32 sm:px-8 lg:pb-24 lg:pt-40">
+      <section className="studio-hero mx-auto max-w-7xl px-5 pb-16 pt-32 sm:px-8 lg:pb-24 lg:pt-40">
         <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_1fr] lg:gap-16">
           <div>
             <p className="mb-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[.18em] text-accent">
@@ -43,14 +43,14 @@ export default function HomePage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/schedule"
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
+                className="nav-call inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
               >
                 Book a discovery call{" "}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href="/services"
-                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-line bg-surface px-6 text-sm font-semibold text-ink hover:bg-surface-muted"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-line bg-surface px-6 text-sm font-semibold text-ink hover:bg-surface-muted"
               >
                 Explore our services
               </Link>
@@ -60,7 +60,7 @@ export default function HomePage() {
             </p>
           </div>
           <figure
-            className="relative rounded-[28px] border border-line bg-surface p-6 shadow-sm sm:p-8"
+            className="frosted-panel relative rounded-[28px] p-6 sm:p-8"
             aria-label="Illustrative operations workflow: orders connect to automation, inventory and customer updates"
           >
             <div className="mb-8 flex items-center justify-between border-b border-line pb-5">
@@ -166,7 +166,7 @@ export default function HomePage() {
               <Link
                 key={service.id}
                 href={`/services#${service.id}`}
-                className="group rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-accent/50 sm:p-8"
+                className="enterprise-card group rounded-2xl p-6 transition-colors hover:border-accent/50 sm:p-8"
               >
                 <div className="mb-6 flex items-center justify-between">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">

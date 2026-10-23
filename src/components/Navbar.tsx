@@ -50,11 +50,11 @@ export default function Navbar() {
   const expertiseTrigger = useRef<HTMLButtonElement>(null);
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const navClass = (href: string) =>
-    `inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-semibold transition-colors ${pathname === href ? "bg-surface-muted text-accent" : "text-muted hover:bg-surface-muted hover:text-ink"}`;
+    `inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors ${pathname === href ? "bg-accent/10 text-accent" : "text-muted hover:bg-surface-muted/80 hover:text-ink"}`;
 
   return (
     <header
-      className="reflective-header fixed inset-x-0 top-0 z-50"
+      className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-5"
       onKeyDown={(event) => {
         if (event.key === "Escape" && mobileOpen) {
           setMobileOpen(false);
@@ -62,7 +62,7 @@ export default function Navbar() {
         }
       }}
     >
-      <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-3 px-5 sm:px-8">
+      <div className="reflective-header mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 rounded-full py-3 pl-5 pr-3 sm:pl-7">
         <Link
           href="/"
           onClick={() => setMobileOpen(false)}
@@ -115,21 +115,21 @@ export default function Navbar() {
                     className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-2"
                     id="expertise-links"
                   >
-                    <div className="rounded-2xl border border-line bg-surface p-2 shadow-lg">
+                    <div className="frosted-popover rounded-3xl p-2">
                       <Link
                         href="/services"
                         onClick={() => setExpertiseOpen(false)}
-                        className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-bold text-accent hover:bg-surface-muted"
+                        className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-bold text-ink hover:bg-surface-muted/60"
                       >
                         All services{" "}
-                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                        <ArrowRight className="h-4 w-4 text-accent" aria-hidden="true" />
                       </Link>
                       {services.map((service) => (
                         <Link
                           key={service.href}
                           href={service.href}
                           onClick={() => setExpertiseOpen(false)}
-                          className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm text-muted hover:bg-surface-muted hover:text-ink"
+                          className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm text-ink hover:bg-surface-muted/60"
                         >
                           <service.icon
                             className="h-4 w-4 text-accent"
@@ -158,7 +158,7 @@ export default function Navbar() {
           <ThemeToggle />
           <Link
             href="/schedule"
-            className="hidden sm:inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[13px] font-semibold text-on-accent hover:bg-accent-strong"
+            className="nav-call hidden sm:inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 text-[13px] font-semibold text-on-accent transition-colors hover:bg-accent-strong"
           >
             Book a call{" "}
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -170,7 +170,7 @@ export default function Navbar() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMobileOpen((open) => !open)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line text-ink hover:bg-surface-muted xl:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line/70 text-ink transition-colors hover:bg-surface-muted/80 xl:hidden"
           >
             {mobileOpen ? (
               <X className="h-5 w-5" aria-hidden="true" />
@@ -184,7 +184,7 @@ export default function Navbar() {
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="max-h-[calc(100dvh-76px)] overflow-y-auto border-t border-line bg-surface px-5 py-4 xl:hidden"
+          className="frosted-popover mx-auto mt-3 max-h-[calc(100dvh-120px)] max-w-7xl overflow-y-auto rounded-[28px] p-3 xl:hidden"
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               setMobileOpen(false);
@@ -198,7 +198,7 @@ export default function Navbar() {
               href={link.href}
               aria-current={pathname === link.href ? "page" : undefined}
               onClick={() => setMobileOpen(false)}
-              className={`block rounded-xl px-3 py-3 text-sm font-semibold ${pathname === link.href ? "bg-surface-muted text-accent" : "text-muted hover:bg-surface-muted"}`}
+              className={`block rounded-xl px-3 py-3 text-sm font-semibold ${pathname === link.href ? "bg-surface-muted text-accent" : "text-ink hover:bg-surface-muted/60"}`}
             >
               {link.name}
             </Link>
@@ -206,7 +206,7 @@ export default function Navbar() {
           <Link
             href="/schedule"
             onClick={() => setMobileOpen(false)}
-            className="mt-3 flex min-h-12 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-on-accent"
+            className="nav-call mt-3 flex min-h-12 items-center justify-center rounded-full bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-strong"
           >
             Book a discovery call
           </Link>

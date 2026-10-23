@@ -277,12 +277,13 @@ Existing Calendar events are not rewritten by deploying this change.
 
 ## Website themes and design checks
 
-The header colour-theme button switches between warm ivory/forest green and dark
-evergreen/mint on every route. The first visit follows the operating-system
-preference; an explicit choice is stored as `arisestudio-theme` in localStorage.
-A small script in the document head applies it before the body paints. The switch
-still works if browser storage is blocked. No theme cookie or server lookup is
-required.
+The header appearance picker offers Device theme (default), Light and Dark on
+every route. Device theme follows the operating-system preference before the
+first paint and updates immediately when the device switches modes. An explicit
+Light or Dark choice is stored as `arisestudio-theme` in localStorage; selecting
+Device theme removes that override. Changes sync between tabs. When storage is
+blocked, the picker still works for the current page. No theme cookie or server
+lookup is required.
 
 Website colours use semantic roles in `src/app/globals.css` (`canvas`, `surface`,
 `ink`, `muted`, `accent`, `on-accent`, and `line`). Both palettes must maintain the

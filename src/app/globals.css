@@ -17,6 +17,9 @@
   --info: #0f766e;
   --danger: #b42332;
   --warning: #87500b;
+  --glass-edge: rgb(255 255 255 / 85%);
+  --glass-sheen: rgb(255 255 255 / 45%);
+  --glass-shadow: rgb(16 58 36 / 9%);
 }
 .dark {
   color-scheme: dark;
@@ -34,6 +37,9 @@
   --info: #7cdbc8;
   --danger: #fda4af;
   --warning: #f8d182;
+  --glass-edge: rgb(221 255 235 / 18%);
+  --glass-sheen: rgb(221 255 235 / 6%);
+  --glass-shadow: rgb(0 10 5 / 24%);
 }
 @theme inline {
   --color-canvas: var(--canvas);
@@ -52,7 +58,7 @@
   --color-warning: var(--warning);
   --font-sans: var(--font-manrope), Arial, Helvetica, sans-serif;
 }
-html { scroll-padding-top: 88px; }
+html { scroll-padding-top: 112px; }
 body { background: var(--canvas); color: var(--ink); font-family: var(--font-sans); }
 ::selection { background: var(--accent); color: var(--on-accent); }
 :where(a, button, input, select, textarea, summary):focus-visible {
@@ -62,12 +68,41 @@ body { background: var(--canvas); color: var(--ink); font-family: var(--font-san
 :where(button, a, input, select, textarea) { -webkit-tap-highlight-color: transparent; }
 button:not(:disabled), summary { cursor: pointer; }
 a, button, input, select, textarea { touch-action: manipulation; }
-.reflective-header { background: var(--surface); border-bottom: 1px solid var(--line); }
-.glass, .enterprise-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: 0 4px 20px -12px rgb(8 40 24 / 12%);
+.reflective-header { position: relative; z-index: 1; }
+/* Keep the navbar's blur off the dropdown's ancestors so its frost can sample the page. */
+.reflective-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
 }
+.reflective-header::before, .frosted-popover {
+  background: var(--surface);
+  border: 1px solid var(--glass-edge);
+  box-shadow: inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 color-mix(in srgb, var(--ink) 3%, transparent), 0 12px 36px -12px var(--glass-shadow);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .reflective-header::before {
+    background: linear-gradient(115deg, var(--glass-sheen), transparent 38%, color-mix(in srgb, var(--glass-sheen) 35%, transparent)), color-mix(in srgb, var(--surface) 55%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
+    backdrop-filter: blur(12px) saturate(135%);
+  }
+  .frosted-popover {
+    background: linear-gradient(115deg, var(--glass-sheen), transparent 38%, color-mix(in srgb, var(--glass-sheen) 35%, transparent)), color-mix(in srgb, var(--surface) 68%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    backdrop-filter: blur(16px) saturate(145%);
+  }
+}
+.nav-call { box-shadow: inset 0 1px 0 rgb(255 255 255 / 23%), 0 3px 10px -6px var(--glass-shadow); }
+.glass, .enterprise-card, .frosted-panel {
+  background: var(--surface);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--glass-sheen) 45%, transparent), transparent 48%), color-mix(in srgb, var(--surface) 96%, var(--canvas));
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 var(--glass-edge), 0 8px 30px -20px var(--glass-shadow);
+}
+.studio-hero { background: radial-gradient(ellipse at 85% 32%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 54%); }
 .enterprise-card-active, .enterprise-pill { background: var(--surface-muted); border: 1px solid var(--line); color: var(--accent); }
 .gradient-text-teal-emerald, .gradient-text-white-emerald { color: var(--accent); }
 .brand-logo-dark { display: none; }
@@ -80,3 +115,13 @@ body:has([data-compact-footer]) .footer-cta { display: none; }
 input:not([type="range"]), select, textarea { border-color: #82998a; }
 .dark input:not([type="range"]), .dark select, .dark textarea { border-color: #577d65; }
 summary::marker { color: var(--accent); }
+@media (prefers-reduced-transparency: reduce) {
+  .reflective-header::before, .frosted-popover, .glass, .enterprise-card, .frosted-panel {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (forced-colors: active) {
+  .reflective-header::before, .frosted-popover { border-color: CanvasText; }
+}

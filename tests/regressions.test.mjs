@@ -862,21 +862,93 @@ test('both emails retain a personal greeting, brief polite message and matching 
   assert.match(cancelled.html, /We’re sorry for the change of plans/);
 });
 
+function themeRuntime({ stored = null, systemDark = false, blocked = false } = {}) {
+  const { themeScript, THEME_KEY, THEME_EVENT } = app()('src/lib/theme.ts');
+  const classes = new Set(['font-manrope']);
+  const root = { dataset: {}, classList: { toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name) } };
+  const listeners = new Map();
+  let onDeviceChange;
+  const media = { matches: systemDark, addEventListener: (type, callback) => { assert.equal(type, 'change'); onDeviceChange = callback; } };
+  class ThemeEvent {
+    constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
+  }
+  const window = {
+    addEventListener: (type, callback) => listeners.set(type, [...(listeners.get(type) || []), callback]),
+    dispatchEvent: event => { for (const callback of listeners.get(event.type) || []) callback(event); },
+  };
+  vm.runInNewContext(themeScript, {
+    localStorage: { getItem: key => { assert.equal(key, THEME_KEY); if (blocked) throw Error('storage blocked'); return stored; } },
+    matchMedia: query => { assert.equal(query, '(prefers-color-scheme: dark)'); return media; },
+    document: { documentElement: root }, window, CustomEvent: ThemeEvent,
+  });
+  return {
+    classes, preference: () => root.dataset.themePreference, dark: () => classes.has('dark'),
+    device: dark => { media.matches = dark; onDeviceChange(); },
+    choose: value => {
+      if (!blocked) stored = value === 'system' ? null : value;
+      window.dispatchEvent(new ThemeEvent(THEME_EVENT, { detail: value }));
+    },
+    storage: (value, key = THEME_KEY, announced = value) => {
+      if (key === THEME_KEY || key === null) stored = value;
+      window.dispatchEvent({ type: 'storage', key, newValue: announced });
+    },
+  };
+}
+
 for (const scenario of [
   { stored: 'light', systemDark: true, expected: false },
   { stored: 'dark', systemDark: false, expected: true },
   { stored: null, systemDark: true, expected: true },
+  { stored: null, systemDark: false, expected: false },
   { stored: 'invalid', systemDark: false, expected: false },
+  { stored: 'invalid', systemDark: true, expected: true },
   { blocked: true, systemDark: true, expected: true },
+  { blocked: true, systemDark: false, expected: false },
 ]) test(`first-paint theme respects preference ${JSON.stringify(scenario)}`, () => {
-  const { themeScript, THEME_KEY } = app()('src/lib/theme.ts');
-  const classes = new Set(['font-manrope']);
-  vm.runInNewContext(themeScript, {
-    localStorage: { getItem: key => { assert.equal(key, THEME_KEY); if (scenario.blocked) throw Error('storage blocked'); return scenario.stored; } },
-    matchMedia: () => ({ matches: scenario.systemDark }),
-    document: { documentElement: { classList: { toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name) } } },
-  });
-  assert.equal(classes.has('dark'), scenario.expected); assert.ok(classes.has('font-manrope'));
+  const runtime = themeRuntime(scenario);
+  assert.equal(runtime.dark(), scenario.expected); assert.ok(runtime.classes.has('font-manrope'));
+});
+
+test('default device theme follows live light and dark changes without a reload', () => {
+  const runtime = themeRuntime();
+  assert.equal(runtime.preference(), 'system'); assert.equal(runtime.dark(), false);
+  runtime.device(true); assert.equal(runtime.dark(), true);
+  runtime.device(false); assert.equal(runtime.dark(), false);
+});
+
+for (const preference of ['light', 'dark']) test(`manual ${preference} theme ignores device changes`, () => {
+  const runtime = themeRuntime({ stored: preference });
+  runtime.device(true); assert.equal(runtime.dark(), preference === 'dark');
+  runtime.device(false); assert.equal(runtime.dark(), preference === 'dark');
+});
+
+test('selecting Device theme releases a manual override and resumes live updates', () => {
+  const runtime = themeRuntime({ stored: 'light', systemDark: true });
+  runtime.choose('system'); assert.equal(runtime.preference(), 'system'); assert.equal(runtime.dark(), true);
+  runtime.device(false); assert.equal(runtime.dark(), false);
+  runtime.choose('dark'); assert.equal(runtime.preference(), 'dark'); assert.equal(runtime.dark(), true);
+});
+
+test('blocked storage still supports device updates, manual choices and returning to automatic', () => {
+  const runtime = themeRuntime({ blocked: true });
+  runtime.device(true); assert.equal(runtime.dark(), true);
+  runtime.choose('light'); runtime.device(false); runtime.device(true);
+  assert.equal(runtime.dark(), false); assert.equal(runtime.preference(), 'light');
+  runtime.choose('system'); assert.equal(runtime.dark(), true);
+});
+
+test('cross-tab preference changes and storage clearing resolve the latest stored choice', () => {
+  const runtime = themeRuntime({ systemDark: true });
+  runtime.storage('light', 'arisestudio-theme', 'dark');
+  assert.equal(runtime.preference(), 'light'); assert.equal(runtime.dark(), false);
+  runtime.storage(null, null); assert.equal(runtime.preference(), 'system'); assert.equal(runtime.dark(), true);
+  runtime.device(false); assert.equal(runtime.dark(), false);
+});
+
+test('unrelated storage events leave an explicit theme unchanged', () => {
+  const runtime = themeRuntime({ stored: 'light', systemDark: true });
+  runtime.storage('dark', 'unrelated-key');
+  assert.equal(runtime.preference(), 'light'); assert.equal(runtime.dark(), false);
 });
 
 test('light and dark theme text and primary action pairs retain readable contrast', () => {
