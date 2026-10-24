@@ -141,10 +141,10 @@ export default function Navbar() {
                 </button>
                 {dropdown?.href === link.href && (
                   <div
-                    className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-5"
+                    className="absolute left-1/2 top-full z-10 w-80 -translate-x-1/2 pt-[13px]"
                     id={`${link.name.toLowerCase()}-links`}
                   >
-                    <div className="frosted-popover relative rounded-3xl p-2">
+                    <div className="frosted-popover nav-dropdown relative rounded-b-3xl p-2">
                       {link.children.map((item) => (
                         <Link
                           key={item.href}

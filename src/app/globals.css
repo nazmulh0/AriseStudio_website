@@ -149,12 +149,12 @@ a, button, input, select, textarea { touch-action: manipulation; }
   box-shadow: inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 color-mix(in srgb, var(--ink) 3%, transparent), 0 12px 36px -12px var(--glass-shadow);
 }
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .reflective-header::before {
+  .reflective-header::before, .nav-dropdown::before {
     background: linear-gradient(115deg, var(--glass-sheen), transparent 38%, color-mix(in srgb, var(--glass-sheen) 35%, transparent)), color-mix(in srgb, var(--surface) 55%, transparent);
     -webkit-backdrop-filter: blur(12px) saturate(135%);
     backdrop-filter: blur(12px) saturate(135%);
   }
-  .frosted-popover::before {
+  .frosted-popover:not(.nav-dropdown)::before {
     background: linear-gradient(115deg, var(--glass-sheen), transparent 38%, color-mix(in srgb, var(--glass-sheen) 35%, transparent)), color-mix(in srgb, var(--surface) 68%, transparent);
     -webkit-backdrop-filter: blur(16px) saturate(145%);
     backdrop-filter: blur(16px) saturate(145%);
@@ -187,6 +187,14 @@ a, button, input, select, textarea { touch-action: manipulation; }
     }
   }
 }
+/* Attached menus share the navbar material without drawing a second top edge. */
+.reflective-header::after, .nav-dropdown::after { background: var(--glass-edge); }
+.nav-dropdown::before {
+  border-top: 0;
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--ink) 3%, transparent), 0 12px 36px -12px var(--glass-shadow);
+}
+.nav-dropdown::after { padding-top: 0; }
+
 .glass, .enterprise-card {
   background: var(--surface);
   border: 1px solid var(--line);
