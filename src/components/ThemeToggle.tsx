@@ -66,7 +66,7 @@ export default function ThemeToggle() {
         aria-expanded={open}
         aria-controls="theme-options"
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line/70 bg-transparent text-ink transition-colors hover:bg-surface-muted/80"
+        className="glass-control inline-flex h-11 w-11 items-center justify-center rounded-full border border-line/70 bg-transparent text-ink transition-colors hover:bg-surface-muted/80"
       >
         <Icon className="h-4 w-4" aria-hidden="true" />
       </button>

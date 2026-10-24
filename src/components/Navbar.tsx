@@ -115,7 +115,7 @@ export default function Navbar() {
                     className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-5"
                     id="expertise-links"
                   >
-                    <div className="frosted-popover rounded-3xl p-2">
+                    <div className="frosted-popover relative rounded-3xl p-2">
                       <Link
                         href="/services"
                         onClick={() => setExpertiseOpen(false)}
@@ -170,7 +170,7 @@ export default function Navbar() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMobileOpen((open) => !open)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line/70 text-ink transition-colors hover:bg-surface-muted/80 xl:hidden"
+            className="glass-control inline-flex h-11 w-11 items-center justify-center rounded-full border border-line/70 text-ink transition-colors hover:bg-surface-muted/80 xl:hidden"
           >
             {mobileOpen ? (
               <X className="h-5 w-5" aria-hidden="true" />
@@ -184,7 +184,7 @@ export default function Navbar() {
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="frosted-popover mx-auto mt-3 max-h-[calc(100dvh-120px)] max-w-7xl overflow-y-auto rounded-[28px] p-3 xl:hidden"
+          className="frosted-popover relative mx-auto mt-3 max-w-7xl rounded-[28px] p-3 xl:hidden"
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               setMobileOpen(false);
@@ -192,24 +192,26 @@ export default function Navbar() {
             }
           }}
         >
-          {links.map((link) => (
+          <div className="max-h-[calc(100dvh-144px)] overflow-y-auto">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={pathname === link.href ? "page" : undefined}
+                onClick={() => setMobileOpen(false)}
+                className={`block rounded-xl px-3 py-3 text-sm font-semibold ${pathname === link.href ? "bg-surface-muted text-accent" : "text-ink hover:bg-surface-muted/60"}`}
+              >
+                {link.name}
+              </Link>
+            ))}
             <Link
-              key={link.href}
-              href={link.href}
-              aria-current={pathname === link.href ? "page" : undefined}
+              href="/schedule"
               onClick={() => setMobileOpen(false)}
-              className={`block rounded-xl px-3 py-3 text-sm font-semibold ${pathname === link.href ? "bg-surface-muted text-accent" : "text-ink hover:bg-surface-muted/60"}`}
+              className="nav-call mt-3 flex min-h-12 items-center justify-center rounded-full bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-strong"
             >
-              {link.name}
+              Book a discovery call
             </Link>
-          ))}
-          <Link
-            href="/schedule"
-            onClick={() => setMobileOpen(false)}
-            className="nav-call mt-3 flex min-h-12 items-center justify-center rounded-full bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-strong"
-          >
-            Book a discovery call
-          </Link>
+          </div>
         </nav>
       )}
     </header>
