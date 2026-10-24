@@ -6,12 +6,12 @@ export default function BrandLogo({
   priority?: boolean;
 }) {
   return (
-    <span className="relative block h-10 w-40 shrink-0">
+    <span className="relative block h-12 w-48 max-w-full shrink-0">
       <Image
         src="/brand/arisestudio-logo.png"
         alt="AriseStudio"
         fill
-        sizes="160px"
+        sizes="192px"
         className="brand-logo-light object-contain"
         priority={priority}
       />
@@ -19,7 +19,7 @@ export default function BrandLogo({
         src="/brand/arisestudio-logo-darkmode.png"
         alt="AriseStudio"
         fill
-        sizes="160px"
+        sizes="192px"
         className="brand-logo-dark object-contain"
         priority={priority}
       />
