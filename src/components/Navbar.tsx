@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -100,7 +101,25 @@ export default function Navbar() {
           onClick={() => setMobileOpen(false)}
           aria-label="AriseStudio home"
         >
-          <BrandLogo priority />
+          <span className="relative block h-12 w-12 sm:hidden">
+            <Image
+              src="/brand/arisestudio-symbol-color.svg"
+              alt="AriseStudio"
+              fill
+              sizes="48px"
+              className="brand-logo-light object-contain"
+              priority
+            />
+            <Image
+              src="/brand/arisestudio-symbol-white.svg"
+              alt="AriseStudio"
+              fill
+              sizes="48px"
+              className="brand-logo-dark object-contain"
+              priority
+            />
+          </span>
+          <span className="hidden sm:block"><BrandLogo priority /></span>
         </Link>
         <nav
           aria-label="Main navigation"

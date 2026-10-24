@@ -29,7 +29,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "AriseStudio Team" }],
   icons: {
-    icon: "/brand/arisestudio-shutter-icon.png",
+    icon: [
+      { url: "/brand/arisestudio-symbol-color.svg", type: "image/svg+xml", media: "(prefers-color-scheme: light)" },
+      { url: "/brand/arisestudio-symbol-white.svg", type: "image/svg+xml", media: "(prefers-color-scheme: dark)" },
+    ],
   },
 };
 

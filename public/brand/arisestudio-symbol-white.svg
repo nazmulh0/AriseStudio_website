@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 256" width="320" height="256" role="img" aria-labelledby="arisestudio-symbol-white">
+  <title id="arisestudio-symbol-white">AriseStudio white symbol</title>
+  <g id="symbol">
+    <path id="left-beam" fill="#FFFFFF" d="M138.04 24 H194.25 L60.14 229.59 Q56.93 234.41 53.71 228.79 L28.02 188.63 C23.2 181.41 23.2 172.57 28.02 166.15 L117.96 39.26 Q126.8 24 138.04 24 Z"/>
+    <path id="right-beam" fill="#FFFFFF" d="M206.3 36.05 L289.82 162.93 Q295.44 172.57 290.63 183.01 L261.71 227.18 Q255.29 236.82 248.86 227.18 L165.34 97.08 Q162.93 93.07 165.34 89.05 L199.88 36.85 Q203.09 32.03 206.3 36.05 Z"/>
+    <path id="lower-module" fill="#FFFFFF" d="M140.45 157.31 H199.88 L160.53 217.54 Q150.89 232 134.02 232 H71.38 L111.54 171.77 Q121.17 157.31 140.45 157.31 Z"/>
+  </g>
+</svg>
