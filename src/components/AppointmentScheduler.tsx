@@ -570,7 +570,6 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
       ) : (
         /* Main Schedule Section - Single Card Interface */
         <div className="pt-2">
-          <p className="text-xs text-muted mb-3">Choose a date, then a time. Times are shown in your selected timezone; calendar dates follow Bangladesh time.</p>
           {availability !== "ready" && <div role={availability === "error" ? "alert" : "status"} className="mb-4 text-sm text-warning">
             {availability === "loading" ? "Checking available slots…" : <>Availability is temporarily unavailable. <button type="button" className="underline" onClick={() => { setAvailability("loading"); setAvailabilityAttempt(n => n + 1); }}>Try again</button></>}
           </div>}
@@ -588,7 +587,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                   type="button"
                   onClick={handlePrevWeek}
                   disabled={isPrevWeekDisabled}
-                  className="inline-flex min-h-11 items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="inline-flex h-8 items-center gap-1 px-3 rounded-lg text-xs font-medium bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Previous 7 Days"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
@@ -597,7 +596,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                 <button
                   type="button"
                   onClick={handleNextWeek}
-                  className="inline-flex min-h-11 items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 transition-colors"
+                  className="inline-flex h-8 items-center gap-1 px-3 rounded-lg text-xs font-medium bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 transition-colors"
                   title="Next 7 Days"
                 >
                   <span>Next</span>
@@ -619,7 +618,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     type="button"
                     onClick={handlePrevMonth}
                     disabled={isPrevMonthDisabled}
-                    className="w-11 h-11 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
                     title="Previous month"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -627,7 +626,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                   <button
                     type="button"
                     onClick={handleNextMonth}
-                    className="w-11 h-11 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted transition-colors"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted transition-colors"
                     title="Next month"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -668,7 +667,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     return (
                       <span
                         key={`prev-${i}`}
-                        className="w-7 h-7 mx-auto flex items-center justify-center text-subtle"
+                        className="w-8 h-8 mx-auto flex items-center justify-center text-subtle/50 select-none text-xs rounded-full"
                       >
                         {dayNum}
                       </span>
@@ -715,7 +714,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                       return (
                         <span
                           key={dayNum}
-                          className="w-7 h-7 mx-auto flex items-center justify-center text-subtle cursor-not-allowed"
+                          className="w-8 h-8 mx-auto flex items-center justify-center text-subtle/60 cursor-not-allowed text-xs rounded-full"
                         >
                           {dayNum}
                         </span>
@@ -734,13 +733,13 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                             handleCalendarDayClick(dayNum, viewMonth, viewYear);
                           }
                         }}
-                        className={`w-11 h-11 mx-auto flex items-center justify-center rounded-full font-semibold transition-colors ${
+                        className={`w-8 h-8 mx-auto flex items-center justify-center rounded-full text-xs font-semibold transition-all ${
                           isSelected
-                            ? "bg-accent text-on-accent ring-2 ring-accent shadow-sm scale-105"
+                            ? "bg-accent text-on-accent shadow-sm"
                             : isSchedDay
-                              ? "bg-surface-muted/80 text-accent hover:bg-accent/10 cursor-pointer"
+                              ? "bg-accent/15 text-accent hover:bg-accent/25 cursor-pointer"
                               : isClosed
-                                ? "text-subtle cursor-not-allowed"
+                                ? "text-subtle/50 cursor-not-allowed"
                                 : "text-muted hover:bg-surface-muted hover:text-ink cursor-pointer"
                         }`}
                         title={
@@ -791,10 +790,10 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                           onClick={() => setSelectedDayIndex(idx)}
                           aria-pressed={isSelected}
                           aria-label={day.fullDate}
-                          className={`w-full max-w-10 h-11 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
+                          className={`w-10 h-10 aspect-square rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
                             isSelected
-                              ? "bg-accent text-on-accent shadow-sm  scale-105"
-                              : "bg-surface-muted/80 text-ink hover:bg-surface-raised"
+                              ? "bg-accent text-on-accent shadow-sm"
+                              : "bg-surface-muted text-ink hover:bg-surface-raised"
                           }`}
                         >
                           {day.dateNumber}
@@ -826,12 +825,12 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                               type="button"
                               disabled={disabled}
                               onClick={() => !disabled && handleSlotSelect(dIdx, slot)}
-                              className={`w-full min-h-11 py-2 px-1 text-center rounded-xl sm:rounded-full text-xs font-medium transition-colors duration-150 border flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                              className={`w-full min-h-10 py-2.5 px-2 text-center rounded-xl text-xs font-medium transition-colors duration-150 border flex items-center justify-center gap-1.5 whitespace-nowrap ${
                                 disabled
-                                  ? "bg-surface-muted/50 text-subtle border-line select-none cursor-not-allowed disabled:cursor-not-allowed hover:border-line hover:bg-surface-muted/50"
+                                  ? "bg-surface-muted/40 text-subtle/70 border-line/50 select-none cursor-not-allowed disabled:cursor-not-allowed hover:border-line/50 hover:bg-surface-muted/40"
                                   : isPicked
-                                    ? "bg-accent text-on-accent border-accent font-semibold shadow-sm  cursor-pointer"
-                                    : "bg-surface-muted/90 text-ink border-line hover:border-accent/50 hover:bg-accent/10 hover:text-ink cursor-pointer"
+                                    ? "bg-accent text-on-accent border-accent font-semibold shadow-sm cursor-pointer"
+                                    : "bg-surface-muted text-ink border-line hover:border-accent/50 hover:bg-accent/10 hover:text-ink cursor-pointer"
                               }`}
                               title={isBooked ? `${displayDate} ${displayTime} (Booked)`
                                 : isPast ? "This appointment time has passed"
@@ -997,7 +996,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="w-full py-2.5 rounded-full text-xs sm:text-sm font-semibold text-on-accent bg-accent hover:bg-accent-strong disabled:opacity-50 transition-colors shadow-sm  flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-on-accent bg-accent hover:bg-accent-strong disabled:opacity-50 transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {status === "loading" ? (
                     <>
