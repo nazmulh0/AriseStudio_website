@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { pageMetadata, siteOrigin } from "@/lib/site";
 import localFont from "next/font/local";
 import { themeScript } from "@/lib/theme";
@@ -5,6 +6,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import NavigationProgressBar from "@/components/NavigationProgressBar";
+import NetworkStatusWatcher from "@/components/NetworkStatusWatcher";
 
 const plexSans = localFont({ src: "./fonts/IBMPlexSans.ttf", variable: "--font-plex-sans", display: "swap", weight: "100 700" });
 
@@ -49,6 +52,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-xl focus:bg-accent focus:px-5 focus:py-3 focus:text-on-accent">Skip to content</a>
+        <Suspense fallback={null}>
+          <NavigationProgressBar />
+        </Suspense>
+        <NetworkStatusWatcher />
         <Navbar />
         <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
         <Footer />

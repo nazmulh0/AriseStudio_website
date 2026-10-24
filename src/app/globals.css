@@ -454,3 +454,28 @@ summary::marker { color: var(--accent); }
   animation: shimmerBeam 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   pointer-events: none;
 }
+
+@keyframes skeletonWave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface-muted);
+}
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 12%, var(--surface-raised)) 50%,
+    transparent 100%
+  );
+  animation: skeletonWave 1.8s var(--ease-ambient) infinite;
+  pointer-events: none;
+}

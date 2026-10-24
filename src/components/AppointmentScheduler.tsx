@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Lock,
+  RotateCw,
 } from "lucide-react";
 
 import type { BookingHost } from "@/lib/bookingHost";
@@ -570,9 +571,34 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
       ) : (
         /* Main Schedule Section - Single Card Interface */
         <div className="pt-2">
-          {availability !== "ready" && <div role={availability === "error" ? "alert" : "status"} className="mb-4 text-sm text-warning">
-            {availability === "loading" ? "Checking available slots…" : <>Availability is temporarily unavailable. <button type="button" className="underline" onClick={() => { setAvailability("loading"); setAvailabilityAttempt(n => n + 1); }}>Try again</button></>}
-          </div>}
+          {availability !== "ready" && (
+            <div
+              role={availability === "error" ? "alert" : "status"}
+              className="mb-4 p-3 rounded-2xl bg-surface-muted border border-line flex flex-wrap items-center justify-between gap-3 text-xs"
+            >
+              <div className="flex items-center gap-2">
+                <Loader2 className={`w-3.5 h-3.5 text-accent ${availability === "loading" ? "animate-spin" : ""}`} />
+                <span className="text-muted">
+                  {availability === "loading"
+                    ? "Verifying live calendar availability…"
+                    : "Calendar slot availability took longer than expected."}
+                </span>
+              </div>
+              {availability === "error" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAvailability("loading");
+                    setAvailabilityAttempt((n) => n + 1);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent text-on-accent font-semibold hover:bg-accent-strong transition-colors cursor-pointer"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                  <span>Reload Slots</span>
+                </button>
+              )}
+            </div>
+          )}
           {status === "error" && !isBookingOpen && <p role="alert" className="text-sm text-danger mb-4">{errorMessage}</p>}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-line">
             <h3 className="text-base sm:text-lg font-semibold text-ink">
