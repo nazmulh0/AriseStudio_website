@@ -164,10 +164,10 @@ export default function SavingsCalculator() {
 
             <Link
               href={`/contact?service=business-automation&message=We%20currently%20have%20${teamSize}%20team%20members%20spending%20approximately%20${hoursPerWeek}%20hours%20per%20week%20on%20manual%20workflows.`}
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm "
+              className="motion-btn group w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm"
             >
               Discuss this workflow
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>

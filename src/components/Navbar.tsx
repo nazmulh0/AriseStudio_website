@@ -163,7 +163,7 @@ export default function Navbar() {
                     className="absolute left-1/2 top-full z-10 w-80 -translate-x-1/2 pt-[13px]"
                     id={`${link.name.toLowerCase()}-links`}
                   >
-                    <div className="frosted-popover nav-dropdown relative rounded-b-3xl p-2">
+                    <div className="frosted-popover nav-dropdown relative rounded-b-3xl p-2 animate-in fade-in slide-in-from-top-2 duration-150">
                       {link.children.map((item) => (
                         <Link
                           key={item.href}
@@ -199,10 +199,10 @@ export default function Navbar() {
           <ThemeToggle />
           <Link
             href="/schedule"
-            className="nav-call hidden sm:inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-on-accent transition-colors hover:bg-accent-strong"
+            className="nav-call motion-btn group hidden sm:inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-on-accent transition-colors hover:bg-accent-strong"
           >
             Book a meeting{" "}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
           </Link>
           <button
             ref={mobileTrigger}
@@ -225,7 +225,7 @@ export default function Navbar() {
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="frosted-popover relative mx-auto mt-3 max-w-7xl rounded-[28px] p-3 xl:hidden"
+          className="frosted-popover relative mx-auto mt-3 max-w-7xl rounded-[28px] p-3 xl:hidden animate-in fade-in slide-in-from-top-3 duration-200"
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               setMobileOpen(false);

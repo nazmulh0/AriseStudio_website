@@ -25,6 +25,10 @@
   --radius-panel: 22px;
   --radius-hero: 26px;
   --ease-out-quart: cubic-bezier(.25, 1, .5, 1);
+  --ease-premium: cubic-bezier(.16, 1, .3, 1);
+  --ease-corporate: cubic-bezier(.2, 0, 0, 1);
+  --ease-ambient: cubic-bezier(.4, 0, .2, 1);
+  --ambient-glow: rgba(22, 113, 75, 0.08);
   --shadow-card: 0 1px 2px rgb(0 0 0 / 3%), 0 8px 24px rgb(0 0 0 / 3%);
   --shadow-panel: 0 1px 3px rgb(0 0 0 / 4%), 0 14px 40px rgb(0 0 0 / 4%);
   --shadow-overlay: 0 2px 8px rgb(0 0 0 / 10%), 0 30px 80px rgb(0 0 0 / 24%);
@@ -45,6 +49,7 @@
   --info: #34d399;
   --danger: #f87171;
   --warning: #fbbf24;
+  --ambient-glow: rgba(44, 199, 138, 0.12);
   --glass-edge: rgb(167 243 208 / 12%);
   --glass-sheen: rgb(167 243 208 / 4%);
   --glass-shadow: rgb(0 15 10 / 45%);
@@ -316,4 +321,136 @@ summary::marker { color: var(--accent); }
 @media (prefers-contrast: more) {
   .reflective-header::before, .frosted-popover::before { background: var(--surface); border-color: var(--ink); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .reflective-header::after, .frosted-popover::after, .glass-control::after { display: none; }
+}
+
+/* ==========================================================================
+   Motion Design System (LottieFiles/motion-design-skill principles)
+   - Archetype: Corporate & Premium
+   - Easing: cubic-bezier(0.16, 1, 0.3, 1) and cubic-bezier(0.2, 0, 0, 1)
+   - GPU-accelerated: transform, opacity, filter only
+   ========================================================================== */
+
+@keyframes ambientBreathe {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.06);
+    opacity: 0.95;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pipelineStream {
+  0% {
+    top: -20%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.hero-ambient-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100vw, 1100px);
+  height: 560px;
+  background: radial-gradient(circle at 50% 25%, var(--ambient-glow) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientBreathe 12s var(--ease-ambient) infinite;
+  will-change: transform, opacity;
+}
+
+.motion-stagger-1 { animation: fadeInUp 450ms var(--ease-premium) 0ms both; }
+.motion-stagger-2 { animation: fadeInUp 500ms var(--ease-premium) 80ms both; }
+.motion-stagger-3 { animation: fadeInUp 550ms var(--ease-premium) 160ms both; }
+.motion-stagger-4 { animation: fadeInUp 600ms var(--ease-premium) 240ms both; }
+.motion-stagger-5 { animation: fadeInUp 650ms var(--ease-premium) 320ms both; }
+
+/* Interactive Tactile Micro-Interactions */
+.motion-btn {
+  transition: transform 140ms var(--ease-corporate), box-shadow 180ms var(--ease-corporate), background-color 150ms ease;
+  will-change: transform;
+}
+.motion-btn:hover {
+  transform: translateY(-1.5px);
+}
+.motion-btn:active {
+  transform: translateY(0.5px) scale(0.985);
+}
+
+.motion-card {
+  transition: transform 220ms var(--ease-premium), border-color 200ms var(--ease-corporate), box-shadow 240ms var(--ease-corporate);
+  will-change: transform;
+}
+.motion-card:hover {
+  transform: translateY(-2.5px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  box-shadow: 0 10px 30px -8px var(--glass-shadow);
+}
+.motion-card:active {
+  transform: translateY(0) scale(0.995);
+}
+
+/* Pipeline Track & Flow Pulse */
+.pipeline-track {
+  position: relative;
+  width: 2px;
+  height: 36px;
+  background-color: var(--line);
+  overflow: hidden;
+  border-radius: 9999px;
+  margin: 0 auto;
+}
+
+.pipeline-stream {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  background: linear-gradient(180deg, transparent, var(--accent), transparent);
+  animation: pipelineStream 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes shimmerBeam {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+.shimmer-active {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 14%, transparent), transparent);
+  animation: shimmerBeam 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
 }

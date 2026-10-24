@@ -47,8 +47,9 @@ const deliverables = [
 export default function ServicesPage() {
   return (
     <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
+      <div className="hero-ambient-glow" aria-hidden="true" />
       {/* Header */}
-      <div className="page-intro">
+      <div className="page-intro relative z-1">
         <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Our services
@@ -75,7 +76,7 @@ export default function ServicesPage() {
             <section
               key={service.id}
               id={service.id}
-              className="scroll-mt-32 rounded-3xl bg-surface border border-line p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row gap-10 items-start shadow-sm"
+              className="scroll-mt-32 rounded-3xl bg-surface border border-line p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row gap-10 items-start shadow-sm motion-card"
             >
               {/* Left Column: Descriptions & Details */}
               <div className="flex-1 space-y-6">
@@ -91,36 +92,37 @@ export default function ServicesPage() {
                   {service.fullDesc}
                 </p>
 
-                <details className="rounded-xl border border-line bg-surface p-4">
-                  <summary className="text-sm font-semibold text-accent">Capabilities & technologies</summary>
-                  <div className="mt-4 space-y-3">
-                  {service.features.map((feat, idx) => (
-                    <div key={idx} className="flex items-start gap-3 text-sm text-muted">
-                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
+                {/* Core Capabilities & Technologies - Fully Open & Visible */}
+                <div className="rounded-2xl border border-line bg-surface-muted/60 p-5 space-y-4">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-accent">Core Capabilities & Technologies</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {service.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
+                        <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="pt-4 flex flex-wrap gap-2">
-                  <span className="text-xs text-muted py-1 pr-2">Technologies:</span>
-                  {service.techStack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="studio-tag text-xs px-2.5 py-1 rounded-md"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                  <div className="pt-3 border-t border-line flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold text-muted">Stack:</span>
+                    {service.techStack.map((tech) => (
+                      <span
+                        key={tech}
+                        className="studio-tag text-xs px-2.5 py-1 rounded-md font-mono"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                </details>
 
                 <div className="pt-4">
                   <Link
                     href={`/contact?service=${service.id}`}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm "
+                    className="motion-btn group inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm"
                   >
                     Discuss this service
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                   </Link>
                 </div>
               </div>
@@ -153,11 +155,23 @@ export default function ServicesPage() {
         })}
       </div>
 
-      <section className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
-        <details className="rounded-2xl border border-line bg-surface">
-          <summary className="min-h-14 px-6 py-5 text-sm font-semibold text-ink">Explore a sample architecture</summary>
+      {/* Live Sample Architecture & Engineering Console - Fully Open & Visible */}
+      <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs font-semibold mb-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+            <span>Deterministic System Blueprint</span>
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-semibold text-ink tracking-tight">
+            Explore live production architecture topologies
+          </h2>
+          <p className="text-muted text-sm sm:text-base mt-2 leading-relaxed">
+            Toggle between live pipeline scenarios to inspect throughput, failover design, node execution phases, and sample JSON event streams.
+          </p>
+        </div>
+        <div className="rounded-3xl border border-line bg-surface shadow-panel overflow-hidden motion-card">
           <ArchitectureSimulator />
-        </details>
+        </div>
       </section>
       {/* What You Receive / Standard Deliverables */}
       <section className="mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -175,7 +189,7 @@ export default function ServicesPage() {
           {deliverables.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="p-6 rounded-2xl bg-canvas border border-line hover:border-accent/30 transition-colors">
+              <div key={idx} className="p-6 rounded-2xl bg-canvas border border-line motion-card">
                 <div className="studio-icon mb-4">
                   <Icon className="w-5 h-5" />
                 </div>

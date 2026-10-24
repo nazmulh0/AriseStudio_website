@@ -57,9 +57,9 @@ const teamPods = [
 export default function AboutPage() {
   return (
     <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
-
+      <div className="hero-ambient-glow" aria-hidden="true" />
       {/* Header */}
-      <div className="page-intro">
+      <div className="page-intro relative z-1">
         <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           About the studio
@@ -147,7 +147,7 @@ export default function AboutPage() {
           {principles.map((pr, idx) => {
             const Icon = pr.icon;
             return (
-              <div key={idx} className="p-8 rounded-2xl bg-canvas border border-line hover:border-accent/40 transition-colors">
+              <div key={idx} className="p-8 rounded-2xl bg-canvas border border-line motion-card">
                 <div className="studio-icon mb-4">
                   <Icon className="w-6 h-6" />
                 </div>
@@ -176,7 +176,7 @@ export default function AboutPage() {
 
           <div className="studio-list studio-list--three">
             {teamPods.map((pod, idx) => (
-              <div key={idx} className="p-6 rounded-2xl bg-canvas border border-line space-y-4">
+              <div key={idx} className="p-6 rounded-2xl bg-canvas border border-line space-y-4 motion-card">
 
                 <h4 className="text-lg font-semibold text-ink">{pod.pod}</h4>
                 <p className="text-xs text-muted leading-relaxed">{pod.focus}</p>
@@ -203,10 +203,10 @@ export default function AboutPage() {
           <div className="mt-8">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm "
+              className="motion-btn group inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm"
             >
               Book an Architecture Session
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>

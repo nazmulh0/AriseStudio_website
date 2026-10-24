@@ -252,7 +252,7 @@ export default function ArchitectureSimulator() {
             {currentScenario.nodes.map((node, i) => (
               <div
                 key={i}
-                className="p-5 rounded-2xl bg-surface-muted/80 border border-line hover:border-accent/40 transition-colors flex flex-col justify-between group"
+                className="p-5 rounded-2xl bg-surface-muted/80 border border-line hover:border-accent/40 transition-all flex flex-col justify-between group motion-card"
               >
                 <div>
                   <div className="text-xs font-semibold text-accent mb-2">

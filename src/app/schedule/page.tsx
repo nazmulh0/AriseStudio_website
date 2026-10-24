@@ -17,8 +17,8 @@ async function Scheduler() {
 export default function SchedulePage() {
   return (
     <div data-compact-footer className="pt-28 pb-16 relative bg-canvas overflow-hidden min-h-screen">
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="hero-ambient-glow" aria-hidden="true" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-1">
         {/* Compact Clean Header - AriseSell Style */}
         <div className="text-center max-w-xl mx-auto mb-6">
           <h1 className="text-4xl sm:text-5xl font-semibold text-ink tracking-tight">

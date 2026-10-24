@@ -54,9 +54,9 @@ const fullStudies = [
 export default function CaseStudiesPage() {
   return (
     <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
-
+      <div className="hero-ambient-glow" aria-hidden="true" />
       {/* Header */}
-      <div className="page-intro">
+      <div className="page-intro relative z-1">
         <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Illustrative project examples
@@ -74,7 +74,7 @@ export default function CaseStudiesPage() {
         {fullStudies.map((study, idx) => (
           <article
             key={idx}
-            className="rounded-3xl bg-surface border border-line p-6 sm:p-10 shadow-sm"
+            className="rounded-3xl bg-surface border border-line p-6 sm:p-10 shadow-sm motion-card"
           >
             <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-line">
               <div>
@@ -136,9 +136,10 @@ export default function CaseStudiesPage() {
               <span className="text-xs text-muted">Facing a similar operational hurdle?</span>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent"
+                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent-strong transition-colors"
               >
-                Schedule an architecture audit <ArrowRight className="w-4 h-4" />
+                Schedule an architecture audit{" "}
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </div>
           </article>

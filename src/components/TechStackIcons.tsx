@@ -107,19 +107,16 @@ export default function TechStackIcons() {
       {techIcons.map((tech) => (
         <div
           key={tech.name}
-
+          className="group flex items-center gap-2 rounded-xl border border-line/70 bg-surface/80 px-3 py-1.5 text-xs font-medium text-muted transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-surface hover:text-ink hover:shadow-xs cursor-default"
         >
           <svg
             viewBox="0 0 24 24"
             aria-hidden="true"
+            className="h-4 w-4 fill-current transition-transform duration-200 group-hover:scale-110 group-hover:text-accent"
           >
             <path d={tech.path} />
           </svg>
-
-          {/* Clean hover tooltip popup */}
-          <span >
-            {tech.name}
-          </span>
+          <span>{tech.name}</span>
         </div>
       ))}
     </div>
