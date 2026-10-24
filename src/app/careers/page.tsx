@@ -87,7 +87,7 @@ export default function CareersPage() {
 
           <div className="p-8 rounded-2xl enterprise-card">
             <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
-              <Coffee className="w-5 h-5 text-info" />
+              <Coffee className="w-5 h-5 text-accent" />
               Developer-First Culture
             </h3>
             <p className="text-sm text-muted mt-3 leading-relaxed">
@@ -125,7 +125,7 @@ export default function CareersPage() {
                       <Briefcase className="w-3.5 h-3.5 text-accent" /> {role.department}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-info" /> {role.location}
+                      <MapPin className="w-3.5 h-3.5 text-accent" /> {role.location}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5 text-accent" /> {role.type}

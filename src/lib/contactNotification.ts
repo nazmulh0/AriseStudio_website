@@ -18,46 +18,46 @@ export async function sendContactNotification(id: number): Promise<boolean> {
     const leadData: Record<string, string> = JSON.parse(String(rows.rows[0].submission));
     const origin = appointmentSiteUrl();
 const htmlContent = `
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #10b981; border-radius: 8px; background-color: #09101d; color: #f8fafc;">
-    <div style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #1e293b;">
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #2cc78a; border-radius: 12px; background-color: #0b120f; color: #f4fbf7;">
+    <div style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #243a30;">
       <a href="${origin}" style="display:inline-block;"><img src="${origin}/brand/arisestudio-logo-white.png" alt="AriseStudio" width="148" style="display:block;width:148px;height:auto;border:0;"></a>
     </div>
-    <h2 style="color: #10b981; margin-bottom: 16px;">🚀 New Consultation Lead | AriseStudio</h2>
-    <p style="font-size: 14px; color: #94a3b8;">A new consultation request was submitted through the website.</p>
+    <h2 style="color: #2cc78a; margin-bottom: 12px; font-size: 20px;">🚀 New Consultation Lead | AriseStudio</h2>
+    <p style="font-size: 13px; color: #a1b3aa; margin-top: 0;">A new consultation request was submitted through the website.</p>
 
     <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-      <tr style="border-bottom: 1px solid #1e293b;">
-        <td style="padding: 10px; color: #a7f3d0; font-weight: bold; width: 140px;">Full Name:</td>
-        <td style="padding: 10px; color: #ffffff;">${escapeHtml(leadData.name)}</td>
+      <tr style="border-bottom: 1px solid #243a30;">
+        <td style="padding: 10px; color: #4ade80; font-weight: bold; width: 140px; font-size: 13px;">Full Name:</td>
+        <td style="padding: 10px; color: #ffffff; font-size: 13px;">${escapeHtml(leadData.name)}</td>
       </tr>
-      <tr style="border-bottom: 1px solid #1e293b;">
-        <td style="padding: 10px; color: #a7f3d0; font-weight: bold;">Email:</td>
-        <td style="padding: 10px; color: #ffffff;"><a href="mailto:${encodeURIComponent(leadData.email)}" style="color: #38bdf8;">${escapeHtml(leadData.email)}</a></td>
+      <tr style="border-bottom: 1px solid #243a30;">
+        <td style="padding: 10px; color: #4ade80; font-weight: bold; font-size: 13px;">Email:</td>
+        <td style="padding: 10px; color: #ffffff; font-size: 13px;"><a href="mailto:${encodeURIComponent(leadData.email)}" style="color: #2cc78a; text-decoration: underline;">${escapeHtml(leadData.email)}</a></td>
       </tr>
-      <tr style="border-bottom: 1px solid #1e293b;">
-        <td style="padding: 10px; color: #a7f3d0; font-weight: bold;">Phone / WhatsApp:</td>
-        <td style="padding: 10px; color: #ffffff;">${escapeHtml(leadData.phone)}</td>
+      <tr style="border-bottom: 1px solid #243a30;">
+        <td style="padding: 10px; color: #4ade80; font-weight: bold; font-size: 13px;">Phone / WhatsApp:</td>
+        <td style="padding: 10px; color: #ffffff; font-size: 13px;">${escapeHtml(leadData.phone)}</td>
       </tr>
-      <tr style="border-bottom: 1px solid #1e293b;">
-        <td style="padding: 10px; color: #a7f3d0; font-weight: bold;">Company:</td>
-        <td style="padding: 10px; color: #ffffff;">${escapeHtml(leadData.company)}</td>
+      <tr style="border-bottom: 1px solid #243a30;">
+        <td style="padding: 10px; color: #4ade80; font-weight: bold; font-size: 13px;">Company:</td>
+        <td style="padding: 10px; color: #ffffff; font-size: 13px;">${escapeHtml(leadData.company)}</td>
       </tr>
-      <tr style="border-bottom: 1px solid #1e293b;">
-        <td style="padding: 10px; color: #a7f3d0; font-weight: bold;">Service Needed:</td>
-        <td style="padding: 10px; color: #ffffff;">${escapeHtml(leadData.service)}</td>
+      <tr style="border-bottom: 1px solid #243a30;">
+        <td style="padding: 10px; color: #4ade80; font-weight: bold; font-size: 13px;">Service Needed:</td>
+        <td style="padding: 10px; color: #ffffff; font-size: 13px;">${escapeHtml(leadData.service)}</td>
       </tr>
-      <tr style="border-bottom: 1px solid #1e293b;">
-        <td style="padding: 10px; color: #a7f3d0; font-weight: bold;">Budget Bracket:</td>
-        <td style="padding: 10px; color: #ffffff;">${escapeHtml(leadData.budget)}</td>
+      <tr style="border-bottom: 1px solid #243a30;">
+        <td style="padding: 10px; color: #4ade80; font-weight: bold; font-size: 13px;">Budget Bracket:</td>
+        <td style="padding: 10px; color: #ffffff; font-size: 13px;">${escapeHtml(leadData.budget)}</td>
       </tr>
     </table>
 
-    <div style="margin-top: 20px; padding: 15px; background-color: #004157; border-radius: 6px;">
-      <h3 style="margin-top: 0; color: #34d399; font-size: 14px;">Project Details / Message:</h3>
-      <p style="white-space: pre-wrap; font-size: 14px; line-height: 1.5; color: #f1f5f9;">${escapeHtml(leadData.message)}</p>
+    <div style="margin-top: 20px; padding: 16px; background-color: #111b16; border: 1px solid #243a30; border-radius: 8px;">
+      <h3 style="margin-top: 0; color: #4ade80; font-size: 13px;">Project Details / Message:</h3>
+      <p style="white-space: pre-wrap; font-size: 13px; line-height: 1.6; color: #f4fbf7; margin-bottom: 0;">${escapeHtml(leadData.message)}</p>
     </div>
 
-    <p style="font-size: 12px; color: #64748b; margin-top: 24px;">Submitted on ${new Date().toLocaleString()}</p>
+    <p style="font-size: 11px; color: #718b7a; margin-top: 24px;">Submitted on ${new Date().toLocaleString()}</p>
   </div>
 `;
 

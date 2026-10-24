@@ -42,7 +42,7 @@
   --accent: #2cc78a;
   --accent-strong: #4ade80;
   --on-accent: #041d13;
-  --info: #38bdf8;
+  --info: #34d399;
   --danger: #f87171;
   --warning: #fbbf24;
   --glass-edge: rgb(167 243 208 / 12%);
@@ -206,7 +206,6 @@ a, button, input, select, textarea { touch-action: manipulation; }
   box-shadow: var(--shadow-panel);
 }
 .enterprise-card-active, .enterprise-pill { background: var(--surface-muted); border: 1px solid var(--line); color: var(--accent); }
-.gradient-text-teal-emerald, .gradient-text-white-emerald { color: inherit; }
 .brand-logo-dark { display: none; }
 .dark .brand-logo-light { display: none; }
 .dark .brand-logo-dark { display: block; }

@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { getBookingHost } from "@/lib/bookingHost";
 import { Suspense } from "react";
 import { Metadata } from "next";
+import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import AppointmentScheduler from "@/components/AppointmentScheduler";
 
@@ -28,7 +29,7 @@ export default function SchedulePage() {
           </p>
         </div>
 
-        <p className="mb-5 text-center text-xs text-muted">We use your details to arrange this call. <a href="/privacy" className="text-accent underline underline-offset-4">Privacy notice</a></p>
+        <p className="mb-5 text-center text-xs text-muted">We use your details to arrange this call. <Link href="/privacy" className="text-accent underline underline-offset-4">Privacy notice</Link></p>
         {/* Appointment Scheduler Widget */}
         <Suspense
           fallback={

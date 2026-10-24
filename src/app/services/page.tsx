@@ -47,8 +47,6 @@ const deliverables = [
 export default function ServicesPage() {
   return (
     <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
-      {/* Background Decor */}
-
       {/* Header */}
       <div className="page-intro">
         <span className="page-eyebrow">
@@ -57,7 +55,7 @@ export default function ServicesPage() {
         </span>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight">
           Practical automation. <br className="hidden sm:inline" />
-          <span className="gradient-text-teal-emerald">Software that fits your business.</span>
+          <span>Software that fits your business.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           We replace fragmented spreadsheets, manual data transcription, and brittle off-the-shelf software with resilient systems engineered around your exact business model.

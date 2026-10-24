@@ -376,7 +376,7 @@ export default function ContactPage() {
                   <Mail className="w-5 h-5 text-accent shrink-0" />
                   <div>
                     <strong className="text-ink block">Direct Email:</strong>
-                    <a href="mailto:contact@arisestudio.com" className="text-info hover:underline">
+                    <a href="mailto:contact@arisestudio.com" className="text-accent hover:underline">
                       contact@arisestudio.com
                     </a>
                   </div>
@@ -393,7 +393,7 @@ export default function ContactPage() {
                 <span><strong>Response target:</strong> Under 24 hours on business days</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted">
-                <ShieldCheck className="w-4 h-4 text-info shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
                 <span><strong>Strict Confidentiality:</strong> NDA available before sharing sensitive details</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted">

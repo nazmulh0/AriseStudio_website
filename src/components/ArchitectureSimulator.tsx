@@ -230,7 +230,7 @@ export default function ArchitectureSimulator() {
         </div>
         <div>
           <span className="text-subtle block">FAILOVER ARCHITECTURE:</span>
-          <span className="text-info font-semibold text-xs">{currentScenario.resilience}</span>
+          <span className="text-accent font-semibold text-xs">{currentScenario.resilience}</span>
         </div>
         <div>
           <span className="text-subtle block">EXAMPLE STATUS:</span>

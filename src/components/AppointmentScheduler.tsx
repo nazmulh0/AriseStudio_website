@@ -449,7 +449,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
               <Clock className="w-3 h-3 text-accent/80" />
               <span>30 min</span>
               <span>•</span>
-              <Video className="w-3 h-3 text-info/80" />
+              <Video className="w-3 h-3 text-accent/80" />
               <span>Google Meet</span>
             </div>
           </div>
@@ -525,7 +525,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                   href={confirmedBooking.meetUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-info hover:text-info underline break-all flex items-center gap-1 font-semibold"
+                  className="text-accent hover:text-accent-strong underline break-all flex items-center gap-1 font-semibold"
                 >
                   {confirmedBooking.meetUrl}
                   <ExternalLink className="w-3.5 h-3.5 shrink-0" />
