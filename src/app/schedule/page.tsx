@@ -16,16 +16,14 @@ async function Scheduler() {
 export default function SchedulePage() {
   return (
     <div data-compact-footer className="pt-28 pb-16 relative bg-canvas overflow-hidden min-h-screen">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-gradient-to-b from-accent/20 via-accent/10 to-transparent blur-3xl pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Compact Clean Header - AriseSell Style */}
         <div className="text-center max-w-xl mx-auto mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-ink tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-semibold text-ink tracking-tight">
             Schedule a <span className="gradient-text-teal-emerald">Discovery Call</span>
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-muted">
+          <p className="mt-2 text-sm sm:text-base text-muted">
             30-minute technical architecture consultation with our engineering team.
           </p>
         </div>

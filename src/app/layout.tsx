@@ -6,7 +6,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const manrope = localFont({ src: "./fonts/Manrope.ttf", variable: "--font-manrope", display: "swap", weight: "200 800" });
+const plexSans = localFont({ src: "./fonts/IBMPlexSans.ttf", variable: "--font-plex-sans", display: "swap", weight: "100 700" });
 
 export const viewport = {
   width: "device-width",
@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={manrope.variable} suppressHydrationWarning>
+    <html lang="en" className={plexSans.variable} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body
         className="min-h-screen flex flex-col bg-canvas text-ink antialiased"

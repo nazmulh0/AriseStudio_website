@@ -64,13 +64,10 @@ const fullStudies = [
 export default function CaseStudiesPage() {
   return (
     <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-accent/25 via-accent/15 to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-accent/10 blur-[130px] pointer-events-none -z-10" />
 
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 text-center">
-        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-accent bg-accent/10 border border-accent/30">
+      <div className="page-intro">
+        <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Proven Field Deployments
         </span>

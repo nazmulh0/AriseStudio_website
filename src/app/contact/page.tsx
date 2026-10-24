@@ -137,7 +137,7 @@ function ContactForm() {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="contact-form space-y-6">
           {status === "error" && (
             <div className="p-4 rounded-xl bg-danger/40 border border-danger/40 text-danger text-sm flex items-start gap-3 animate-in fade-in">
               <AlertCircle className="w-5 h-5 text-danger shrink-0 mt-0.5" />
@@ -317,12 +317,9 @@ function ContactForm() {
 export default function ContactPage() {
   return (
     <div data-compact-footer className="pt-32 pb-24 relative bg-canvas overflow-hidden">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-accent/30 via-accent/20 to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-accent/10 blur-[130px] pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
-        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-accent bg-accent/10 border border-accent/30">
+      <div className="page-intro">
+        <span className="page-eyebrow">
           Get in Touch
         </span>
         <h1 className="text-4xl sm:text-5xl font-bold text-ink mt-4 tracking-tight">

@@ -26,7 +26,7 @@ export default function HomePage() {
       <section className="studio-hero mx-auto max-w-7xl px-5 pb-16 pt-32 sm:px-8 lg:pb-24 lg:pt-40">
         <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_1fr] lg:gap-16">
           <div>
-            <p className="mb-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[.18em] text-accent">
+            <p className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Dhaka studio. Global partnerships.
             </p>
@@ -145,7 +145,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:pb-24">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+            <p className="text-sm font-semibold text-accent">
               What we do
             </p>
             <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
@@ -192,7 +192,7 @@ export default function HomePage() {
       <section id="products" className="border-y border-line bg-surface-muted">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:py-20">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+            <p className="text-sm font-semibold text-accent">
               Built at AriseStudio
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
@@ -254,7 +254,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+            <p className="text-sm font-semibold text-accent">
               Client perspectives
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
@@ -298,7 +298,7 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:pb-24">
-        <p className="text-xs font-semibold uppercase tracking-[.15em] text-accent">
+        <p className="text-sm font-semibold text-accent">
           Working together
         </p>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">

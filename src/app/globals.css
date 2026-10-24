@@ -58,13 +58,53 @@
   --color-info: var(--info);
   --color-danger: var(--danger);
   --color-warning: var(--warning);
-  --font-sans: var(--font-manrope), Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-plex-sans), Arial, Helvetica, sans-serif;
 }
 html {
   scroll-padding-top: 112px;
   scrollbar-color: color-mix(in srgb, var(--accent) 75%, var(--canvas)) var(--canvas);
 }
 body { background: var(--canvas); color: var(--ink); font-family: var(--font-sans); }
+.page-intro {
+  max-width: 80rem;
+  margin: 0 auto clamp(3rem, 6vw, 5rem);
+  padding: 0 clamp(1.25rem, 4vw, 2rem) clamp(2rem, 4vw, 3rem);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.page-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  font-size: .95rem;
+  font-weight: 600;
+}
+.page-intro > h1 {
+  max-width: 26ch;
+  margin: 0;
+  font-size: clamp(2.65rem, 5vw, 4.75rem);
+  line-height: 1.04;
+  letter-spacing: -.045em;
+}
+.page-intro > p {
+  max-width: 62ch;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.65;
+}
+.studio-hero h1 {
+  font-size: clamp(2.75rem, 5.15vw, 4.7rem);
+  line-height: 1.04;
+  letter-spacing: -.05em;
+}
+.contact-form label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 ::selection { background: var(--accent); color: var(--on-accent); }
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 2px solid var(--accent);
@@ -128,11 +168,18 @@ a, button, input, select, textarea { touch-action: manipulation; }
     }
   }
 }
-.glass, .enterprise-card, .frosted-panel {
+.glass, .enterprise-card {
   background: var(--surface);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--glass-sheen) 45%, transparent), transparent 48%), color-mix(in srgb, var(--surface) 96%, var(--canvas));
   border: 1px solid var(--line);
-  box-shadow: inset 0 1px 0 var(--glass-edge), 0 8px 30px -20px var(--glass-shadow);
+  box-shadow: inset 0 1px 0 var(--glass-edge), 0 14px 34px -26px var(--glass-shadow);
+}
+.frosted-panel {
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 76%, transparent);
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 var(--glass-edge), 0 18px 42px -28px var(--glass-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
 }
 .studio-hero { background: radial-gradient(ellipse at 85% 32%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 54%); }
 .enterprise-card-active, .enterprise-pill { background: var(--surface-muted); border: 1px solid var(--line); color: var(--accent); }

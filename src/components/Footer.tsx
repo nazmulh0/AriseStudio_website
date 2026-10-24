@@ -16,7 +16,7 @@ export default async function Footer() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
           
           <div className="max-w-2xl">
-            <span className="text-xs font-semibold tracking-wider uppercase text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">
+            <span className="text-sm font-semibold text-accent">
               Start a conversation
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-ink mt-3 tracking-tight">
