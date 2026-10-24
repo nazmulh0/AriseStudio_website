@@ -31,24 +31,24 @@
 }
 .dark {
   color-scheme: dark;
-  --canvas: #071b14;
-  --surface: #0d261d;
-  --surface-muted: #102e23;
-  --surface-raised: #183b2d;
-  --ink: #f2f8f4;
-  --muted: #b4ccbf;
-  --subtle: #9eb8aa;
-  --line: #2b4b3d;
+  --canvas: #0b120f;
+  --surface: #111b16;
+  --surface-muted: #16241e;
+  --surface-raised: #1d2e26;
+  --ink: #f4fbf7;
+  --muted: #d2ded7;
+  --subtle: #a1b3aa;
+  --line: #243a30;
   --accent: #2cc78a;
-  --accent-strong: #73e3b0;
-  --on-accent: #071b14;
-  --info: #7cdbc8;
-  --danger: #fda4af;
-  --warning: #f8d182;
-  --glass-edge: rgb(221 255 235 / 18%);
-  --glass-sheen: rgb(221 255 235 / 6%);
-  --glass-shadow: rgb(0 10 5 / 24%);
-  --glass-highlight: rgb(235 255 246 / 62%);
+  --accent-strong: #4ade80;
+  --on-accent: #041d13;
+  --info: #38bdf8;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --glass-edge: rgb(167 243 208 / 12%);
+  --glass-sheen: rgb(167 243 208 / 4%);
+  --glass-shadow: rgb(0 15 10 / 45%);
+  --glass-highlight: rgb(240 253 244 / 15%);
 }
 @theme inline {
   --color-canvas: var(--canvas);
@@ -214,7 +214,7 @@ a, button, input, select, textarea { touch-action: manipulation; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 input:not([type="range"]), select, textarea { border-color: #82998a; }
-.dark input:not([type="range"]), .dark select, .dark textarea { border-color: #577d65; }
+.dark input:not([type="range"]), .dark select, .dark textarea { border-color: #334e42; }
 summary::marker { color: var(--accent); }
 @media (prefers-reduced-transparency: reduce) {
   .reflective-header::after, .frosted-popover::after, .nav-call::after, .glass-control::after { display: none; }
