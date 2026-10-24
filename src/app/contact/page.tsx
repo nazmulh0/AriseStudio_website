@@ -326,8 +326,8 @@ export default function ContactPage() {
           Let&apos;s build{" "}<br className="hidden sm:inline" />
           <span>a better workflow.</span>
         </h1>
-        <p className="mt-4 text-lg text-muted max-w-2xl mx-auto">
-          Share your requirements with our solutions architects. We evaluate your workflow and respond within 24 hours with an actionable roadmap.
+        <p className="mt-4 text-lg text-muted max-w-2xl mx-auto leading-relaxed">
+          Tell us about your current workflow and where your team loses time. A systems engineer will review your note and respond within 24 hours with practical recommendations.
         </p>
 
         {/* Live Call Scheduler CTA */}
@@ -357,10 +357,10 @@ export default function ContactPage() {
             <div className="p-8 rounded-3xl enterprise-card space-y-6">
               <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-accent" />
-                AriseStudio Solutions Desk
+                How to reach our engineers
               </h3>
               <p className="text-sm text-muted leading-relaxed">
-                Whether you need immediate 24/7 IT support, a full ERP migration, or high-volume e-commerce automation, we are ready to assist.
+                Whether you need ongoing 24/7 IT support, custom ERP development, or automation across your stores and warehouses, we are ready to help.
               </p>
 
               <div className="space-y-4 pt-2 text-sm">
@@ -368,7 +368,7 @@ export default function ContactPage() {
                   <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
                     <strong className="text-ink block">Headquarters:</strong>
-                    Dhaka, Bangladesh (Serving clients globally across US, UK, EU & APAC)
+                    Dhaka, Bangladesh (Partnering with clients across US, UK, EU, Middle East & APAC)
                   </div>
                 </div>
 
@@ -381,8 +381,6 @@ export default function ContactPage() {
                     </a>
                   </div>
                 </div>
-
-
               </div>
             </div>
 
@@ -394,11 +392,11 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center gap-3 text-sm text-muted">
                 <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
-                <span><strong>Strict Confidentiality:</strong> NDA available before sharing sensitive details</span>
+                <span><strong>Confidentiality:</strong> NDA available before sharing sensitive details</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted">
                 <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
-                <span><strong>Free Architecture Audit:</strong> No commitment or sales pressure</span>
+                <span><strong>Technical discovery:</strong> Practical guidance with zero sales pressure</span>
               </div>
             </div>
           </div>

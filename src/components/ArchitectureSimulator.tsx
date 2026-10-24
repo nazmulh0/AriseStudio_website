@@ -159,7 +159,7 @@ export default function ArchitectureSimulator() {
             <span className="w-3 h-3 rounded-full bg-accent" />
           </div>
           <span className="font-mono text-xs text-muted pl-2 border-l border-line">
-            AriseStudio Sample Architecture Explorer
+            Sample architecture explorer
           </span>
         </div>
 
@@ -167,7 +167,7 @@ export default function ArchitectureSimulator() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            INTERACTIVE DEMO
+            Interactive preview
           </span>
 
           <div className="inline-flex rounded-lg bg-surface-muted p-0.5 border border-line text-xs font-medium">
@@ -221,22 +221,22 @@ export default function ArchitectureSimulator() {
       {/* Scenario Overview Bar */}
       <div className="px-6 py-4 bg-surface-muted/20 border-b border-line grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
         <div>
-          <span className="text-subtle block">SAMPLE THROUGHPUT:</span>
+          <span className="text-subtle block">Throughput:</span>
           <span className="text-ink font-semibold text-sm">{currentScenario.throughput}</span>
         </div>
         <div>
-          <span className="text-subtle block">SAMPLE LATENCY:</span>
+          <span className="text-subtle block">Latency:</span>
           <span className="text-accent font-semibold text-sm">{currentScenario.latency}</span>
         </div>
         <div>
-          <span className="text-subtle block">FAILOVER ARCHITECTURE:</span>
+          <span className="text-subtle block">Failover design:</span>
           <span className="text-accent font-semibold text-xs">{currentScenario.resilience}</span>
         </div>
         <div>
-          <span className="text-subtle block">EXAMPLE STATUS:</span>
+          <span className="text-subtle block">Execution model:</span>
           <span className="text-accent font-semibold flex items-center gap-1.5 mt-0.5">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Deterministic Execution
+            Deterministic execution
           </span>
         </div>
       </div>

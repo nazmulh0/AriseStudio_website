@@ -58,7 +58,7 @@ export default function ServicesPage() {
           <span>Software that fits your business.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
-          We replace fragmented spreadsheets, manual data transcription, and brittle off-the-shelf software with resilient systems engineered around your exact business model.
+          We replace messy spreadsheets and manual data entry with software built around how your team actually works—from multi-warehouse inventory and courier dispatches to custom ERP ledgers.
         </p>
       </div>
 
@@ -162,10 +162,10 @@ export default function ServicesPage() {
       {/* What You Receive / Standard Deliverables */}
       <section className="mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs text-accent font-semibold ">
-            Standard Operating Procedure
+          <span className="text-xs text-accent font-semibold">
+            Handover standards
           </span>
-          <h2 className="text-3xl font-semibold text-ink mt-2">What You Receive in Every Handover</h2>
+          <h2 className="text-3xl font-semibold text-ink mt-2">What you receive in every project handover</h2>
           <p className="text-muted text-sm mt-2">
             Clear handover, documented systems and a team that helps you take ownership.
           </p>

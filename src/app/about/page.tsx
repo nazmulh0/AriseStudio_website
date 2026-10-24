@@ -16,23 +16,23 @@ export const metadata: Metadata = pageMetadata("About Us | AriseStudio", "Learn 
 const principles = [
   {
     icon: Code2,
-    title: "Zero Blind Commits & Deterministic Architecture",
-    desc: "Every pull request undergoes static analysis, automated unit/integration suites, and mandatory peer review from a Principal Architect. We don't deploy fragile hotfixes or untested glue code to production."
+    title: "Deterministic architecture, zero untested code",
+    desc: "Every pull request undergoes automated regression tests, static type checking, and peer review before reaching production. We don't ship untested glue code or fragile hotfixes."
   },
   {
     icon: Target,
-    title: "Measurable Economic ROI",
-    desc: "We consider software an engineering asset, not an experiment. Every workflow we automate and every platform we build is evaluated by concrete business metrics: payroll hours saved, order throughput multiplied, and eliminated SaaS seat licenses."
+    title: "Measurable business value",
+    desc: "We treat software as an operational asset, not an experiment. Every workflow we build is measured by tangible metrics: hours recovered each week, fewer manual errors, and eliminated SaaS subscription fees."
   },
   {
     icon: Lock,
-    title: "Data Sovereignty & Code IP Ownership",
-    desc: "You own 100% of your source code, deployment scripts, schema definitions, and private keys from day one. Your sensitive commercial data stays securely on your own cloud VPC, never locked into proprietary vendor silos."
+    title: "Full source code and data ownership",
+    desc: "You own 100% of your source code, database schemas, and configuration from day one. Your sensitive commercial data stays securely in your cloud account, never trapped in proprietary vendor silos."
   },
   {
     icon: Server,
-    title: "Contractual Incident SLAs",
-    desc: "When high-volume campaigns or month-end billing cycles run, automated bots are not enough. Our dedicated on-call systems engineers are bound by contract to respond within 15 minutes of any priority escalation."
+    title: "Direct engineering support with contractual SLAs",
+    desc: "During high-volume flash sales or month-end billing, automated bots aren't enough. Our on-call systems engineers are bound by contract to respond within 15 minutes to any production escalation."
   }
 ];
 
@@ -69,7 +69,7 @@ export default function AboutPage() {
           <span>A team you can rely on.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
-          AriseStudio was founded with a straightforward thesis: growing enterprises shouldn&apos;t be held hostage between manual spreadsheet chaos and extortionate per-user SaaS license fees. We design, deploy, and safeguard bespoke operational engines.
+          AriseStudio was founded on a simple premise: growing businesses shouldn&apos;t be stuck between messy spreadsheets and expensive per-seat SaaS tools. We design, build and support custom software and automated workflows tailored to the way your business actually runs.
         </p>
       </div>
 
@@ -78,25 +78,25 @@ export default function AboutPage() {
         <div className="rounded-3xl bg-surface border border-line p-6 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <span className="text-xs text-accent font-semibold ">
-                Who We Are & Why We Exist
+              <span className="text-xs text-accent font-semibold">
+                Our background
               </span>
               <h2 className="text-3xl sm:text-4xl font-semibold text-ink">
-                Pragmatic Software Engineering for Complex Realities
+                Engineering for businesses that have outgrown off-the-shelf tools
               </h2>
               <p className="text-muted leading-relaxed text-base">
-                We observed that while multibillion-dollar conglomerates have in-house software arms, mid-market enterprises frequently struggle with fragmented SaaS tools that don&apos;t talk to one another, leaving operators to re-enter data by hand.
+                Large corporations have in-house software departments. Growing businesses usually don&apos;t—so they end up juggling disconnected subscription tools, forcing their team to manually copy orders, invoices and tracking numbers between systems.
               </p>
               <p className="text-muted leading-relaxed text-base">
-                AriseStudio bridges that gap. We assemble senior engineering pods that step into your operational bottlenecks, architect resilient automated pipelines, build custom ERPs tailored to your exact hierarchy, and protect uptime 24/7/365.
+                AriseStudio bridges that gap. We step in as your dedicated technical partners: automating repetitive handoffs, building custom ERP and inventory software where SaaS falls short, and maintaining 24/7 uptime.
               </p>
               <div className="pt-2 flex items-center gap-4">
                 <div className="p-3 rounded-xl bg-accent/10 border border-accent/30 text-accent">
                   <Terminal className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="text-ink font-semibold text-sm">Founded in Dhaka, Operating Globally</h4>
-                  <p className="text-xs text-muted">Partnering with fast-scaling enterprises across North America, Europe, the Middle East, and South Asia.</p>
+                  <h4 className="text-ink font-semibold text-sm">Founded in Dhaka, operating globally</h4>
+                  <p className="text-xs text-muted">Partnering with fast-scaling retail, logistics, and technology businesses across North America, Europe, the Middle East, and South Asia.</p>
                 </div>
               </div>
             </div>
@@ -135,11 +135,11 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="studio-label">
-            Our Architectural Tenets
+            How we build
           </span>
-          <h2 className="text-3xl font-semibold text-ink mt-3">The Principles We Code By</h2>
+          <h2 className="text-3xl font-semibold text-ink mt-3">Principles we stick to</h2>
           <p className="text-muted mt-2 text-sm">
-            Standards crafted to provide predictability, auditability, and long-term security.
+            Standards designed to provide predictability, auditability, and long-term security.
           </p>
         </div>
 
@@ -163,11 +163,11 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div className="rounded-3xl bg-surface border border-line p-6 sm:p-10">
           <div className="max-w-2xl mb-10">
-            <span className="text-xs text-accent font-semibold ">
-              Studio Structure
+            <span className="text-xs text-accent font-semibold">
+              How we work together
             </span>
             <h3 className="text-2xl sm:text-3xl font-semibold text-ink mt-2">
-              Cross-Functional Engineering Pods
+              Dedicated engineering pods, no middlemen
             </h3>
             <p className="text-muted text-sm mt-2">
               You collaborate directly with dedicated systems engineers and technical leads—never account managers or outsourced junior subcontractors.

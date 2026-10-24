@@ -99,8 +99,8 @@ export default function SolutionsPage() {
           Built around{" "}<br className="hidden sm:inline" />
           <span>your industry.</span>
         </h1>
-        <p className="mt-4 text-lg text-muted max-w-3xl mx-auto">
-          Every industry has distinct regulatory requirements, operational quirks, and bottlenecks. We architect purpose-built solutions designed to deliver maximum operational leverage.
+        <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
+          Every industry has its own bottlenecks, paperwork, and daily friction. Here is how we design systems around the specific demands of retail, logistics, manufacturing, and billing.
         </p>
       </div>
 

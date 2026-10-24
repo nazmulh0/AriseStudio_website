@@ -67,8 +67,8 @@ export default function CareersPage() {
           Do your best work.{" "}<br className="hidden sm:inline" />
           <span>Build useful systems.</span>
         </h1>
-        <p className="mt-4 text-lg text-muted max-w-3xl mx-auto">
-          At AriseStudio, we don&apos;t build disposable prototypes. We craft high-throughput, mission-critical automation systems and enterprise platforms.
+        <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
+          At AriseStudio, we build production software that real businesses rely on every single day—from high-volume commerce queues to custom ERPs and automated logistics pipelines.
         </p>
       </div>
 
@@ -78,17 +78,17 @@ export default function CareersPage() {
           <div className="p-8 rounded-2xl enterprise-card">
             <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
               <Cpu className="w-5 h-5 text-accent" />
-              Complex Technical Challenges
+              Challenging technical problems
             </h3>
             <p className="text-sm text-muted mt-3 leading-relaxed">
-              Work directly with event-driven pipelines, distributed databases, high-concurrency commerce queues, and AI-driven workflow engines.
+              Work directly with event-driven pipelines, distributed databases, high-concurrency commerce queues, and automated workflow engines.
             </p>
           </div>
 
           <div className="p-8 rounded-2xl enterprise-card">
             <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
               <Coffee className="w-5 h-5 text-accent" />
-              Developer-First Culture
+              Developer-first environment
             </h3>
             <p className="text-sm text-muted mt-3 leading-relaxed">
               Zero bureaucracy, modern tooling (GitHub, automated CI/CD, Linear), continuous learning stipends, and flexible hybrid options.
@@ -98,7 +98,7 @@ export default function CareersPage() {
           <div className="p-8 rounded-2xl enterprise-card">
             <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-accent" />
-              Transparent Growth & Bonuses
+              Transparent growth and bonuses
             </h3>
             <p className="text-sm text-muted mt-3 leading-relaxed">
               Competitive compensation, bi-annual performance evaluations, and project success bonuses tied to measurable client outcomes.

@@ -59,17 +59,17 @@ export const servicesData: ServiceItem[] = [
       "Executive Real-Time Business Intelligence & Financial Dashboards"
     ],
     benefits: [
-      "100% intellectual property ownership with zero recurring SaaS user taxes",
+      "Full source code ownership with zero monthly per-seat licensing fees",
       "35% increase in cross-department operational velocity",
-      "Unified single pane of glass across multi-branch and multi-country operations"
+      "One central view across all your branches, warehouses and retail outlets"
     ],
     techStack: ["React", "NestJS", "TypeScript", "PostgreSQL", "TimescaleDB", "GraphQL", "Tailwind CSS"]
   },
   {
     id: "business-automation",
-    title: "End-to-End Business Automation & RPA",
+    title: "Business Process Automation & Workflows",
     shortDesc: "Spend less time copying information, checking documents and chasing approvals.",
-    fullDesc: "We audit your manual bottlenecks—spreadsheets, email approval chains, and repetitive copying across legacy portals—and engineer autonomous event-driven pipelines that run quietly 24/7.",
+    fullDesc: "We map out where your team loses time—spreadsheets, email approval chains, and copying data between portals—and build background automations that handle it reliably.",
     iconName: "Layers",
     features: [
       "Durable Workflow Automation with Temporal & Event-Driven Triggers",
@@ -89,7 +89,7 @@ export const servicesData: ServiceItem[] = [
     id: "it-support",
     title: "24/7 Managed IT Support & DevOps",
     shortDesc: "Keep your systems running with monitoring, cloud support, backups and incident response.",
-    fullDesc: "Ensure mission-critical systems and corporate workstations never suffer downtime. Our dedicated engineering desk handles zero-downtime deployments, security patching, cloud provisioning, and active surveillance 24/7/365.",
+    fullDesc: "Keep your servers, databases, and customer-facing apps running without disruption. Our systems engineers handle deployments, security patches, backups, and 24/7 monitoring.",
     iconName: "Headphones",
     features: [
       "24/7/365 Proactive Server, Database & Microservice Uptime Telemetry",
@@ -101,7 +101,7 @@ export const servicesData: ServiceItem[] = [
     benefits: [
       "99.99% guaranteed infrastructure uptime backed by contractual SLA",
       "Zero panic during peak traffic spikes or DDoS attempts",
-      "Predictable monthly engineering cost without maintaining bloated in-house IT overhead"
+      "Predictable monthly cost with dedicated on-call systems engineers"
     ],
     techStack: ["AWS", "Google Cloud", "Kubernetes", "Terraform", "Prometheus", "Grafana", "Cloudflare"]
   }
