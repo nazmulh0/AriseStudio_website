@@ -21,7 +21,7 @@ export default function SchedulePage() {
         {/* Compact Clean Header - AriseSell Style */}
         <div className="text-center max-w-xl mx-auto mb-6">
           <h1 className="text-4xl sm:text-5xl font-semibold text-ink tracking-tight">
-            Schedule a <span className="gradient-text-teal-emerald">Discovery Call</span>
+            Book a discovery call
           </h1>
           <p className="mt-2 text-sm sm:text-base text-muted">
             30-minute technical architecture consultation with our engineering team.
@@ -32,7 +32,7 @@ export default function SchedulePage() {
         {/* Appointment Scheduler Widget */}
         <Suspense
           fallback={
-            <div className="w-full max-w-7xl mx-auto rounded-3xl bg-canvas/90 backdrop-blur-xl border border-line p-16 text-center flex items-center justify-center gap-2 text-muted">
+            <div className="w-full max-w-7xl mx-auto rounded-3xl bg-surface border border-line p-16 text-center flex items-center justify-center gap-2 text-muted">
               <Loader2 className="w-5 h-5 animate-spin text-accent" />
               <span className="text-xs">Loading calendar...</span>
             </div>

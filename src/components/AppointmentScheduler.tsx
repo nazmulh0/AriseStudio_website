@@ -431,12 +431,12 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
   const monthHeader = `${monthNames[viewMonth]} ${viewYear}`;
 
   return (
-    <div className="w-full max-w-7xl mx-auto rounded-3xl bg-canvas/90 backdrop-blur-xl border border-line shadow-sm p-5 sm:p-7 relative">
+    <div className="w-full max-w-7xl mx-auto scheduler-panel rounded-3xl border border-line p-5 sm:p-7 relative">
       {/* Sleek Integrated Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-line">
         {/* Host Info */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-xs font-bold text-accent shrink-0 shadow-sm">
+          <div className="w-9 h-9 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-xs font-semibold text-accent shrink-0 shadow-sm">
             {host.initials}
           </div>
           <div className="leading-tight">
@@ -463,7 +463,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
               aria-label="Display timezone"
               value={selectedTimezone}
               onChange={(e) => setSelectedTimezone(e.target.value)}
-              className="bg-transparent border-none text-ink focus:outline-none cursor-pointer pr-1 text-xs"
+              className="bg-transparent border-none text-ink  cursor-pointer pr-1 text-xs"
             >
               {bookingTimezones.map((tz) => (
                 <option
@@ -493,11 +493,11 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
             <CheckCircle2 className="w-8 h-8" />
           </div>
 
-          <span className="text-xs uppercase tracking-widest text-accent font-semibold px-3 py-1 rounded-full bg-accent/10 border border-accent/20">
+          <span className="text-xs tracking-widest text-accent font-semibold px-3 py-1 rounded-full bg-accent/10 border border-accent/20">
             {confirmedBooking.gcalStatus === "cancelled" ? "Session Cancelled" : "Slot Reserved"}
           </span>
 
-          <h3 className="text-2xl sm:text-3xl font-bold text-ink mt-3">
+          <h3 className="text-2xl sm:text-3xl font-semibold text-ink mt-3">
             {confirmedBooking.gcalStatus === "cancelled" ? "This session has been cancelled" : confirmedBooking.meetUrl ? "Your 30-Min Architecture Call is Scheduled!" : confirmedBooking.gcalStatus === "failed" ? "Your slot is saved. Meeting setup needs another attempt." : "Your slot is saved. We are preparing your meeting."}
           </h3>
 
@@ -508,13 +508,13 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
           <div className="my-8 max-w-md mx-auto p-5 rounded-2xl bg-accent/10 border border-line text-left space-y-3 text-xs">
             <div className="flex justify-between items-center pb-2 border-b border-line">
               <span className="text-muted">Date:</span>
-              <span className="text-ink font-bold">
+              <span className="text-ink font-semibold">
                 {formatBookingDate(confirmedBooking.startIso, confirmedBooking.timezone)}
               </span>
             </div>
             <div className="flex justify-between items-center pb-2 border-b border-line">
               <span className="text-muted">Time:</span>
-              <span className="text-accent font-bold">
+              <span className="text-accent font-semibold">
                 {formatBookingRange(confirmedBooking.startIso, confirmedBooking.timezone)}
               </span>
             </div>
@@ -548,7 +548,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
               href={calendarUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-xs shadow-sm "
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-xs shadow-sm "
             >
               <CalendarIcon className="w-4 h-4" />
               Add to Google Calendar
@@ -576,7 +576,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
           </div>}
           {status === "error" && !isBookingOpen && <p role="alert" className="text-sm text-danger mb-4">{errorMessage}</p>}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-line">
-            <h3 className="text-base sm:text-lg font-bold text-ink">
+            <h3 className="text-base sm:text-lg font-semibold text-ink">
               Select an appointment time
             </h3>
             <div className="flex items-center gap-2.5">
@@ -588,7 +588,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                   type="button"
                   onClick={handlePrevWeek}
                   disabled={isPrevWeekDisabled}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="inline-flex min-h-11 items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Previous 7 Days"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
@@ -597,7 +597,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                 <button
                   type="button"
                   onClick={handleNextWeek}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 transition-colors"
+                  className="inline-flex min-h-11 items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-surface-muted border border-line text-muted hover:text-ink hover:border-accent/40 transition-colors"
                   title="Next 7 Days"
                 >
                   <span>Next</span>
@@ -609,9 +609,9 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
 
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-7 items-start">
             {/* Left Mini Calendar - Clean & Borderless (No inner card) */}
-            <div className="hidden lg:block w-full lg:w-[245px] shrink-0 space-y-4 pb-6 lg:pb-0 border-b lg:border-b-0 lg:border-r border-line lg:pr-6">
+            <div className="hidden xl:block w-full xl:w-[360px] shrink-0 space-y-4 pb-6 lg:pb-0 border-b lg:border-b-0 lg:border-r border-line lg:pr-6">
               <div className="flex items-center justify-between pb-2">
-                <span className="text-sm font-bold text-ink">
+                <span className="text-sm font-semibold text-ink">
                   {monthHeader}
                 </span>
                 <div className="flex items-center gap-1">
@@ -619,7 +619,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     type="button"
                     onClick={handlePrevMonth}
                     disabled={isPrevMonthDisabled}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
                     title="Previous month"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -627,7 +627,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                   <button
                     type="button"
                     onClick={handleNextMonth}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted transition-colors"
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-surface-muted transition-colors"
                     title="Next month"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -734,7 +734,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                             handleCalendarDayClick(dayNum, viewMonth, viewYear);
                           }
                         }}
-                        className={`w-7 h-7 mx-auto flex items-center justify-center rounded-full font-bold transition-colors ${
+                        className={`w-11 h-11 mx-auto flex items-center justify-center rounded-full font-semibold transition-colors ${
                           isSelected
                             ? "bg-accent text-on-accent ring-2 ring-accent shadow-sm scale-105"
                             : isSchedDay
@@ -784,14 +784,14 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                         key={day.dateNumber}
                         className="flex flex-col items-center"
                       >
-                        <span className="text-xs uppercase text-muted font-semibold mb-1">
+                        <span className="text-xs text-muted font-semibold mb-1">
                           {day.dayShort}
                         </span>
                         <button
                           onClick={() => setSelectedDayIndex(idx)}
                           aria-pressed={isSelected}
                           aria-label={day.fullDate}
-                          className={`w-full max-w-10 h-11 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${
+                          className={`w-full max-w-10 h-11 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
                             isSelected
                               ? "bg-accent text-on-accent shadow-sm  scale-105"
                               : "bg-surface-muted/80 text-ink hover:bg-surface-raised"
@@ -826,11 +826,11 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                               type="button"
                               disabled={disabled}
                               onClick={() => !disabled && handleSlotSelect(dIdx, slot)}
-                              className={`w-full min-h-11 lg:min-h-10 py-2 px-1 text-center rounded-xl sm:rounded-full text-xs font-medium transition-colors duration-150 border flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                              className={`w-full min-h-11 py-2 px-1 text-center rounded-xl sm:rounded-full text-xs font-medium transition-colors duration-150 border flex items-center justify-center gap-1.5 whitespace-nowrap ${
                                 disabled
                                   ? "bg-surface-muted/50 text-subtle border-line select-none cursor-not-allowed disabled:cursor-not-allowed hover:border-line hover:bg-surface-muted/50"
                                   : isPicked
-                                    ? "bg-accent text-on-accent border-accent font-bold shadow-sm  cursor-pointer"
+                                    ? "bg-accent text-on-accent border-accent font-semibold shadow-sm  cursor-pointer"
                                     : "bg-surface-muted/90 text-ink border-line hover:border-accent/50 hover:bg-accent/10 hover:text-ink cursor-pointer"
                               }`}
                               title={isBooked ? `${displayDate} ${displayTime} (Booked)`
@@ -867,16 +867,16 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
           aria-labelledby="booking-dialog-title"
           onCancel={(event) => { event.preventDefault(); if (status !== "loading") setIsBookingOpen(false); }}
           onClick={(event) => { if (event.target === event.currentTarget && status !== "loading") setIsBookingOpen(false); }}
-          className="m-auto w-[calc(100%-2rem)] max-w-md max-h-[90vh] overflow-y-auto p-0 bg-transparent text-ink backdrop:bg-black/80 backdrop:backdrop-blur-md"
+          className="m-auto w-[calc(100%-2rem)] max-w-md max-h-[90vh] overflow-y-auto p-0 booking-dialog bg-transparent text-ink"
         >
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md rounded-2xl bg-canvas border border-line p-5 sm:p-6 shadow-sm relative text-left animate-in zoom-in-95 duration-150"
           >
             {/* Header matching Google Calendar style */}
             <div className="flex items-start justify-between pb-3 border-b border-line">
               <div className="space-y-1">
-                <h3 id="booking-dialog-title" className="text-lg font-bold text-ink tracking-tight">
+                <h3 id="booking-dialog-title" className="text-lg font-semibold text-ink tracking-tight">
                   30 minutes with AriseStudio
                 </h3>
                 <div className="flex items-center gap-2 text-xs text-accent font-medium">
@@ -933,7 +933,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="e.g. Mahir Zaman"
-                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent focus:outline-none placeholder:text-subtle"
+                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent  placeholder:text-subtle"
                 />
               </div>
 
@@ -952,7 +952,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="mahir@company.com"
-                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent focus:outline-none placeholder:text-subtle"
+                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent  placeholder:text-subtle"
                 />
               </div>
 
@@ -971,7 +971,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   placeholder="+880 1700-000000"
-                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent focus:outline-none placeholder:text-subtle"
+                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent  placeholder:text-subtle"
                 />
               </div>
 
@@ -989,7 +989,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                     setFormData({ ...formData, notes: e.target.value })
                   }
                   placeholder="Questions or topics you would like to discuss..."
-                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent focus:outline-none placeholder:text-subtle"
+                  className="w-full px-3.5 py-2 rounded-xl bg-surface-muted border border-line text-ink text-base sm:text-sm focus:border-accent  placeholder:text-subtle"
                 />
               </div>
 
@@ -997,7 +997,7 @@ export default function AppointmentScheduler({ host }: { host: BookingHost }) {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold text-on-accent bg-accent hover:bg-accent-strong disabled:opacity-50 transition-colors shadow-sm  flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 rounded-full text-xs sm:text-sm font-semibold text-on-accent bg-accent hover:bg-accent-strong disabled:opacity-50 transition-colors shadow-sm  flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {status === "loading" ? (
                     <>

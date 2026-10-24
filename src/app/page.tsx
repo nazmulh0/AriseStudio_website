@@ -33,7 +33,7 @@ export default function HomePage() {
             <h1 className="text-[2.6rem] font-semibold leading-[1.12] tracking-[-.055em] text-ink sm:text-6xl lg:text-[4.1rem]">
               Less manual work.
               <br />
-              <span className="text-accent">More room to grow.</span>
+              <span>More room to grow.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
               Automation and custom software built around the way your business
@@ -60,10 +60,10 @@ export default function HomePage() {
             </p>
           </div>
           <figure
-            className="frosted-panel relative rounded-[28px] p-6 sm:p-8"
+            className="workflow-panel relative rounded-[26px] p-6 sm:p-8"
             aria-label="Illustrative operations workflow: orders connect to automation, inventory and customer updates"
           >
-            <div className="mb-8 flex items-center justify-between border-b border-line pb-5">
+            <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-5">
               <span className="text-sm font-semibold text-ink">
                 Your business, connected
               </span>
@@ -86,7 +86,7 @@ export default function HomePage() {
               <div className="flex h-10 items-center text-accent">
                 <ArrowDown className="h-4 w-4" aria-hidden="true" />
               </div>
-              <div className="w-full rounded-2xl border border-accent/30 bg-accent/10 p-5">
+              <div className="w-full rounded-2xl border border-line bg-surface-muted p-5">
                 <div className="flex items-center gap-3">
                   <Workflow
                     className="h-5 w-5 text-accent"
@@ -131,7 +131,7 @@ export default function HomePage() {
             { value: "Your code", label: "Your ownership" },
           ].map((item) => (
             <div key={item.label} className="text-center">
-              <p className="text-xl font-semibold tracking-tight text-ink sm:text-3xl">
+              <p className="text-xl font-semibold tracking-tight text-ink tabular-nums sm:text-3xl">
                 {item.value}
               </p>
               <p className="mt-2 text-[11px] leading-relaxed text-muted sm:text-xs">
@@ -159,7 +159,7 @@ export default function HomePage() {
             All services <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="studio-list studio-list--two">
           {servicesData.map((service, index) => {
             const Icon = icons[index];
             return (
@@ -219,7 +219,7 @@ export default function HomePage() {
             </ul>
             <Link
               href="/contact?service=arisesell"
-              className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
+              className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
             >
               Discuss AriseSell{" "}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -269,7 +269,7 @@ export default function HomePage() {
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className="grid gap-5 lg:grid-cols-3">
+        <div className="studio-list studio-list--three">
           {testimonialsData.map((testimonial) => (
             <figure
               key={testimonial.id}
@@ -310,10 +310,7 @@ export default function HomePage() {
               key={model.title}
               className="flex flex-col border-t border-line pt-6"
             >
-              <span className="text-xs font-semibold text-accent">
-                0{index + 1}
-              </span>
-              <h3 className="mt-4 text-xl font-semibold text-ink">
+                            <h3 className="mt-4 text-xl font-semibold text-ink">
                 {model.title}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -331,7 +328,7 @@ export default function HomePage() {
           ))}
         </div>
         <details className="mt-12 rounded-2xl border border-line bg-surface">
-          <summary className="flex min-h-16 items-center justify-between gap-4 px-6 py-5 text-sm font-semibold text-ink">
+          <summary className="flex min-h-16 items-center justify-between gap-4 px-6 py-5 text-sm font-semibold text-ink"><span className="sr-only">Toggle calculator: </span>
             <span className="flex items-center gap-3">
               <Layers className="h-4 w-4 text-accent" aria-hidden="true" />
               Estimate the time your team could recover

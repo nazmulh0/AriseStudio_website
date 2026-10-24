@@ -62,11 +62,18 @@ export default function Navbar() {
       if (!expertiseContainer.current?.contains(event.target)) setExpertiseMode(null);
       if (!header.current?.contains(event.target)) setMobileOpen(false);
     };
+    const dismissOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !expertiseOpen) return;
+      setExpertiseMode(null);
+      if (expertiseContainer.current?.contains(document.activeElement)) expertiseTrigger.current?.focus();
+    };
     document.addEventListener("pointerdown", dismiss);
     document.addEventListener("focusin", dismiss);
+    document.addEventListener("keydown", dismissOnEscape);
     return () => {
       document.removeEventListener("pointerdown", dismiss);
       document.removeEventListener("focusin", dismiss);
+      document.removeEventListener("keydown", dismissOnEscape);
     };
   }, [expertiseOpen, mobileOpen]);
 

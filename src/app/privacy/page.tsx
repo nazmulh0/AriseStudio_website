@@ -8,9 +8,9 @@ export const metadata = pageMetadata(
 export default function PrivacyPage() {
   return (
     <div className="px-5 pb-24 pt-36">
-      <article className="mx-auto max-w-3xl rounded-3xl border border-line bg-surface p-7 sm:p-12">
+      <article className="reading-copy mx-auto">
         <p className="text-sm font-semibold text-accent">Your information</p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink">
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink">
           Privacy notice
         </h1>
         <p className="mt-5 text-base leading-relaxed text-muted">

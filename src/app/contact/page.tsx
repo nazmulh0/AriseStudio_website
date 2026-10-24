@@ -3,13 +3,13 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { 
-  Mail, 
-  MapPin, 
-  Send, 
-  CheckCircle2, 
-  Clock, 
-  ShieldCheck, 
+import {
+  Mail,
+  MapPin,
+  Send,
+  CheckCircle2,
+  Clock,
+  ShieldCheck,
   MessageSquare,
   AlertCircle,
   Loader2,
@@ -107,13 +107,13 @@ function ContactForm() {
   };
 
   return (
-    <div className="p-8 sm:p-12 rounded-3xl enterprise-card relative shadow-sm">
+    <div className="p-6 sm:p-10 rounded-3xl enterprise-card relative">
       {status === "success" ? (
-        <div className="py-12 text-center space-y-5 animate-in fade-in duration-300">
+        <div role="status" className="py-12 text-center space-y-5">
           <div className="w-20 h-20 rounded-full bg-accent/10 border-2 border-accent text-accent mx-auto flex items-center justify-center shadow-sm ">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-ink">
+          <h3 className="text-2xl sm:text-3xl font-semibold text-ink">
             {isCareer ? "Application Received!" : "Consultation Request Received!"}
           </h3>
           <p className="text-muted max-w-md mx-auto text-sm leading-relaxed">
@@ -129,7 +129,7 @@ function ContactForm() {
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 hover:bg-accent border border-accent/40 text-sm font-semibold text-ink transition-colors hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 hover:bg-accent border border-accent/40 text-sm font-semibold text-ink transition-colors "
             >
               <RefreshCw className="w-4 h-4" />
               {isCareer ? "Submit Another Application" : "Submit Another Inquiry"}
@@ -139,7 +139,7 @@ function ContactForm() {
       ) : (
         <form onSubmit={handleSubmit} className="contact-form space-y-6">
           {status === "error" && (
-            <div className="p-4 rounded-xl bg-danger/40 border border-danger/40 text-danger text-sm flex items-start gap-3 animate-in fade-in">
+            <div role="alert" className="p-4 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm flex items-start gap-3 animate-in fade-in">
               <AlertCircle className="w-5 h-5 text-danger shrink-0 mt-0.5" />
               <div>
                 <strong className="block font-semibold">Submission Failed</strong>
@@ -150,7 +150,7 @@ function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+              <label htmlFor="contact-name" className="block text-xs font-semibold text-muted mb-2">
                 Your Full Name *
               </label>
               <input id="contact-name"
@@ -160,12 +160,12 @@ function ContactForm() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g. Farhan Rahman"
-                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+              <label htmlFor="contact-email" className="block text-xs font-semibold text-muted mb-2">
                 {isCareer ? "Email Address *" : "Corporate Email *"}
               </label>
               <input id="contact-email"
@@ -175,14 +175,14 @@ function ContactForm() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder={isCareer ? "you@example.com" : "farhan@company.com"}
-                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="contact-phone" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+              <label htmlFor="contact-phone" className="block text-xs font-semibold text-muted mb-2">
                 Phone / WhatsApp
               </label>
               <input id="contact-phone"
@@ -191,12 +191,12 @@ function ContactForm() {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="+880 17... / +1 ..."
-                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="contact-company" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+              <label htmlFor="contact-company" className="block text-xs font-semibold text-muted mb-2">
                 {isCareer ? "Portfolio / GitHub / LinkedIn" : "Company Name"}
               </label>
               <input id="contact-company"
@@ -205,14 +205,14 @@ function ContactForm() {
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 placeholder={isCareer ? "https://github.com/... or linkedin.com/..." : "Your Organization"}
-                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="contact-service" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+              <label htmlFor="contact-service" className="block text-xs font-semibold text-muted mb-2">
                 Primary Service Needed
               </label>
               <select id="contact-service"
@@ -227,7 +227,7 @@ function ContactForm() {
                   if (!isNowCareer && wasCareer) newBudget = "$3,000 - $8,000";
                   setFormData({ ...formData, service: newService, budget: newBudget });
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink focus:border-accent text-base sm:text-sm disabled:opacity-60"
               >
                 <option value="e-commerce-automation">E-Commerce Automation System</option>
                 <option value="arisesell-deployment">AriseSell Platform Deployment</option>
@@ -240,14 +240,14 @@ function ContactForm() {
             </div>
 
             <div>
-              <label htmlFor="contact-budget" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+              <label htmlFor="contact-budget" className="block text-xs font-semibold text-muted mb-2">
                 {isCareer ? "Years of Experience" : "Estimated Budget Bracket"}
               </label>
               <select id="contact-budget"
                 disabled={status === "loading"}
                 value={formData.budget}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60"
+                className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink focus:border-accent text-base sm:text-sm disabled:opacity-60"
               >
                 {isCareer ? (
                   <>
@@ -270,7 +270,7 @@ function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+            <label htmlFor="contact-message" className="block text-xs font-semibold text-muted mb-2">
               {isCareer
                 ? "Cover Note, Background & Core Skills *"
                 : "Tell us about your project or current operational bottlenecks *"}
@@ -286,7 +286,7 @@ function ContactForm() {
                   ? "Share your core stack, relevant projects or open-source work, and what excites you about joining AriseStudio..."
                   : "Describe your current systems, what you wish to automate, and your target completion timeline..."
               }
-              className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:outline-none focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-canvas border border-line text-ink placeholder:text-subtle focus:border-accent text-base sm:text-sm disabled:opacity-60 transition-colors"
             />
           </div>
 
@@ -294,7 +294,7 @@ function ContactForm() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full py-4 rounded-xl font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shadow-sm  flex items-center justify-center gap-2 text-sm disabled:opacity-75 disabled:cursor-not-allowed hover:-translate-y-0.5"
+            className="w-full py-4 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shadow-sm  flex items-center justify-center gap-2 text-sm disabled:opacity-75 disabled:cursor-not-allowed "
           >
             {status === "loading" ? (
               <>
@@ -320,30 +320,30 @@ export default function ContactPage() {
 
       <div className="page-intro">
         <span className="page-eyebrow">
-          Get in Touch
+          Contact the studio
         </span>
-        <h1 className="text-4xl sm:text-5xl font-bold text-ink mt-4 tracking-tight">
-          Let&apos;s Engineer Your <br className="hidden sm:inline" />
-          <span className="gradient-text-teal-emerald">System Together</span>
+        <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
+          Let&apos;s build{" "}<br className="hidden sm:inline" />
+          <span>a better workflow.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-2xl mx-auto">
           Share your requirements with our solutions architects. We evaluate your workflow and respond within 24 hours with an actionable roadmap.
         </p>
 
         {/* Live Call Scheduler CTA */}
-        <div className="mt-8 max-w-xl mx-auto p-4 rounded-2xl bg-accent/10 border border-accent/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-sm">
+        <div className="mt-7 max-w-2xl p-4 rounded-2xl bg-surface border border-line flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-bold text-ink">Prefer an instant 30-min live call?</p>
+              <p className="text-sm font-semibold text-ink">Prefer a 30-minute call?</p>
               <p className="text-xs text-muted">Pick an open slot on our Google Meet scheduler.</p>
             </div>
           </div>
           <Link
             href="/schedule"
-            className="px-5 py-2.5 rounded-full text-xs font-bold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm "
+            className="px-5 py-2.5 rounded-full text-xs font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm "
           >
             Schedule a Call
           </Link>
@@ -355,7 +355,7 @@ export default function ContactPage() {
           {/* Left Column: Direct Contact & Guarantees */}
           <div className="order-2 lg:order-1 lg:col-span-5 space-y-8">
             <div className="p-8 rounded-3xl enterprise-card space-y-6">
-              <h3 className="text-xl font-bold text-ink flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-accent" />
                 AriseStudio Solutions Desk
               </h3>
@@ -387,7 +387,7 @@ export default function ContactPage() {
             </div>
 
             {/* SLA & Security Trust Badges */}
-            <div className="p-6 rounded-2xl bg-canvas border border-accent/50 space-y-3">
+            <div className="p-6 rounded-2xl bg-surface border border-line space-y-3">
               <div className="flex items-center gap-3 text-sm text-muted">
                 <Clock className="w-4 h-4 text-accent shrink-0" />
                 <span><strong>Response target:</strong> Under 24 hours on business days</span>

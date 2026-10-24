@@ -103,24 +103,21 @@ const techIcons: TechIconItem[] = [
 
 export default function TechStackIcons() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-5xl mx-auto">
+    <div className="tech-stack max-w-5xl mx-auto">
       {techIcons.map((tech) => (
         <div
           key={tech.name}
-          className="group relative p-3 sm:p-3.5 rounded-2xl bg-canvas border border-line hover:border-accent/50 hover:bg-accent/10 hover:-translate-y-1 transition-colors duration-200 shadow-sm flex items-center justify-center"
-          title={tech.name}
+
         >
           <svg
-            role="img"
             viewBox="0 0 24 24"
-            className="w-5 h-5 sm:w-6 sm:h-6 fill-muted group-hover:fill-accent transition-colors duration-200"
-            aria-label={tech.name}
+            aria-hidden="true"
           >
             <path d={tech.path} />
           </svg>
 
           {/* Clean hover tooltip popup */}
-          <span className="pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 px-2.5 py-1 rounded-md bg-surface-muted border border-line text-xs text-ink whitespace-nowrap shadow-sm z-20">
+          <span >
             {tech.name}
           </span>
         </div>

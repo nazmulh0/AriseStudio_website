@@ -1,15 +1,15 @@
 import { pageMetadata } from "@/lib/site";
 import { Metadata } from "next";
 import Link from "next/link";
-import { 
-  Briefcase, 
-  MapPin, 
-  Clock, 
-  ArrowRight, 
-  CheckCircle2, 
-  Cpu, 
-  Sparkles, 
-  Coffee 
+import {
+  Briefcase,
+  MapPin,
+  Clock,
+  ArrowRight,
+  CheckCircle2,
+  Cpu,
+  Sparkles,
+  Coffee
 } from "lucide-react";
 
 export const metadata: Metadata = pageMetadata("Careers & Culture | AriseStudio", "Join the AriseStudio engineering team. Build enterprise automation systems, custom ERPs, and cloud architectures.", "/careers");
@@ -61,11 +61,11 @@ export default function CareersPage() {
       <div className="page-intro">
         <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
-          Join Our Engineering Guild
+          Careers at AriseStudio
         </span>
-        <h1 className="text-4xl sm:text-5xl font-bold text-ink mt-4 tracking-tight">
-          Build Systems That <br className="hidden sm:inline" />
-          <span className="gradient-text-teal-emerald">Millions Depend On</span>
+        <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
+          Do your best work.{" "}<br className="hidden sm:inline" />
+          <span>Build useful systems.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto">
           At AriseStudio, we don&apos;t build disposable prototypes. We craft high-throughput, mission-critical automation systems and enterprise platforms.
@@ -73,10 +73,10 @@ export default function CareersPage() {
       </div>
 
       {/* Culture Highlights */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div className="studio-list studio-list--three">
           <div className="p-8 rounded-2xl enterprise-card">
-            <h3 className="text-xl font-bold text-ink flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
               <Cpu className="w-5 h-5 text-accent" />
               Complex Technical Challenges
             </h3>
@@ -86,7 +86,7 @@ export default function CareersPage() {
           </div>
 
           <div className="p-8 rounded-2xl enterprise-card">
-            <h3 className="text-xl font-bold text-ink flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
               <Coffee className="w-5 h-5 text-info" />
               Developer-First Culture
             </h3>
@@ -96,7 +96,7 @@ export default function CareersPage() {
           </div>
 
           <div className="p-8 rounded-2xl enterprise-card">
-            <h3 className="text-xl font-bold text-ink flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-accent" />
               Transparent Growth & Bonuses
             </h3>
@@ -109,9 +109,9 @@ export default function CareersPage() {
 
       {/* Open Positions */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-ink mb-8">Open Engineering Positions</h2>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-ink mb-8">Open Engineering Positions</h2>
 
-        <div className="space-y-6">
+        <div className="studio-list">
           {openRoles.map((role, idx) => (
             <div
               key={idx}
@@ -119,7 +119,7 @@ export default function CareersPage() {
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-line">
                 <div>
-                  <h3 className="text-xl font-bold text-ink">{role.title}</h3>
+                  <h3 className="text-xl font-semibold text-ink">{role.title}</h3>
                   <div className="flex flex-wrap items-center gap-4 text-xs text-muted mt-2">
                     <span className="flex items-center gap-1">
                       <Briefcase className="w-3.5 h-3.5 text-accent" /> {role.department}
@@ -135,7 +135,7 @@ export default function CareersPage() {
 
                 <Link
                   href={`/contact?apply=${encodeURIComponent(role.title)}`}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm "
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm "
                 >
                   Apply for Role <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -146,7 +146,7 @@ export default function CareersPage() {
               </p>
 
               <div className="mt-4 space-y-1.5">
-                <p className="text-xs font-semibold uppercase text-muted tracking-wider">Requirements:</p>
+                <p className="text-xs font-semibold text-muted ">Requirements:</p>
                 {role.requirements.map((req, rIdx) => (
                   <div key={rIdx} className="flex items-start gap-2 text-xs text-muted">
                     <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />

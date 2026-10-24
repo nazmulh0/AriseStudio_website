@@ -1,12 +1,12 @@
 import { pageMetadata } from "@/lib/site";
 import { Metadata } from "next";
 import Link from "next/link";
-import { 
-  ShoppingCart, 
-  Truck, 
-  Receipt, 
-  Factory, 
-  CheckCircle2, 
+import {
+  ShoppingCart,
+  Truck,
+  Receipt,
+  Factory,
+  CheckCircle2,
   ArrowRight,
   TrendingUp,
   Sparkles
@@ -93,53 +93,53 @@ export default function SolutionsPage() {
       <div className="page-intro">
         <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
-          Industry-Specific Architectures
+          Industry solutions
         </span>
-        <h1 className="text-4xl sm:text-5xl font-bold text-ink mt-4 tracking-tight">
-          Automation Tailored to <br className="hidden sm:inline" />
-          <span className="gradient-text-teal-emerald">Your Exact Industry</span>
+        <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
+          Built around{" "}<br className="hidden sm:inline" />
+          <span>your industry.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto">
           Every industry has distinct regulatory requirements, operational quirks, and bottlenecks. We architect purpose-built solutions designed to deliver maximum operational leverage.
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {solutions.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.id}
               id={item.id}
-              className="scroll-mt-32 rounded-3xl enterprise-card p-8 sm:p-12 shadow-sm"
+              className="scroll-mt-32 rounded-3xl enterprise-card p-6 sm:p-10"
             >
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-8 border-b border-line">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/30 flex items-center justify-center text-accent">
+                  <div className="studio-icon shrink-0">
                     <Icon className="w-7 h-7" />
                   </div>
                   <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-ink">{item.title}</h2>
+                    <h2 className="text-2xl sm:text-3xl font-semibold text-ink">{item.title}</h2>
                     <p className="text-muted text-sm mt-1">{item.subtitle}</p>
                   </div>
                 </div>
 
-                <div className="px-4 py-2 rounded-xl bg-accent/10 border border-accent/30 text-accent text-sm font-semibold flex items-center gap-2">
+                <div className="px-4 py-2 rounded-full bg-surface-muted text-ink text-sm font-medium flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-accent" />
                   <span>{item.metrics}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+              <div className="studio-list studio-list--two studio-list--inset mt-6">
                 {/* Traditional Bottlenecks */}
-                <div className="p-6 rounded-2xl bg-canvas border border-danger/20">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-danger mb-4 flex items-center gap-2">
-                    <span>Common Friction & Manual Bottlenecks</span>
+                <div className="p-6">
+                  <h3 className="text-sm font-semibold text-muted mb-4 flex items-center gap-2">
+                    <span>The challenge</span>
                   </h3>
                   <div className="space-y-3">
                     {item.challenges.map((ch, idx) => (
                       <div key={idx} className="flex items-start gap-3 text-sm text-muted">
-                        <span className="text-danger font-bold">✕</span>
+                        <span className="text-muted font-semibold">✕</span>
                         <span>{ch}</span>
                       </div>
                     ))}
@@ -147,9 +147,9 @@ export default function SolutionsPage() {
                 </div>
 
                 {/* AriseStudio Engineered Solution */}
-                <div className="p-6 rounded-2xl bg-accent/10 border border-accent/30">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-accent mb-4 flex items-center gap-2">
-                    <span>AriseStudio Engineered Architecture</span>
+                <div className="p-6">
+                  <h3 className="text-sm font-semibold text-accent mb-4 flex items-center gap-2">
+                    <span>What we build</span>
                   </h3>
                   <div className="space-y-3">
                     {item.solutionsProvided.map((sol, idx) => (

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  ShoppingCart, 
-  Database, 
-  ShieldCheck, 
-  CheckCircle2, 
+import {
+  ShoppingCart,
+  Database,
+  ShieldCheck,
+  CheckCircle2,
   Terminal
 } from "lucide-react";
 
@@ -153,7 +153,7 @@ export default function ArchitectureSimulator() {
   const currentScenario = scenarios.find((s) => s.id === activeTab) || scenarios[0];
 
   return (
-    <div className="rounded-3xl bg-canvas border border-line shadow-sm overflow-hidden relative">
+    <div className="studio-tool overflow-hidden relative">
       {/* Chrome Top Header Bar */}
       <div className="bg-surface-raised/90 px-6 py-4 border-b border-line flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -168,7 +168,7 @@ export default function ArchitectureSimulator() {
         </div>
 
         {/* Live Status Pill */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             INTERACTIVE DEMO
@@ -179,7 +179,7 @@ export default function ArchitectureSimulator() {
               aria-pressed={viewMode === "flow"}
               onClick={() => setViewMode("flow")}
               className={`px-3 py-1 rounded-md transition-colors ${
-                viewMode === "flow" 
+                viewMode === "flow"
                   ? "bg-accent text-on-accent font-semibold"
                   : "text-muted hover:text-ink"
               }`}
@@ -190,7 +190,7 @@ export default function ArchitectureSimulator() {
               aria-pressed={viewMode === "payload"}
               onClick={() => setViewMode("payload")}
               className={`px-3 py-1 rounded-md transition-colors ${
-                viewMode === "payload" 
+                viewMode === "payload"
                   ? "bg-accent text-on-accent font-semibold"
                   : "text-muted hover:text-ink"
               }`}
@@ -252,17 +252,17 @@ export default function ArchitectureSimulator() {
         </p>
 
         {viewMode === "flow" ? (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="studio-list studio-list--four">
             {currentScenario.nodes.map((node, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="p-5 rounded-2xl bg-surface-muted/80 border border-line hover:border-accent/40 transition-colors flex flex-col justify-between group"
               >
                 <div>
-                  <div className="text-xs font-semibold text-accent uppercase tracking-wider mb-2">
+                  <div className="text-xs font-semibold text-accent mb-2">
                     Phase {i + 1}
                   </div>
-                  <h4 className="text-sm font-bold text-ink group-hover:text-accent transition-colors">
+                  <h4 className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">
                     {node.title}
                   </h4>
                   <p className="text-xs text-muted mt-2 leading-relaxed">

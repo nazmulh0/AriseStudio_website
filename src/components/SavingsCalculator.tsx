@@ -13,15 +13,14 @@ export default function SavingsCalculator() {
   const weeklyHoursLost = teamSize * hoursPerWeek;
   const annualHoursLost = weeklyHoursLost * 50; // 50 working weeks
   const annualPayrollWasted = annualHoursLost * hourlyRate;
-  
+
   // A planning assumption, not a guaranteed automation result.
   const reclaimedHours = Math.round(annualHoursLost * 0.85);
   const annualSavings = Math.round(annualPayrollWasted * 0.85);
 
   return (
-    <div className="rounded-3xl bg-canvas border border-line shadow-sm p-6 sm:p-10 lg:p-12 relative overflow-hidden">
+    <div className="studio-tool p-6 sm:p-10 lg:p-12 relative">
       {/* Background radial accent */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left: Interactive Controls */}
@@ -31,7 +30,7 @@ export default function SavingsCalculator() {
             <span>Automation savings estimate</span>
           </div>
 
-          <h3 className="text-2xl sm:text-3xl font-bold text-ink tracking-tight">
+          <h3 className="text-2xl sm:text-3xl font-semibold text-ink tracking-tight">
             See where automation could save time
           </h3>
 
@@ -42,9 +41,9 @@ export default function SavingsCalculator() {
           <div className="space-y-6 pt-2">
             {/* Slider 1: Team Size */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-sm font-medium">
+              <div className="flex flex-wrap justify-between items-center gap-2 text-sm font-medium">
                 <label htmlFor="team-size" className="text-muted">Team members</label>
-                <span className="font-mono text-accent font-bold text-base px-2.5 py-0.5 rounded bg-surface-muted border border-line">
+                <span className="font-mono text-accent font-semibold text-base px-2.5 py-0.5 rounded bg-surface-muted border border-line">
                   {teamSize} {teamSize === 1 ? "person" : "people"}
                 </span>
               </div>
@@ -67,9 +66,9 @@ export default function SavingsCalculator() {
 
             {/* Slider 2: Hours per week */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-sm font-medium">
+              <div className="flex flex-wrap justify-between items-center gap-2 text-sm font-medium">
                 <label htmlFor="hours-per-week" className="text-muted">Manual hours per person / week</label>
-                <span className="font-mono text-accent font-bold text-base px-2.5 py-0.5 rounded bg-surface-muted border border-line">
+                <span className="font-mono text-accent font-semibold text-base px-2.5 py-0.5 rounded bg-surface-muted border border-line">
                   {hoursPerWeek} hrs / week
                 </span>
               </div>
@@ -92,9 +91,9 @@ export default function SavingsCalculator() {
 
             {/* Slider 3: Blended Hourly Cost */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-sm font-medium">
+              <div className="flex flex-wrap justify-between items-center gap-2 text-sm font-medium">
                 <label htmlFor="hourly-rate" className="text-muted">Hourly cost (USD)</label>
-                <span className="font-mono text-accent font-bold text-base px-2.5 py-0.5 rounded bg-surface-muted border border-line">
+                <span className="font-mono text-accent font-semibold text-base px-2.5 py-0.5 rounded bg-surface-muted border border-line">
                   ${hourlyRate} / hour
                 </span>
               </div>
@@ -121,7 +120,7 @@ export default function SavingsCalculator() {
         <div className="lg:col-span-5">
           <div className="rounded-2xl bg-canvas border border-accent/30 p-6 sm:p-8 space-y-6 shadow-sm relative">
             <div className="flex items-center justify-between pb-4 border-b border-line">
-              <span className="text-xs uppercase tracking-wider text-muted">
+              <span className="text-xs text-muted">
                 Estimated annual capacity
               </span>
               <span className="text-xs text-accent font-semibold px-2 py-0.5 rounded bg-accent/10">
@@ -133,8 +132,8 @@ export default function SavingsCalculator() {
             <div className="space-y-4" aria-live="polite" aria-atomic="true">
               <div>
                 <span className="text-xs text-muted block mb-1">Recoverable Team Hours:</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-ink">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-4xl font-semibold text-ink">
                     {reclaimedHours.toLocaleString()}
                   </span>
                   <span className="text-sm font-medium text-accent">hours / year</span>
@@ -143,8 +142,8 @@ export default function SavingsCalculator() {
 
               <div>
                 <span className="text-xs text-muted block mb-1">Estimated time value:</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-accent">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-4xl font-semibold text-accent">
                     ${annualSavings.toLocaleString()}
                   </span>
                   <span className="text-xs text-muted">/ year in payroll capacity</span>
@@ -165,7 +164,7 @@ export default function SavingsCalculator() {
 
             <Link
               href={`/contact?service=business-automation&message=We%20currently%20have%20${teamSize}%20team%20members%20spending%20approximately%20${hoursPerWeek}%20hours%20per%20week%20on%20manual%20workflows.`}
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm "
+              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors text-sm shadow-sm "
             >
               Discuss this workflow
               <ArrowRight className="w-4 h-4" />
