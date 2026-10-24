@@ -8,7 +8,7 @@ export default function BrandLogo({
   return (
     <span className="relative block h-12 w-48 max-w-full shrink-0">
       <Image
-        src="/brand/arisestudio-logo.png"
+        src="/brand/arisestudio-logo-color.svg"
         alt="AriseStudio"
         fill
         sizes="192px"
@@ -16,7 +16,7 @@ export default function BrandLogo({
         priority={priority}
       />
       <Image
-        src="/brand/arisestudio-logo-darkmode.png"
+        src="/brand/arisestudio-logo-white.svg"
         alt="AriseStudio"
         fill
         sizes="192px"
