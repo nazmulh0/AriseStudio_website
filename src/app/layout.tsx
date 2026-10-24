@@ -46,6 +46,7 @@ export default function RootLayout({
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body
         className="min-h-screen flex flex-col bg-canvas text-ink antialiased"
+        suppressHydrationWarning
       >
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-xl focus:bg-accent focus:px-5 focus:py-3 focus:text-on-accent">Skip to content</a>
         <Navbar />
