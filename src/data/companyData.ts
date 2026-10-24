@@ -9,14 +9,11 @@ export interface ServiceItem {
   techStack: string[];
 }
 
-export interface TestimonialItem {
+export interface ProjectExample {
   id: string;
-  quote: string;
-  author: string;
-  role: string;
-  company: string;
   industry: string;
-  impactMetric: string;
+  challenge: string;
+  approach: string;
 }
 
 export interface EngagementModel {
@@ -110,57 +107,24 @@ export const servicesData: ServiceItem[] = [
   }
 ];
 
-export const testimonialsData: TestimonialItem[] = [
+export const projectExamples: ProjectExample[] = [
   {
-    id: "test-1",
-    quote: "Before AriseStudio, our warehouse team spent four hours every morning manually re-entering Shopify orders into our legacy billing software and courier portals. AriseStudio replaced the entire mess with an automated pipeline in three weeks. Our shipping error rate dropped to virtually zero.",
-    author: "Tanvir Rahman",
-    role: "Chief Operating Officer",
-    company: "Apex OmniCommerce",
+    id: "retail",
     industry: "Retail & Multi-Channel E-Commerce",
-    impactMetric: "Saved 20+ staff hours daily"
+    challenge: "Orders, stock and delivery updates live in separate systems, leaving teams to reconcile them by hand.",
+    approach: "Connect storefronts, inventory and courier workflows through one reliable order pipeline."
   },
   {
-    id: "test-2",
-    quote: "We were paying over $1,800 every month for a bloated enterprise CRM that 80% of our team hated using. AriseStudio engineered a tailored ERP & CRM platform that reflects our exact sales cycles. We own the codebase outright, our data is on our private VPC, and team adoption was instant.",
-    author: "Zubair Al-Mansoor",
-    role: "Managing Director",
-    company: "Nordic Logistics & Freight Ltd.",
+    id: "logistics",
     industry: "Supply Chain & Logistics",
-    impactMetric: "Zero recurring SaaS seat licenses"
+    challenge: "Freight documents are copied between email, spreadsheets and legacy portals.",
+    approach: "Use document extraction and a tailored ERP workflow to keep consignments and approvals in sync."
   },
   {
-    id: "test-3",
-    quote: "During our bi-weekly loan disbursement cycles, server bottlenecks previously risked customer data corruption. AriseStudio overhauled our cloud architecture on Kubernetes, automated our failovers, and their 24/7 monitoring team resolved an edge DDoS attempt before our users even noticed.",
-    author: "Farhana Yasmin",
-    role: "VP of Engineering",
-    company: "FinTrust Capital Group",
+    id: "finance",
     industry: "Financial Services",
-    impactMetric: "100% uptime across 18 peak cycles"
-  }
-];
-
-export const caseStudiesData = [
-  {
-    client: "Apex OmniCommerce",
-    industry: "Retail & E-Commerce",
-    metric: "450% Order Growth with Zero Additional Staff",
-    description: "Built an omnichannel inventory synchronizer linking 14 physical outlets with online web stores and courier API integrations.",
-    tags: ["E-Commerce Automation", "Next.js", "Warehouse Sync"]
-  },
-  {
-    client: "Nordic Logistics Ltd.",
-    industry: "Freight & Transport",
-    metric: "92% Reduction in Invoice Processing Delay",
-    description: "Automated OCR bill of lading parsing and integrated an automated customs clearance audit checklist pipeline.",
-    tags: ["Custom ERP", "AI OCR", "Process Automation"]
-  },
-  {
-    client: "FinTrust MicroCapital",
-    industry: "Financial Services",
-    metric: "100% Uptime Across Peak Payment Cycles",
-    description: "Architected high-availability cloud cluster, automated failovers, and established 24/7 Level 3 proactive system monitoring.",
-    tags: ["Managed IT Support", "DevOps", "AWS High-Availability"]
+    challenge: "Peak transaction periods expose fragile infrastructure and slow incident response.",
+    approach: "Add resilient deployment, monitoring and a clear incident response path for critical services."
   }
 ];
 

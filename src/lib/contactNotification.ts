@@ -1,5 +1,6 @@
 import { getDatabase } from "./turso";
 import { mailTransport } from "./mail";
+import { appointmentSiteUrl } from "./appointmentEmail";
 
 const escapeHtml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
@@ -15,8 +16,12 @@ export async function sendContactNotification(id: number): Promise<boolean> {
   try {
     const rows = await db.execute({ sql: "SELECT submission FROM contact_leads WHERE id = ?", args: [id] });
     const leadData: Record<string, string> = JSON.parse(String(rows.rows[0].submission));
+    const origin = appointmentSiteUrl();
 const htmlContent = `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #10b981; border-radius: 8px; background-color: #09101d; color: #f8fafc;">
+    <div style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #1e293b;">
+      <a href="${origin}" style="display:inline-block;"><img src="${origin}/brand/arisestudio-logo-white.png" alt="AriseStudio" width="148" style="display:block;width:148px;height:auto;border:0;"></a>
+    </div>
     <h2 style="color: #10b981; margin-bottom: 16px;">🚀 New Consultation Lead | AriseStudio</h2>
     <p style="font-size: 14px; color: #94a3b8;">A new consultation request was submitted through the website.</p>
 

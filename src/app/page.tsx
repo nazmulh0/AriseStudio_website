@@ -8,12 +8,11 @@ import {
   Database,
   Workflow,
   Headphones,
-  Quote,
   Layers,
 } from "lucide-react";
 import {
   servicesData,
-  testimonialsData,
+  projectExamples,
   engagementModels,
 } from "@/data/companyData";
 import SavingsCalculator from "@/components/SavingsCalculator";
@@ -255,44 +254,37 @@ export default function HomePage() {
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-sm font-semibold text-accent">
-              Client perspectives
+              Example workflows
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-              Good work. Lasting partnerships.
+              Built for the way teams work.
             </h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">Illustrative scenarios showing the kinds of systems we can design with you.</p>
           </div>
           <Link
             href="/case-studies"
             className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-accent"
           >
-            Read the case studies{" "}
+            Explore the examples{" "}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
         <div className="studio-list studio-list--three">
-          {testimonialsData.map((testimonial) => (
-            <figure
-              key={testimonial.id}
+          {projectExamples.map((example) => (
+            <article
+              key={example.id}
               className="flex flex-col justify-between rounded-2xl border border-line bg-surface p-6 sm:p-7"
             >
               <div>
-                <Quote
+                <Layers
                   className="mb-5 h-5 w-5 text-accent"
                   aria-hidden="true"
                 />
-                <blockquote className="text-sm leading-[1.8] text-muted">
-                  “{testimonial.quote}”
-                </blockquote>
+                <h3 className="text-sm font-semibold text-ink">{example.industry}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{example.challenge}</p>
               </div>
-              <figcaption className="mt-6 border-t border-line pt-5">
-                <p className="text-sm font-semibold text-ink">
-                  {testimonial.author}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted">
-                  {testimonial.role} · {testimonial.company}
-                </p>
-              </figcaption>
-            </figure>
+              <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted">{example.approach}</p>
+            </article>
           ))}
         </div>
       </section>

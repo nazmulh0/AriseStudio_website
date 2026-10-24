@@ -55,7 +55,7 @@ a { text-decoration:none; }
 <!--[if mso]><table role="presentation" width="600" align="center"><tr><td><![endif]-->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;table-layout:fixed;background-color:#ffffff;border:1px solid #d7e5dc;border-radius:16px;overflow:hidden;">
 <tr><td class="inset" align="center" bgcolor="#eaf4ed" style="text-align:center;padding:18px 28px;background-color:#eaf4ed;border-radius:15px 15px 0 0;border-bottom:1px solid #d7e5dc;">
-<a href="${origin}" style="display:inline-block;"><img src="${origin}/brand/arisestudio-logo.png" alt="AriseStudio" width="132" style="display:block;width:132px;height:auto;border:0;color:#ffffff;font-size:20px;font-weight:bold;"></a>
+<a href="${origin}" style="display:inline-block;"><img src="${origin}/brand/arisestudio-logo.png" alt="AriseStudio" width="160" style="display:block;width:160px;height:auto;border:0;color:#063a2b;font-size:20px;font-weight:bold;"></a>
 </td></tr>
 <tr><td class="inset" style="padding:28px;">
 <h1 class="headline" style="margin:0 0 20px;color:#1c603c;font-size:25px;line-height:32px;font-weight:700;letter-spacing:-.5px;">${title}</h1>

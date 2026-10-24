@@ -12,7 +12,6 @@ import {
 interface PipelineScenario {
   id: string;
   name: string;
-  badge: string;
   summary: string;
   latency: string;
   throughput: string;
@@ -29,7 +28,6 @@ const scenarios: PipelineScenario[] = [
   {
     id: "ecommerce",
     name: "E-Commerce Multi-Channel Synchronizer",
-    badge: "Active Production Engine",
     summary: "Real-time webhook ingestion from Shopify, Amazon & local POS with automatic parcel courier booking & inventory lock.",
     latency: "18 ms avg",
     throughput: "140 orders / sec",
@@ -69,7 +67,6 @@ const scenarios: PipelineScenario[] = [
   {
     id: "erp",
     name: "Custom ERP & Manufacturing Ledger",
-    badge: "Core Enterprise Backbone",
     summary: "Event-driven supply chain tracking connecting raw material procurement, Bill of Materials (BOM), and sales audit trails.",
     latency: "32 ms avg",
     throughput: "1,200 transactions / min",
@@ -108,7 +105,6 @@ const scenarios: PipelineScenario[] = [
   {
     id: "sentry",
     name: "24/7 Managed Infrastructure Sentry",
-    badge: "Continuous Surveillance",
     summary: "High-availability telemetry cluster providing proactive incident detection, synthetic health probes, and automated disaster failover.",
     latency: "< 5s probe",
     throughput: "24/7 Uptime Sentry",
@@ -167,7 +163,7 @@ export default function ArchitectureSimulator() {
           </span>
         </div>
 
-        {/* Live Status Pill */}
+        {/* Demo status */}
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
@@ -225,11 +221,11 @@ export default function ArchitectureSimulator() {
       {/* Scenario Overview Bar */}
       <div className="px-6 py-4 bg-surface-muted/20 border-b border-line grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
         <div>
-          <span className="text-subtle block">THROUGHPUT:</span>
+          <span className="text-subtle block">SAMPLE THROUGHPUT:</span>
           <span className="text-ink font-semibold text-sm">{currentScenario.throughput}</span>
         </div>
         <div>
-          <span className="text-subtle block">AVG LATENCY:</span>
+          <span className="text-subtle block">SAMPLE LATENCY:</span>
           <span className="text-accent font-semibold text-sm">{currentScenario.latency}</span>
         </div>
         <div>
@@ -237,7 +233,7 @@ export default function ArchitectureSimulator() {
           <span className="text-info font-semibold text-xs">{currentScenario.resilience}</span>
         </div>
         <div>
-          <span className="text-subtle block">STATUS:</span>
+          <span className="text-subtle block">EXAMPLE STATUS:</span>
           <span className="text-accent font-semibold flex items-center gap-1.5 mt-0.5">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Deterministic Execution
@@ -282,7 +278,7 @@ export default function ArchitectureSimulator() {
             <div className="flex items-center justify-between pb-3 mb-3 border-b border-line text-subtle text-xs">
               <span className="flex items-center gap-2">
                 <Terminal className="w-3.5 h-3.5 text-accent" />
-                Raw Event Payload Stream
+                Sample event payload
               </span>
               <span>Content-Type: application/json</span>
             </div>

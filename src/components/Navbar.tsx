@@ -45,7 +45,7 @@ const company = [
 const links = [
   { name: "Services", href: "/services", children: services },
   { name: "Solutions", href: "/solutions" },
-  { name: "Case Studies", href: "/case-studies" },
+  { name: "Examples", href: "/case-studies" },
   { name: "Company", href: "/about", children: company },
   { name: "Contact", href: "/contact" },
 ];

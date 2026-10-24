@@ -32,7 +32,7 @@ export default async function Footer() {
             <li><Link href="/solutions#retail">Retail & omnichannel</Link></li>
             <li><Link href="/solutions#logistics">Supply chain & logistics</Link></li>
             <li><Link href="/solutions#finance">Finance & invoicing</Link></li>
-            <li><Link href="/case-studies">Verified case studies</Link></li>
+            <li><Link href="/case-studies">Project examples</Link></li>
           </ul>
         </nav>
       </div>
@@ -45,7 +45,7 @@ export default async function Footer() {
           <p className="footer-copyright">© {new Date().getFullYear()} AriseStudio. All rights reserved.</p>
           <nav className="footer-legal" aria-label="Footer information">
             <Link href="/privacy">Privacy</Link>
-            <Link href="/case-studies">Client Studies</Link>
+            <Link href="/case-studies">Examples</Link>
             <Link href="/contact">Direct Desk</Link>
           </nav>
         </div>

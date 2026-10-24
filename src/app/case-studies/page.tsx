@@ -8,54 +8,44 @@ import {
   ShieldAlert,
   Zap,
   Sparkles,
-  Quote
 } from "lucide-react";
 
-export const metadata: Metadata = pageMetadata("Case Studies & Client Success | AriseStudio", "Real-world engineering case studies showcasing automation, custom ERP overhauls, and IT infrastructure results by AriseStudio.", "/case-studies");
+export const metadata: Metadata = pageMetadata("Project Examples | AriseStudio", "Illustrative examples of automation, ERP and infrastructure solutions AriseStudio can design around a business workflow.", "/case-studies");
 
 const fullStudies = [
   {
     title: "Multi-Channel Order & Inventory Synchronizer",
-    client: "Apex OmniCommerce",
     industry: "Retail & Multi-Channel E-Commerce",
-    overview: "Managing 14 physical retail branches alongside Shopify and Daraz web stores was causing inventory overselling, stockout chaos, and an average fulfillment lag of 48 hours per customer order.",
-    solution: "AriseStudio engineered an event-driven inventory hub built on Next.js, Redis, and Webhooks. Every POS sales register or online transaction immediately acquires an atomic distributed lock across all channels within 120 milliseconds.",
-    quote: "Our shipping error rate dropped to virtually zero within three weeks of rollout. The automated courier booking alone saved our warehouse team four hours every morning.",
-    quoteAuthor: "Tanvir Rahman, COO",
-    results: [
-      "450% surge in daily online order handling capacity with zero added headcount",
-      "99.4% elimination of customer refund cancellations caused by stock mismatches",
-      "Automated courier consignment booking saving 18 staff hours daily"
+    overview: "A retailer selling through physical stores and online channels needs one reliable view of orders, inventory and delivery status.",
+    solution: "An event-driven inventory hub could connect POS, storefronts and courier APIs, with safeguards against duplicate or conflicting stock updates.",
+    capabilities: [
+      "Keep stock changes consistent across connected channels",
+      "Route new orders into a shared fulfillment workflow",
+      "Give the team a clear record of dispatch and delivery status"
     ],
     tech: ["Next.js", "Node.js", "Redis Mutex", "Shopify Webhooks", "PostgreSQL", "Docker"]
   },
   {
     title: "Paperless Customs & Automated Freight Tracking ERP",
-    client: "Nordic Logistics & Freight Ltd.",
     industry: "Freight Forwarding & Customs",
-    overview: "Customs paper manifests and freight bills of lading were manually re-typed by clerks into three different legacy portals, resulting in costly data-entry typos and customs clearance bottlenecks.",
-    solution: "Implemented an automated OCR and LLM-assisted document parsing pipeline connected directly into their custom cloud ERP. Consignment documents uploaded via mobile or email are automatically verified against customs tariffs.",
-    quote: "We were paying thousands every month for an off-the-shelf software our staff hated. AriseStudio built an ERP mapped to our exact freight process. We own the codebase outright.",
-    quoteAuthor: "Zubair Al-Mansoor, Managing Director",
-    results: [
-      "92% reduction in manifest processing turnaround time",
-      "Zero compliance fines across 12 consecutive months of audit",
-      "Instant client consignment tracking portal with live GPS milestones"
+    overview: "A freight team handling paper manifests and bills of lading may spend too much time re-entering the same information into separate systems.",
+    solution: "A tailored ERP could combine document extraction, human review and shipment tracking in one workflow.",
+    capabilities: [
+      "Reduce repeated entry of consignment details",
+      "Keep source documents attached to each shipment",
+      "Give customers a clearer view of shipment milestones"
     ],
     tech: ["Python", "FastAPI", "OCR Pipeline", "Docker", "React ERP", "PostgreSQL"]
   },
   {
     title: "High-Availability Cloud Infrastructure & 24/7 IT Desk",
-    client: "FinTrust Capital Group",
     industry: "Financial & Loan Services",
-    overview: "Unplanned server crashes during monthly repayment collection cycles caused reputational damage and threatened transaction log consistency across branch tellers.",
-    solution: "Architected a multi-zone AWS Kubernetes cluster with automated horizontal pod autoscaling, automated database replication failover, and established an around-the-clock L3 engineering response team.",
-    quote: "Their 24/7 telemetry team mitigated a targeted edge DDoS attack during our peak loan disbursement window before our users even noticed a dip in speed.",
-    quoteAuthor: "Farhana Yasmin, VP of Engineering",
-    results: [
-      "100% server availability across 18 peak settlement windows",
-      "Average incident mitigation speed under 8 minutes",
-      "38% decrease in unnecessary cloud hosting expenses via rightsizing"
+    overview: "A financial services platform needs predictable availability and a dependable response when transaction traffic spikes.",
+    solution: "A resilient deployment could pair monitored services, tested backups and a clear incident response process.",
+    capabilities: [
+      "Detect service problems before they spread",
+      "Recover critical systems with tested backup and failover plans",
+      "Review infrastructure usage and costs regularly"
     ],
     tech: ["AWS EKS", "Terraform", "Prometheus", "PostgreSQL Replication", "Cloudflare"]
   }
@@ -69,14 +59,14 @@ export default function CaseStudiesPage() {
       <div className="page-intro">
         <span className="page-eyebrow">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
-          Client case studies
+          Illustrative project examples
         </span>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight">
-          Systems at work.{" "}<br className="hidden sm:inline" />
-          <span>Results that matter.</span>
+          Connected systems.{" "}<br className="hidden sm:inline" />
+          <span>Built around real workflows.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
-          Explore how AriseStudio has eliminated operational bottlenecks, replaced fragile spreadsheets with custom platforms, and protected system uptime for fast-growing enterprises.
+          These are illustrative scenarios, not client case studies or measured outcomes. They show how we might approach common operational challenges; the final design depends on your business.
         </p>
       </div>
 
@@ -94,7 +84,7 @@ export default function CaseStudiesPage() {
                 <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1">
                   {study.title}
                 </h2>
-                <p className="text-sm text-muted mt-1">Client: <span className="text-ink font-semibold">{study.client}</span></p>
+                <p className="text-sm text-muted mt-1">Example architecture</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {study.tech.map((t) => (
@@ -119,35 +109,26 @@ export default function CaseStudiesPage() {
               {/* Solution */}
               <div className="p-6">
                 <h3 className="text-xs font-semibold text-accent mb-3 flex items-center gap-2">
-                  <Zap className="w-4 h-4" /> Architectural Solution
+                  <Zap className="w-4 h-4" /> Possible Approach
                 </h3>
                 <p className="text-sm text-muted leading-relaxed">
                   {study.solution}
                 </p>
               </div>
 
-              {/* Verified Results */}
+              {/* Illustrative capabilities */}
               <div className="p-6">
                 <h3 className="text-xs font-semibold text-accent mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-accent" /> Commercial Returns
+                  <TrendingUp className="w-4 h-4 text-accent" /> What This Could Enable
                 </h3>
                 <div className="space-y-2.5">
-                  {study.results.map((res, rIdx) => (
+                  {study.capabilities.map((res, rIdx) => (
                     <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
                       <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                       <span>{res}</span>
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
-
-            {/* Direct Client Quote Callout */}
-            <div className="mt-6 border-t border-line py-6 flex items-start gap-4">
-              <Quote className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm text-ink italic">&ldquo;{study.quote}&rdquo;</p>
-                <p className="text-xs text-accent mt-2 font-semibold">— {study.quoteAuthor}</p>
               </div>
             </div>
 

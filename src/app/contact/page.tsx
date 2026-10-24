@@ -100,9 +100,9 @@ function ContactForm() {
       email: "",
       phone: "",
       company: "",
-      service: "e-commerce-automation",
-      budget: "$3,000 - $8,000",
-      message: ""
+      service: getInitialService(serviceParam, roleParam),
+      budget: roleParam ? "1 - 3 Years" : "$3,000 - $8,000",
+      message: getInitialMessage(roleParam, searchParams.get("message") || "")
     });
   };
 
