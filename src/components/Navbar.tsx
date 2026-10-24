@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Menu,
   X,
@@ -46,14 +46,33 @@ const services = [
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [expertiseOpen, setExpertiseOpen] = useState(false);
+  const [expertiseMode, setExpertiseMode] = useState<"hover" | "press" | null>(null);
+  const expertiseOpen = expertiseMode !== null;
+  const header = useRef<HTMLElement>(null);
+  const expertiseContainer = useRef<HTMLDivElement>(null);
   const expertiseTrigger = useRef<HTMLButtonElement>(null);
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const navClass = (href: string) =>
     `inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors ${pathname === href ? "bg-accent/10 text-accent" : "text-muted hover:bg-surface-muted/80 hover:text-ink"}`;
 
+  useEffect(() => {
+    if (!expertiseOpen && !mobileOpen) return;
+    const dismiss = (event: Event) => {
+      if (!(event.target instanceof Node)) return;
+      if (!expertiseContainer.current?.contains(event.target)) setExpertiseMode(null);
+      if (!header.current?.contains(event.target)) setMobileOpen(false);
+    };
+    document.addEventListener("pointerdown", dismiss);
+    document.addEventListener("focusin", dismiss);
+    return () => {
+      document.removeEventListener("pointerdown", dismiss);
+      document.removeEventListener("focusin", dismiss);
+    };
+  }, [expertiseOpen, mobileOpen]);
+
   return (
     <header
+      ref={header}
       className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-5"
       onKeyDown={(event) => {
         if (event.key === "Escape" && mobileOpen) {
@@ -78,19 +97,18 @@ export default function Navbar() {
             link.href === "/services" ? (
               <div
                 key={link.href}
+                ref={expertiseContainer}
                 className="relative"
-                onMouseEnter={() => setExpertiseOpen(true)}
-                onMouseLeave={(event) => {
-                  if (!event.currentTarget.contains(document.activeElement))
-                    setExpertiseOpen(false);
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") setExpertiseMode((mode) => mode ?? "hover");
                 }}
-                onBlur={(event) => {
-                  if (!event.currentTarget.contains(event.relatedTarget))
-                    setExpertiseOpen(false);
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse" && !event.currentTarget.contains(document.activeElement))
+                    setExpertiseMode(null);
                 }}
                 onKeyDown={(event) => {
                   if (event.key === "Escape") {
-                    setExpertiseOpen(false);
+                    setExpertiseMode(null);
                     expertiseTrigger.current?.focus();
                   }
                 }}
@@ -101,7 +119,7 @@ export default function Navbar() {
                   aria-expanded={expertiseOpen}
                   aria-controls="expertise-links"
                   aria-current={pathname === "/services" ? "page" : undefined}
-                  onClick={() => setExpertiseOpen((open) => !open)}
+                  onClick={() => setExpertiseMode((mode) => mode === "press" ? null : "press")}
                   className={navClass(link.href)}
                 >
                   Expertise{" "}
@@ -118,7 +136,7 @@ export default function Navbar() {
                     <div className="frosted-popover relative rounded-3xl p-2">
                       <Link
                         href="/services"
-                        onClick={() => setExpertiseOpen(false)}
+                        onClick={() => setExpertiseMode(null)}
                         className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-bold text-ink hover:bg-surface-muted/60"
                       >
                         All services{" "}
@@ -128,7 +146,7 @@ export default function Navbar() {
                         <Link
                           key={service.href}
                           href={service.href}
-                          onClick={() => setExpertiseOpen(false)}
+                          onClick={() => setExpertiseMode(null)}
                           className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm text-ink hover:bg-surface-muted/60"
                         >
                           <service.icon

@@ -25,11 +25,16 @@ export default function ThemeToggle() {
   useEffect(() => {
     if (!open) return;
     container.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
-    const dismiss = (event: PointerEvent) => {
+    const dismiss = (event: Event) => {
       if (event.target instanceof Node && !container.current?.contains(event.target)) setOpen(false);
     };
     document.addEventListener("pointerdown", dismiss);
-    return () => document.removeEventListener("pointerdown", dismiss);
+    // Safari can blur to the page before an option click; dismiss on outside focus instead.
+    document.addEventListener("focusin", dismiss);
+    return () => {
+      document.removeEventListener("pointerdown", dismiss);
+      document.removeEventListener("focusin", dismiss);
+    };
   }, [open]);
 
   function choose(value: string) {
@@ -48,9 +53,6 @@ export default function ThemeToggle() {
     <div
       ref={container}
       className="relative shrink-0"
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
-      }}
       onKeyDown={(event) => {
         if (event.key === "Escape" && open) {
           event.stopPropagation();
