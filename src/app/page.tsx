@@ -39,14 +39,10 @@ export default function HomePage() {
               </span>
               <span>Dhaka studio · Global partnerships</span>
             </div>
-            <h1 className="text-[2.6rem] font-semibold leading-[1.12] tracking-[-.055em] text-ink sm:text-6xl lg:text-[4.1rem]">
-              <span className="text-mask-reveal">
-                <span className="text-mask-inner">Less manual work.</span>
-              </span>
+            <h1 className="motion-stagger-2 text-[2.6rem] font-semibold leading-[1.15] tracking-[-.055em] text-ink sm:text-6xl lg:text-[4.1rem]">
+              Less manual work.
               <br />
-              <span className="text-mask-reveal">
-                <span className="text-mask-inner [animation-delay:120ms]">More room to grow.</span>
-              </span>
+              <span>More room to grow.</span>
             </h1>
             <p className="motion-stagger-3 mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
               Automation and custom software built around the way your business
@@ -116,7 +112,7 @@ export default function HomePage() {
                       HMAC Validated
                     </span>
                   </div>
-                  <p className="text-xs text-muted truncate mt-0.5">
+                  <p className="text-xs text-muted mt-0.5 leading-relaxed">
                     Shopify D2C · WooCommerce · POS Gulshan Branch
                   </p>
                 </div>

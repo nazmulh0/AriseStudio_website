@@ -69,14 +69,9 @@ export default function AboutPage() {
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           About the studio
         </span>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight">
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner">Software you own.</span>
-          </span>{" "}
-          <br className="hidden sm:inline" />
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner [animation-delay:120ms]">A team you can rely on.</span>
-          </span>
+        <h1 className="motion-stagger-2 text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight leading-[1.15]">
+          Software you own. <br className="hidden sm:inline" />
+          <span>A team you can rely on.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           AriseStudio was founded on a simple premise: growing businesses shouldn&apos;t be stuck between messy spreadsheets and expensive per-seat SaaS tools. We design, build and support custom software and automated workflows tailored to the way your business actually runs.

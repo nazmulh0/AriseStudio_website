@@ -68,14 +68,9 @@ export default function CareersPage() {
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Careers at AriseStudio
         </span>
-        <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner">Do your best work.</span>
-          </span>{" "}
-          <br className="hidden sm:inline" />
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner [animation-delay:120ms]">Build useful systems.</span>
-          </span>
+        <h1 className="motion-stagger-2 text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight leading-[1.15]">
+          Do your best work. <br className="hidden sm:inline" />
+          <span>Build useful systems.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           At AriseStudio, we build production software that real businesses rely on every single day—from high-volume commerce queues to custom ERPs and automated logistics pipelines.

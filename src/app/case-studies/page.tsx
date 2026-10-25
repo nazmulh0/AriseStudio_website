@@ -65,14 +65,9 @@ export default function CaseStudiesPage() {
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Illustrative project examples
         </span>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight">
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner">Connected systems.</span>
-          </span>{" "}
-          <br className="hidden sm:inline" />
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner [animation-delay:120ms]">Built around real workflows.</span>
-          </span>
+        <h1 className="motion-stagger-2 text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight leading-[1.15]">
+          Connected systems. <br className="hidden sm:inline" />
+          <span>Built around real workflows.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           These are illustrative scenarios, not client case studies or measured outcomes. They show how we might approach common operational challenges; the final design depends on your business.

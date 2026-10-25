@@ -329,14 +329,9 @@ export default function ContactPage() {
         <span className="page-eyebrow">
           Contact the studio
         </span>
-        <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner">Let&apos;s build</span>
-          </span>{" "}
-          <br className="hidden sm:inline" />
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner [animation-delay:120ms]">a better workflow.</span>
-          </span>
+        <h1 className="motion-stagger-2 text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight leading-[1.15]">
+          Let&apos;s build <br className="hidden sm:inline" />
+          <span>a better workflow.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-2xl mx-auto leading-relaxed">
           Tell us about your current workflow and where your team loses time. A systems engineer will review your note and respond within 24 hours with practical recommendations.

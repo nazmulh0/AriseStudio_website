@@ -46,8 +46,8 @@ export default function NetworkStatusWatcher() {
             <WifiOff className="w-4 h-4" />
           </span>
           <div className="min-w-0">
-            <p className="font-semibold text-ink truncate">Connection interrupted</p>
-            <p className="text-xs text-muted truncate">Internet appears unstable or offline</p>
+            <p className="font-semibold text-ink leading-tight">Connection interrupted</p>
+            <p className="text-xs text-muted leading-tight mt-0.5">Internet appears unstable or offline</p>
           </div>
         </div>
 

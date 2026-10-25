@@ -58,14 +58,9 @@ export default function ServicesPage() {
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Our services
         </span>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight">
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner">Practical automation.</span>
-          </span>{" "}
-          <br className="hidden sm:inline" />
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner [animation-delay:120ms]">Software that fits your business.</span>
-          </span>
+        <h1 className="motion-stagger-2 text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight leading-[1.15]">
+          Practical automation. <br className="hidden sm:inline" />
+          <span>Software that fits your business.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           We replace messy spreadsheets and manual data entry with software built around how your team actually works—from multi-warehouse inventory and courier dispatches to custom ERP ledgers.

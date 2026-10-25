@@ -23,12 +23,10 @@ export default function SchedulePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-1">
         {/* Compact Clean Header - AriseSell Style */}
         <div className="text-center max-w-xl mx-auto mb-6">
-          <h1 className="text-4xl sm:text-5xl font-semibold text-ink tracking-tight">
-            <span className="text-mask-reveal">
-              <span className="text-mask-inner">Book a discovery call</span>
-            </span>
+          <h1 className="motion-stagger-2 text-4xl sm:text-5xl font-semibold text-ink tracking-tight">
+            Book a discovery call
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-muted">
+          <p className="motion-stagger-3 mt-3 text-sm sm:text-base text-muted leading-relaxed">
             30-minute technical architecture consultation with our engineering team.
           </p>
         </div>

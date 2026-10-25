@@ -100,14 +100,9 @@ export default function SolutionsPage() {
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           Industry solutions
         </span>
-        <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner">Built around</span>
-          </span>{" "}
-          <br className="hidden sm:inline" />
-          <span className="text-mask-reveal">
-            <span className="text-mask-inner [animation-delay:120ms]">your industry.</span>
-          </span>
+        <h1 className="motion-stagger-2 text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight leading-[1.15]">
+          Built around <br className="hidden sm:inline" />
+          <span>your industry.</span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           Every industry has its own bottlenecks, paperwork, and daily friction. Here is how we design systems around the specific demands of retail, logistics, manufacturing, and billing.
