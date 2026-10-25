@@ -79,7 +79,13 @@ html {
   scroll-padding-top: 112px;
   scrollbar-color: color-mix(in srgb, var(--accent) 75%, var(--canvas)) var(--canvas);
 }
-body { background: var(--canvas); color: var(--ink); font-family: var(--font-sans); font-optical-sizing: auto; }
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  transition: background-color 300ms var(--ease-ambient), color 300ms var(--ease-ambient);
+}
 @layer base {
   h1, h2, h3 { text-wrap: balance; }
   h2, h3 { letter-spacing: -.025em; }
@@ -478,4 +484,38 @@ summary::marker { color: var(--accent); }
   );
   animation: skeletonWave 1.8s var(--ease-ambient) infinite;
   pointer-events: none;
+}
+
+/* ==========================================================================
+   Advanced Creative Motion (Cuberto, Lusion & Noomo Reverse-Engineered)
+   ========================================================================== */
+
+@keyframes textMaskReveal {
+  0% {
+    transform: translateY(115%) skewY(4deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%) skewY(0deg);
+    opacity: 1;
+  }
+}
+
+.text-mask-reveal {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.text-mask-inner {
+  display: inline-block;
+  animation: textMaskReveal 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
 }

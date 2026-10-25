@@ -60,7 +60,12 @@ export default function NavigationProgressBar() {
       if (target && target !== "_self") return;
 
       const href = anchor.getAttribute("href");
-      if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+      if (
+        !href ||
+        href.startsWith("#") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:")
+      ) {
         return;
       }
 
@@ -68,7 +73,8 @@ export default function NavigationProgressBar() {
         const targetUrl = new URL(anchor.href, window.location.href);
         if (
           targetUrl.origin === window.location.origin &&
-          (targetUrl.pathname !== window.location.pathname || targetUrl.search !== window.location.search)
+          (targetUrl.pathname !== window.location.pathname ||
+            targetUrl.search !== window.location.search)
         ) {
           startProgress();
         }
@@ -79,7 +85,9 @@ export default function NavigationProgressBar() {
 
     document.addEventListener("click", handleAnchorClick, { capture: true });
     return () => {
-      document.removeEventListener("click", handleAnchorClick, { capture: true });
+      document.removeEventListener("click", handleAnchorClick, {
+        capture: true,
+      });
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);

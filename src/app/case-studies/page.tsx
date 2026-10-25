@@ -1,6 +1,9 @@
 import { pageMetadata } from "@/lib/site";
 import { Metadata } from "next";
 import Link from "next/link";
+import HeroAmbientCanvas from "@/components/HeroAmbientCanvas";
+import TiltCard from "@/components/TiltCard";
+import MagneticElement from "@/components/MagneticElement";
 import {
   ArrowRight,
   CheckCircle2,
@@ -54,6 +57,7 @@ const fullStudies = [
 export default function CaseStudiesPage() {
   return (
     <div className="pt-32 pb-24 relative bg-canvas overflow-hidden">
+      <HeroAmbientCanvas />
       <div className="hero-ambient-glow" aria-hidden="true" />
       {/* Header */}
       <div className="page-intro relative z-1">
@@ -62,87 +66,95 @@ export default function CaseStudiesPage() {
           Illustrative project examples
         </span>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-ink mt-4 tracking-tight">
-          Connected systems.{" "}<br className="hidden sm:inline" />
-          <span>Built around real workflows.</span>
+          <span className="text-mask-reveal">
+            <span className="text-mask-inner">Connected systems.</span>
+          </span>{" "}
+          <br className="hidden sm:inline" />
+          <span className="text-mask-reveal">
+            <span className="text-mask-inner [animation-delay:120ms]">Built around real workflows.</span>
+          </span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-3xl mx-auto leading-relaxed">
           These are illustrative scenarios, not client case studies or measured outcomes. They show how we might approach common operational challenges; the final design depends on your business.
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-1">
         {fullStudies.map((study, idx) => (
-          <article
-            key={idx}
-            className="rounded-3xl bg-surface border border-line p-6 sm:p-10 shadow-sm motion-card"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-line">
-              <div>
-                <span className="text-xs text-accent font-semibold">
-                  {study.industry}
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1">
-                  {study.title}
-                </h2>
-                <p className="text-sm text-muted mt-1">Example architecture</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {study.tech.map((t) => (
-                  <span key={t} className="studio-tag text-xs px-2.5 py-1 rounded-md">
-                    {t}
+          <TiltCard key={idx} maxTilt={2} spotlightBorder={true} className="rounded-3xl">
+            <article
+              className="rounded-3xl bg-surface border border-line p-6 sm:p-10 shadow-sm motion-card"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-line">
+                <div>
+                  <span className="text-xs text-accent font-semibold">
+                    {study.industry}
                   </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="studio-list studio-list--three studio-list--inset mt-6">
-              {/* Problem */}
-              <div className="p-6">
-                <h3 className="text-xs font-semibold text-muted mb-3 flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4" /> The Bottleneck
-                </h3>
-                <p className="text-sm text-muted leading-relaxed">
-                  {study.overview}
-                </p>
-              </div>
-
-              {/* Solution */}
-              <div className="p-6">
-                <h3 className="text-xs font-semibold text-accent mb-3 flex items-center gap-2">
-                  <Zap className="w-4 h-4" /> Possible Approach
-                </h3>
-                <p className="text-sm text-muted leading-relaxed">
-                  {study.solution}
-                </p>
-              </div>
-
-              {/* Illustrative capabilities */}
-              <div className="p-6">
-                <h3 className="text-xs font-semibold text-accent mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-accent" /> What This Could Enable
-                </h3>
-                <div className="space-y-2.5">
-                  {study.capabilities.map((res, rIdx) => (
-                    <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
-                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                      <span>{res}</span>
-                    </div>
+                  <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1">
+                    {study.title}
+                  </h2>
+                  <p className="text-sm text-muted mt-1">Example architecture</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {study.tech.map((t) => (
+                    <span key={t} className="studio-tag text-xs px-2.5 py-1 rounded-md font-mono">
+                      {t}
+                    </span>
                   ))}
                 </div>
               </div>
-            </div>
 
-            <div className="mt-6 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
-              <span className="text-xs text-muted">Facing a similar operational hurdle?</span>
-              <Link
-                href="/contact"
-                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent-strong transition-colors"
-              >
-                Schedule an architecture audit{" "}
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </article>
+              <div className="studio-list studio-list--three studio-list--inset mt-6">
+                {/* Problem */}
+                <div className="p-6">
+                  <h3 className="text-xs font-semibold text-muted mb-3 flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4" /> The Bottleneck
+                  </h3>
+                  <p className="text-sm text-muted leading-relaxed">
+                    {study.overview}
+                  </p>
+                </div>
+
+                {/* Solution */}
+                <div className="p-6">
+                  <h3 className="text-xs font-semibold text-accent mb-3 flex items-center gap-2">
+                    <Zap className="w-4 h-4" /> Possible Approach
+                  </h3>
+                  <p className="text-sm text-muted leading-relaxed">
+                    {study.solution}
+                  </p>
+                </div>
+
+                {/* Illustrative capabilities */}
+                <div className="p-6">
+                  <h3 className="text-xs font-semibold text-accent mb-3 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-accent" /> What This Could Enable
+                  </h3>
+                  <div className="space-y-2.5">
+                    {study.capabilities.map((res, rIdx) => (
+                      <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
+                        <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                        <span>{res}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
+                <span className="text-xs text-muted">Facing a similar operational hurdle?</span>
+                <MagneticElement strength={0.2}>
+                  <Link
+                    href="/contact"
+                    className="group inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent-strong transition-colors"
+                  >
+                    Schedule an architecture audit{" "}
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </Link>
+                </MagneticElement>
+              </div>
+            </article>
+          </TiltCard>
         ))}
       </div>
     </div>

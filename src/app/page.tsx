@@ -17,6 +17,10 @@ import {
   engagementModels,
 } from "@/data/companyData";
 import SavingsCalculator from "@/components/SavingsCalculator";
+import HeroAmbientCanvas from "@/components/HeroAmbientCanvas";
+import TiltCard from "@/components/TiltCard";
+import MagneticElement from "@/components/MagneticElement";
+import KineticCounter from "@/components/KineticCounter";
 
 const icons = [ShoppingCart, Database, Workflow, Headphones];
 
@@ -25,7 +29,8 @@ export default function HomePage() {
     <div className="relative overflow-hidden bg-canvas">
       <div className="hero-ambient-glow" aria-hidden="true" />
       <section className="studio-hero relative z-1 mx-auto max-w-7xl px-5 pb-16 pt-32 sm:px-8 lg:pb-24 lg:pt-40">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_1fr] lg:gap-16">
+        <HeroAmbientCanvas />
+        <div className="relative z-1 grid items-center gap-12 lg:grid-cols-[1.12fr_1fr] lg:gap-16">
           <div>
             <div className="motion-stagger-1 mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/25 bg-accent/5 px-3.5 py-1.5 text-xs font-semibold text-accent shadow-xs">
               <span className="relative flex h-2 w-2">
@@ -34,10 +39,14 @@ export default function HomePage() {
               </span>
               <span>Dhaka studio · Global partnerships</span>
             </div>
-            <h1 className="motion-stagger-2 text-[2.6rem] font-semibold leading-[1.12] tracking-[-.055em] text-ink sm:text-6xl lg:text-[4.1rem]">
-              Less manual work.
+            <h1 className="text-[2.6rem] font-semibold leading-[1.12] tracking-[-.055em] text-ink sm:text-6xl lg:text-[4.1rem]">
+              <span className="text-mask-reveal">
+                <span className="text-mask-inner">Less manual work.</span>
+              </span>
               <br />
-              <span>More room to grow.</span>
+              <span className="text-mask-reveal">
+                <span className="text-mask-inner [animation-delay:120ms]">More room to grow.</span>
+              </span>
             </h1>
             <p className="motion-stagger-3 mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
               Automation and custom software built around the way your business
@@ -45,30 +54,35 @@ export default function HomePage() {
               team time for what matters.
             </p>
             <div className="motion-stagger-4 mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/schedule"
-                className="nav-call motion-btn group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong"
-              >
-                Book a discovery call{" "}
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/services"
-                className="motion-btn inline-flex min-h-12 items-center justify-center rounded-full border border-line bg-surface px-6 text-sm font-semibold text-ink hover:bg-surface-muted"
-              >
-                Explore our services
-              </Link>
+              <MagneticElement>
+                <Link
+                  href="/schedule"
+                  className="nav-call motion-btn group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent hover:bg-accent-strong shadow-[0_0_20px_rgba(44,199,138,0.25)]"
+                >
+                  Book a discovery call{" "}
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                </Link>
+              </MagneticElement>
+              <MagneticElement strength={0.18}>
+                <Link
+                  href="/services"
+                  className="motion-btn inline-flex min-h-12 items-center justify-center rounded-full border border-line bg-surface px-6 text-sm font-semibold text-ink hover:bg-surface-muted"
+                >
+                  Explore our services
+                </Link>
+              </MagneticElement>
             </div>
             <p className="motion-stagger-4 mt-4 text-xs text-subtle">
               30 minutes · Google Meet · A conversation about your goals
             </p>
           </div>
 
-          {/* Interactive Live Operations Engine Console */}
-          <figure
-            className="workflow-panel motion-card motion-stagger-5 relative rounded-[26px] p-5 sm:p-7 shadow-panel border border-line"
-            aria-label="Interactive operations workflow engine showcasing real-time order ingest, stock mutex and instant courier dispatch"
-          >
+          {/* Interactive Live Operations Engine Console with 3D Tilt */}
+          <TiltCard maxTilt={5}>
+            <figure
+              className="workflow-panel motion-card motion-stagger-5 relative rounded-[26px] p-5 sm:p-7 shadow-panel border border-line"
+              aria-label="Interactive operations workflow engine showcasing real-time order ingest, stock mutex and instant courier dispatch"
+            >
             {/* Terminal Top Bar */}
             <div className="flex items-center justify-between pb-4 border-b border-line mb-6">
               <div className="flex items-center gap-2">
@@ -166,26 +180,37 @@ export default function HomePage() {
                 <span>Zero dropped webhooks</span>
               </span>
               <span className="font-mono text-[11px] text-subtle">
-                140 ops / sec
+                <KineticCounter end={140} suffix=" ops / sec" duration={1200} />
               </span>
             </div>
           </figure>
+          </TiltCard>
         </div>
         <div className="mt-14 grid grid-cols-3 gap-4 border-y border-line py-7 sm:mt-20">
-          {[
-            { value: "40+", label: "Production deployments" },
-            { value: "14+", label: "Retail stores connected" },
-            { value: "Your code", label: "Your ownership" },
-          ].map((item) => (
-            <div key={item.label} className="text-center">
-              <p className="text-xl font-semibold tracking-tight text-ink tabular-nums sm:text-3xl">
-                {item.value}
-              </p>
-              <p className="mt-2 text-[11px] leading-relaxed text-muted sm:text-xs">
-                {item.label}
-              </p>
-            </div>
-          ))}
+          <div className="text-center">
+            <p className="text-xl font-semibold tracking-tight text-ink tabular-nums sm:text-3xl">
+              <KineticCounter end={40} suffix="+" duration={1600} />
+            </p>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted sm:text-xs">
+              Production deployments
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl font-semibold tracking-tight text-ink tabular-nums sm:text-3xl">
+              <KineticCounter end={14} suffix="+" duration={1400} />
+            </p>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted sm:text-xs">
+              Retail stores connected
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl font-semibold tracking-tight text-ink sm:text-3xl">
+              Your code
+            </p>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted sm:text-xs">
+              Your ownership
+            </p>
+          </div>
         </div>
       </section>
 
@@ -206,31 +231,37 @@ export default function HomePage() {
             All services <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className="studio-list studio-list--two">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {servicesData.map((service, index) => {
             const Icon = icons[index];
             return (
-              <Link
-                key={service.id}
-                href={`/services#${service.id}`}
-                className="enterprise-card motion-card group rounded-2xl p-6 transition-all hover:border-accent/50 sm:p-8"
-              >
-                <div className="mb-6 flex items-center justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-transform duration-200 group-hover:scale-105">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <ArrowRight
-                    className="h-4 w-4 text-subtle transition-transform duration-200 group-hover:translate-x-1 group-hover:text-accent"
-                    aria-hidden="true"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold tracking-tight text-ink">
-                  {service.title}
-                </h3>
-                <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted">
-                  {service.shortDesc}
-                </p>
-              </Link>
+              <TiltCard key={service.id} maxTilt={4} spotlightBorder={true} className="rounded-2xl">
+                <Link
+                  href={`/services#${service.id}`}
+                  className="enterprise-card motion-card group flex flex-col justify-between rounded-2xl p-6 transition-all hover:border-accent/50 sm:p-8 h-full"
+                >
+                  <div>
+                    <div className="mb-6 flex items-center justify-between">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-transform duration-200 group-hover:scale-110">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <ArrowRight
+                        className="h-4 w-4 text-subtle transition-transform duration-200 group-hover:translate-x-1.5 group-hover:text-accent"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <h3 className="text-xl font-semibold tracking-tight text-ink">
+                      {service.title}
+                    </h3>
+                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted">
+                      {service.shortDesc}
+                    </p>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-line/60 flex items-center text-xs font-semibold text-accent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <span>Explore architecture & details →</span>
+                  </div>
+                </Link>
+              </TiltCard>
             );
           })}
         </div>
@@ -281,62 +312,66 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right Column: Live AriseSell Dashboard Mockup */}
-          <div className="motion-card rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-panel relative">
-            <div className="flex items-center justify-between pb-4 border-b border-line mb-6">
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/brand/arisesell-icon.svg"
-                  alt="AriseSell"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-xl"
-                />
-                <div>
-                  <h4 className="text-sm font-semibold text-ink">AriseSell Commerce Hub</h4>
-                  <p className="text-xs text-muted">Node: Dhaka Fulfilment Central</p>
+          {/* Right Column: Live AriseSell Dashboard Mockup with 3D Tilt */}
+          <TiltCard maxTilt={5}>
+            <div className="motion-card rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-panel relative">
+              <div className="flex items-center justify-between pb-4 border-b border-line mb-6">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/brand/arisesell-icon.svg"
+                    alt="AriseSell"
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 rounded-xl"
+                  />
+                  <div>
+                    <h4 className="text-sm font-semibold text-ink">AriseSell Commerce Hub</h4>
+                    <p className="text-xs text-muted">Node: Dhaka Fulfilment Central</p>
+                  </div>
+                </div>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                  Live Hub
+                </span>
+              </div>
+
+              {/* Live Metrics Grid */}
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="p-3.5 rounded-xl bg-surface-muted/70 border border-line text-center">
+                  <span className="text-[11px] text-muted block mb-0.5">Today&apos;s Orders</span>
+                  <span className="text-xl font-semibold text-ink tabular-nums">
+                    <KineticCounter end={1842} duration={1500} />
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-surface-muted/70 border border-line text-center">
+                  <span className="text-[11px] text-muted block mb-0.5">Courier API</span>
+                  <span className="text-xl font-semibold text-accent tabular-nums">&lt; 14ms</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-surface-muted/70 border border-line text-center">
+                  <span className="text-[11px] text-muted block mb-0.5">Desync Rate</span>
+                  <span className="text-xl font-semibold text-accent tabular-nums">0.00%</span>
                 </div>
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                Live Hub
-              </span>
-            </div>
 
-            {/* Live Metrics Grid */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              <div className="p-3.5 rounded-xl bg-surface-muted/70 border border-line text-center">
-                <span className="text-[11px] text-muted block mb-0.5">Today&apos;s Orders</span>
-                <span className="text-xl font-semibold text-ink tabular-nums">1,842</span>
+              {/* Live Pipeline Flow Visualizer */}
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-muted">Connected Delivery & Payment Gateways</div>
+                <div className="flex flex-wrap gap-2">
+                  {["Pathao Courier", "Steadfast", "RedX", "DHL Express", "bKash Merchant", "Shopify API"].map((badge) => (
+                    <span key={badge} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface-muted/90 text-xs font-medium text-ink">
+                      <Check className="w-3.5 h-3.5 text-accent" />
+                      {badge}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="p-3.5 rounded-xl bg-surface-muted/70 border border-line text-center">
-                <span className="text-[11px] text-muted block mb-0.5">Courier API</span>
-                <span className="text-xl font-semibold text-accent tabular-nums">&lt; 14ms</span>
-              </div>
-              <div className="p-3.5 rounded-xl bg-surface-muted/70 border border-line text-center">
-                <span className="text-[11px] text-muted block mb-0.5">Desync Rate</span>
-                <span className="text-xl font-semibold text-accent tabular-nums">0.00%</span>
-              </div>
-            </div>
 
-            {/* Live Pipeline Flow Visualizer */}
-            <div className="space-y-3">
-              <div className="text-xs font-semibold text-muted">Connected Delivery & Payment Gateways</div>
-              <div className="flex flex-wrap gap-2">
-                {["Pathao Courier", "Steadfast", "RedX", "DHL Express", "bKash Merchant", "Shopify API"].map((badge) => (
-                  <span key={badge} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface-muted/90 text-xs font-medium text-ink">
-                    <Check className="w-3.5 h-3.5 text-accent" />
-                    {badge}
-                  </span>
-                ))}
+              <div className="mt-6 pt-5 border-t border-line flex items-center justify-between text-xs text-muted">
+                <span>Automatic Barcode Slip Generator</span>
+                <span className="font-mono text-accent font-semibold">Active & Synced</span>
               </div>
             </div>
-
-            <div className="mt-6 pt-5 border-t border-line flex items-center justify-between text-xs text-muted">
-              <span>Automatic Barcode Slip Generator</span>
-              <span className="font-mono text-accent font-semibold">Active & Synced</span>
-            </div>
-          </div>
+          </TiltCard>
         </div>
       </section>
 
@@ -359,22 +394,23 @@ export default function HomePage() {
             <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
           </Link>
         </div>
-        <div className="studio-list studio-list--three">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {projectExamples.map((example) => (
-            <article
-              key={example.id}
-              className="motion-card flex flex-col justify-between rounded-2xl border border-line bg-surface p-6 sm:p-7"
-            >
-              <div>
-                <Layers
-                  className="mb-5 h-5 w-5 text-accent"
-                  aria-hidden="true"
-                />
-                <h3 className="text-sm font-semibold text-ink">{example.industry}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{example.challenge}</p>
-              </div>
-              <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted">{example.approach}</p>
-            </article>
+            <TiltCard key={example.id} maxTilt={3} spotlightBorder={true} className="rounded-2xl">
+              <article
+                className="motion-card flex flex-col justify-between rounded-2xl border border-line bg-surface p-6 sm:p-7 h-full"
+              >
+                <div>
+                  <Layers
+                    className="mb-5 h-5 w-5 text-accent"
+                    aria-hidden="true"
+                  />
+                  <h3 className="text-sm font-semibold text-ink">{example.industry}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{example.challenge}</p>
+                </div>
+                <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted">{example.approach}</p>
+              </article>
+            </TiltCard>
           ))}
         </div>
       </section>

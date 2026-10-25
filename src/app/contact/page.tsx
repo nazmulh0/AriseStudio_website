@@ -3,6 +3,9 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import HeroAmbientCanvas from "@/components/HeroAmbientCanvas";
+import TiltCard from "@/components/TiltCard";
+import MagneticElement from "@/components/MagneticElement";
 import {
   Mail,
   MapPin,
@@ -291,23 +294,25 @@ function ContactForm() {
           </div>
 
           <p className="text-xs leading-relaxed text-muted">We use your details to respond to this request. <Link href="/privacy" className="font-semibold text-accent underline underline-offset-4">Privacy notice</Link></p>
-          <button
-            type="submit"
-            disabled={status === "loading"}
-            className="w-full py-4 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shadow-sm  flex items-center justify-center gap-2 text-sm disabled:opacity-75 disabled:cursor-not-allowed "
-          >
-            {status === "loading" ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>{isCareer ? "Submitting Application..." : "Sending Consultation Request..."}</span>
-              </>
-            ) : (
-              <>
-                <Send className="w-4 h-4" />
-                <span>{isCareer ? "Submit Application" : "Submit Consultation Request"}</span>
-              </>
-            )}
-          </button>
+          <MagneticElement strength={0.15} className="w-full">
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className="w-full py-4 rounded-full font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shadow-sm flex items-center justify-center gap-2 text-sm disabled:opacity-75 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(44,199,138,0.25)]"
+            >
+              {status === "loading" ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{isCareer ? "Submitting Application..." : "Sending Consultation Request..."}</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  <span>{isCareer ? "Submit Application" : "Submit Consultation Request"}</span>
+                </>
+              )}
+            </button>
+          </MagneticElement>
         </form>
       )}
     </div>
@@ -317,14 +322,21 @@ function ContactForm() {
 export default function ContactPage() {
   return (
     <div data-compact-footer className="pt-32 pb-24 relative bg-canvas overflow-hidden">
+      <HeroAmbientCanvas />
+      <div className="hero-ambient-glow" aria-hidden="true" />
 
-      <div className="page-intro">
+      <div className="page-intro relative z-1">
         <span className="page-eyebrow">
           Contact the studio
         </span>
         <h1 className="text-4xl sm:text-5xl font-semibold text-ink mt-4 tracking-tight">
-          Let&apos;s build{" "}<br className="hidden sm:inline" />
-          <span>a better workflow.</span>
+          <span className="text-mask-reveal">
+            <span className="text-mask-inner">Let&apos;s build</span>
+          </span>{" "}
+          <br className="hidden sm:inline" />
+          <span className="text-mask-reveal">
+            <span className="text-mask-inner [animation-delay:120ms]">a better workflow.</span>
+          </span>
         </h1>
         <p className="mt-4 text-lg text-muted max-w-2xl mx-auto leading-relaxed">
           Tell us about your current workflow and where your team loses time. A systems engineer will review your note and respond within 24 hours with practical recommendations.
@@ -341,64 +353,70 @@ export default function ContactPage() {
               <p className="text-xs text-muted">Pick an open slot on our Google Meet scheduler.</p>
             </div>
           </div>
-          <Link
-            href="/schedule"
-            className="px-5 py-2.5 rounded-full text-xs font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm "
-          >
-            Schedule a Call
-          </Link>
+          <MagneticElement strength={0.2}>
+            <Link
+              href="/schedule"
+              className="px-5 py-2.5 rounded-full text-xs font-semibold text-on-accent bg-accent hover:bg-accent-strong transition-colors shrink-0 shadow-sm"
+            >
+              Schedule a Call
+            </Link>
+          </MagneticElement>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-1">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Column: Direct Contact & Guarantees */}
           <div className="order-2 lg:order-1 lg:col-span-5 space-y-8">
-            <div className="p-8 rounded-3xl enterprise-card space-y-6">
-              <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-accent" />
-                How to reach our engineers
-              </h3>
-              <p className="text-sm text-muted leading-relaxed">
-                Whether you need ongoing 24/7 IT support, custom ERP development, or automation across your stores and warehouses, we are ready to help.
-              </p>
+            <TiltCard maxTilt={3} spotlightBorder={true} className="rounded-3xl">
+              <div className="p-8 rounded-3xl enterprise-card space-y-6">
+                <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-accent" />
+                  How to reach our engineers
+                </h3>
+                <p className="text-sm text-muted leading-relaxed">
+                  Whether you need ongoing 24/7 IT support, custom ERP development, or automation across your stores and warehouses, we are ready to help.
+                </p>
 
-              <div className="space-y-4 pt-2 text-sm">
-                <div className="flex items-start gap-3 text-muted">
-                  <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="text-ink block">Headquarters:</strong>
-                    Dhaka, Bangladesh (Partnering with clients across US, UK, EU, Middle East & APAC)
+                <div className="space-y-4 pt-2 text-sm">
+                  <div className="flex items-start gap-3 text-muted">
+                    <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-ink block">Headquarters:</strong>
+                      Dhaka, Bangladesh (Partnering with clients across US, UK, EU, Middle East & APAC)
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3 text-muted">
-                  <Mail className="w-5 h-5 text-accent shrink-0" />
-                  <div>
-                    <strong className="text-ink block">Direct Email:</strong>
-                    <a href="mailto:contact@arisestudio.com" className="text-accent hover:underline">
-                      contact@arisestudio.com
-                    </a>
+                  <div className="flex items-center gap-3 text-muted">
+                    <Mail className="w-5 h-5 text-accent shrink-0" />
+                    <div>
+                      <strong className="text-ink block">Direct Email:</strong>
+                      <a href="mailto:contact@arisestudio.com" className="text-accent hover:underline">
+                        contact@arisestudio.com
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </TiltCard>
 
             {/* SLA & Security Trust Badges */}
-            <div className="p-6 rounded-2xl bg-surface border border-line space-y-3">
-              <div className="flex items-center gap-3 text-sm text-muted">
-                <Clock className="w-4 h-4 text-accent shrink-0" />
-                <span><strong>Response target:</strong> Under 24 hours on business days</span>
+            <TiltCard maxTilt={3} spotlightBorder={true} className="rounded-2xl">
+              <div className="p-6 rounded-2xl bg-surface border border-line space-y-3">
+                <div className="flex items-center gap-3 text-sm text-muted">
+                  <Clock className="w-4 h-4 text-accent shrink-0" />
+                  <span><strong>Response target:</strong> Under 24 hours on business days</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted">
+                  <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
+                  <span><strong>Confidentiality:</strong> NDA available before sharing sensitive details</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span><strong>Technical discovery:</strong> Practical guidance with zero sales pressure</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-sm text-muted">
-                <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
-                <span><strong>Confidentiality:</strong> NDA available before sharing sensitive details</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-muted">
-                <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
-                <span><strong>Technical discovery:</strong> Practical guidance with zero sales pressure</span>
-              </div>
-            </div>
+            </TiltCard>
           </div>
 
           {/* Right Column: Suspense wrapped form */}

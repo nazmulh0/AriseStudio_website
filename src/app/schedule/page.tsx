@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import AppointmentScheduler from "@/components/AppointmentScheduler";
+import HeroAmbientCanvas from "@/components/HeroAmbientCanvas";
 
 export const metadata: Metadata = pageMetadata("Schedule a Call | AriseStudio", "Book a 30-minute technical architecture discovery call with AriseStudio's lead engineering team.", "/schedule");
 
@@ -17,12 +18,15 @@ async function Scheduler() {
 export default function SchedulePage() {
   return (
     <div data-compact-footer className="pt-28 pb-16 relative bg-canvas overflow-hidden min-h-screen">
+      <HeroAmbientCanvas />
       <div className="hero-ambient-glow" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-1">
         {/* Compact Clean Header - AriseSell Style */}
         <div className="text-center max-w-xl mx-auto mb-6">
           <h1 className="text-4xl sm:text-5xl font-semibold text-ink tracking-tight">
-            Book a discovery call
+            <span className="text-mask-reveal">
+              <span className="text-mask-inner">Book a discovery call</span>
+            </span>
           </h1>
           <p className="mt-2 text-sm sm:text-base text-muted">
             30-minute technical architecture consultation with our engineering team.

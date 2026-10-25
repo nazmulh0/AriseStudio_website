@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import BrandLogo from "./BrandLogo";
 import ThemeToggle from "./ThemeToggle";
+import MagneticElement from "./MagneticElement";
 
 const services = [
   { name: "All services", href: "/services", icon: ArrowRight },
@@ -197,13 +198,15 @@ export default function Navbar() {
         </nav>
         <div className="flex shrink-0 items-center gap-2">
           <ThemeToggle />
-          <Link
-            href="/schedule"
-            className="nav-call motion-btn group hidden sm:inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-on-accent transition-colors hover:bg-accent-strong"
-          >
-            Book a meeting{" "}
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
-          </Link>
+          <MagneticElement strength={0.25} className="hidden sm:inline-block">
+            <Link
+              href="/schedule"
+              className="nav-call motion-btn group inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-on-accent transition-colors hover:bg-accent-strong shadow-[0_0_15px_rgba(44,199,138,0.2)]"
+            >
+              Book a meeting{" "}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
+          </MagneticElement>
           <button
             ref={mobileTrigger}
             type="button"
